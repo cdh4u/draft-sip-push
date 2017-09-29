@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY RFC0822 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC3261 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3261.xml">
+<!ENTITY RFC3311 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3261.xml">
+<!ENTITY RFC4028 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4028.xml">
+]>
+<?rfc toc="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="yes" ?>
+<?rfc sortrefs="no" ?>
+<?rfc strict="yes" ?>
+<rfc ipr="trust200902" category="std" docName="draft-holmberg-sipcore-sip-push-latest" obsoletes="" updates="4028" submissionType="IETF" xml:lang="en">
+  <front>
+    <title abbrev="Session timer glare">
+      Push Notification with the Session Initiation Protocol (SIP)
+    </title>
+      <author initials="C.H." surname="Holmberg" fullname="Christer Holmberg">
+      <organization>Ericsson</organization>
+      <address>
+        <postal>
+          <street>Hirsalantie 11</street>
+          <code>02420</code>
+          <city>Jorvas</city>
+          <country>Finland</country>
+        </postal>
+        <email>christer.holmberg@ericsson.com</email>
+      </address>
+    </author>
+  
+    <date year="2017"/>
+    <area>Transport</area>
+    <workgroup>SIPCORE Working Group</workgroup>
+    <keyword>SIP</keyword>
+    <keyword>Push</keyword>
+    <keyword>Notification</keyword>
+    <abstract>
+      <t>
+        This document describes how push notification mechanisms can be used to wake up
+        idle SIP applications, in order to be able to receive and process SIP requests.
+        The document defines new SIP media feature tags, that can be used in a SIP REGISTER
+        request to provide push notification information from the SIP UA to the SIP entity
+        that will send a push request to the push server in order to trigger a push notification 
+        towards the SIP UA.
+      </t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section title="Introduction" toc="default">
+      <t>
+        In order to save resources (e.g, battery life) some devices and operating
+        systems require idle applications to be woken up using a push notification
+        service. Typically each operating system uses a dedicated push notification
+        service. For example, Apple iOS devices use the Apple Push Notification Service (APNS).
+      </t>
+      <t>
+        Due to the restriction above, applications can not be woken up by non-push notification
+        traffic. For SIP this means that an idle SIP application will not be able
+        to receive an incoming SIP request, e.g., an SIP INVITE request initiating a new
+        SIP session.
+      </t>
+      <t>
+        This document describes how push notification mechanisms can be used to wake up
+        idle SIP applications, in order to be able to receive and process SIP requests.
+        The document defines new SIP media feature tags, that can be used in a SIP REGISTER
+        request to provide push notification information from the SIP UA to the SIP entity
+        that will send a push request to the push server in order to trigger a push notification 
+        towards the SIP UA.
+      </t> 
+      <t>
+        When a SIP UA registers to a push service, it will receive a unique Push Resoruce ID (PRID)
+        associated to that registration. The SIP UA will provide the PRID to the SIP network in
+        a SIP REGISTER request. A SIP entity (e.g., a SIP registrar) will store a mapping between
+        the registered contact and the PRID.
+      </t>
+      <t>
+        When the SIP entity receives a SIP request for a new session, or a stand-alone SIP request,
+        addressed towards a SIP UA, the SIP entity will send a push request to the push
+        serivce used by the SIP UA, using the push resource ID associated with the registered
+        contact of the SIP UA, in order to trigger a push notficiation towards the SIP UA. The
+        SIP entity will then forward the SIP request towards the SIP UA using normal SIP routing
+        procedures. Once the SIP UA recieves the push notification, it will be able to receive
+        and process the SIP request.
+      </t>
+      <t>
+        Different push notification mechanisms exist today. Some are based on there
+        standardized mechanism defined in <xref target="RFC8030"/>, while others are
+        proprietary (e.g., the Apple Push Notification Service). <xref target="fig-sip-pn-arch"/>
+        shows the generic push notification architecture supported by the mechanism
+        in this document.
+      </t>
+      <figure title="SIP Push Notification Architecture" anchor="fig-sip-pn-arch"
+align="center"><artwork>
+<![CDATA[
+
+    +--------+           +--------------+       +-----------------+
+    | SIP UA |           | Push Service |       | SIP Application |
+    +--------+           +--------------+       |   Server        |
+        |                      |                +-----------------+
+        |      Subscribe       |                         |
+        |--------------------->|                         |
+        |                      |                         |
+        |    Push Resource ID  |<------------------------|
+        |<---------------------|                         |
+        |                      |                         |        
+        |          SIP REGISTER (Push Resource ID)       |
+        |===============================================>|
+        |                      |                         |
+        |                      |     Push Message        |
+        |    Push Message      |<------------------------|
+        |<---------------------|                         |
+        |                      |                         |
+
+        ------- Push Notification API
+
+        ======= SIP 
+
+    REGISTER sip:alice@example.com SIP/2.0
+    Via: SIP/2.0/TCP alicemobile.example.com:5060;branch=z9hG4bKnashds7
+    Max-Forwards: 70
+    To: Alice <sip:alice@example.com>
+    From: Alice <sip:alice@example.com>;tag=456248
+    Call-ID: 843817637684230@998sdasdh09
+    CSeq: 1826 REGISTER
+    Contact: <sip:alice@alicemobile.example.com>;
+      pn-type=acme;
+      pn-uri="https://pn.acme.example.com/ZTY4ZDJlMzODE1NmUgKi0K">
+    Expires: 7200
+    Content-Length: 0
+
+]]></artwork></figure>
+    </section>
+ 
+    <section title="Conventions">
+    <t>
+      The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+      "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+      document are to be interpreted as described in <xref target="RFC2119"></xref>.
+    </t>
+    </section>
+
+    <section anchor="section.ua" title="UA Behavior">
+      <t>
+        When the UA application is enabled, it will reqister itself with
+        a push notification server. If the registation is succesful the push
+        notficiation will return a unique Push Resource ID (PRID). The PRID 
+        is typically a URI that can be used to send push requests to the push
+        server, and that will trigger push notifications associated with the
+        push notification towards the UA.
+      </t>
+      <t>
+        The details regarding discovery of the push server, and the procedures for
+        the push service registration and registration maintenance, are outside t
+        he scope of this document. The information needed to contact the push server 
+        is typically pre-configured in the operating system of the UA device.
+      </t>
+      <t>
+        Once the UA has received the PRID, and when then UA wants to become reachable, it
+        will send a SIP REGISTER using normal SIP registration procedures. The UA MUST
+        add a sip.pn-uri header field parameter to the SIP Contact header field of the request.
+        The UA MAY add a sip.pn-type header field parameter. If the UA expects to receive
+        application data in the push notification, it MAY add a sip.pn-enckey and a 
+        sip.pn-encsec header field parameter, in order to allow encryption of the data.
+      </t>
+      <t>
+        The details for data encryption are defined in <xref target="I-D.ietf-webpush-encryption"/>.
+      </t>
+      <t>
+        Whenever the UA receives a push notification, if the SIP UA is located behind a NAT, 
+        the UA might need to take actions in order to establish a binding in the NAT, in order 
+        for an incoming SIP request to reach the UA. <xref target="RFC5626"/> and <xref target="RFC6223"/> 
+        define such mechanisms. However, this document does not require usage of a specific mechanism.
+      </t>
+    </section>
+
+    <section anchor="section.proxy" title="Proxy Behavior">
+      <t>Add text</t>
+    </section>
+
+    <section anchor="section.sec" title="Security considerations">
+      <t>
+        In addition to the unique identifier generated by the push server, the mechanism
+        in this document does not require to reveal any user information to the push
+        server.
+      </t>
+      <t>
+        Push mechanisms provide different methods to ensure that malicious user cannot
+        trigger push notifications to a user. Users of the SIP Push mechanism MUST take
+        measures to prevent malicius push notifications from being sent to users.
+      </t>
+      <t>
+        In case endpoints want to send information, in addition to the unique identifier, 
+        this document defines support for a mechanism which allows such information to
+        be encrypted end-to-end, without the push server having access to the non-encrypted
+        information.
+      </t>
+      <t>
+        This specification assumes that the interfaces between the push event subscriber and 
+        the push server, and between the push event notifier and the push server, are properly
+        secured.
+      </t>
+    </section>
+    <section anchor="section.iana" title="IANA considerations">
+      <t>
+        This section registers four new media feature tags in the SIP tree
+        per the process defined in <xref target="RFC2506"/> and
+        <xref target="RFC3840"/>.
+      </t>
+      <section anchor="section.iana.pn-uri" title="sip.pn-uri">
+        <figure anchor="fig-iana-sip-pn-uri" align="center"><artwork>
+<![CDATA[
+
+  Media feature tag name:  sip.pn-uri
+
+  ASN.1 Identifier:
+
+  Summary of the media feature indicated by this tag: This feature tag
+    indicates that the UA supports receiving push notifications from
+    the push service indicated in the media feature tag value.
+
+  Values appropriate for use with this feature tag: string
+
+  The feature tag is intended primarily for use in the following
+  applications, protocols, services, or negotiation mechanisms:
+    This feature tag is only useful when a SIP UA supports receiving
+    push notifications and the SIP UA is communicating with an
+    application server that can trigger such push notifications.
+
+  Examples of typical use: Providing the URI associated with a push
+    notification service to an application service in a SIP 
+    REGISTER request.
+
+  Security Considerations:  Security considerations for this media
+      feature tag are discussed in Section 11.1 of RFC 3840.
+
+]]></artwork></figure>     
+      </section>
+      <section anchor="section.iana.pn-type" title="sip.pn-type">
+        <figure anchor="fig-iana-sip-pn-type" align="center"><artwork>
+<![CDATA[
+
+  Media feature tag name:  sip.pn-type
+
+  ASN.1 Identifier:
+
+  Summary of the media feature indicated by this tag: This feature tag
+    indicates the name of the push notification service associated with
+    the URI provided in the sip.pn-uri media feature tag.
+
+  Values appropriate for use with this feature tag: string
+
+  The feature tag is intended primarily for use in the following
+  applications, protocols, services, or negotiation mechanisms:
+    This feature tag is only useful when a SIP UA supports receiving
+    push notifications and the SIP UA is communicating with an
+    application server that can trigger such push notifications.
+
+  Examples of typical use: Providing a value identifying a push
+    notification service to an application service in a SIP 
+    REGISTER request.
+
+  Security Considerations:  Security considerations for this media
+      feature tag are discussed in Section 11.1 of RFC 3840.
+
+]]></artwork></figure>     
+      </section>
+      <section anchor="section.iana.pn-enckey" title="sip.pn-enckey">
+        <t>
+          Text
+        </t>
+      </section>
+      <section anchor="section.iana.pn-enccode" title="sip.pn-enccode">
+        <t>
+          Text
+        </t>
+      </section>
+    </section>
+  </middle>
+  <back>
+    <references title="Normative references">
+      <?rfc include="reference.RFC.2119"?>
+      <?rfc include="reference.RFC.2506"?>
+      <?rfc include="reference.RFC.3261"?>
+      <?rfc include="reference.RFC.3840"?>
+      <?rfc include="reference.RFC.8030"?>
+    </references>
+    <references title="Informative references">
+      <?rfc include="reference.RFC.5626"?>
+      <?rfc include="reference.RFC.6223"?>
+      <?rfc include="reference.I-D.ietf-webpush-encryption"?>
+    </references>
+  </back>
+</rfc>
