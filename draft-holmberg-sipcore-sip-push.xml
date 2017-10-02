@@ -40,8 +40,8 @@
         idle SIP applications, in order to be able to receive and process SIP requests.
         The document defines new SIP media feature tags, that can be used in a SIP REGISTER
         request to provide push notification information from the SIP UA to the SIP entity
-        that will send a push request to the push server in order to trigger a push notification 
-        towards the SIP UA.
+        (SIP proxy) that will send a push request to the push server in order to trigger a 
+        push notification towards the SIP UA.
       </t>
     </abstract>
   </front>
@@ -65,13 +65,13 @@
         idle SIP applications, in order to be able to receive and process SIP requests.
         The document defines new SIP media feature tags, that can be used in a SIP REGISTER
         request to provide push notification information from the SIP UA to the SIP entity
-        that will send a push request to the push server in order to trigger a push notification 
-        towards the SIP UA.
+        (SIP proxy) that will send a push request to the push server in order to trigger a 
+        push notification towards the SIP UA.
       </t> 
       <t>
         When a SIP UA registers to a push service, it will receive a unique Push Resoruce ID (PRID)
         associated to that registration. The SIP UA will provide the PRID to the SIP network in
-        a SIP REGISTER request. A SIP entity (e.g., a SIP registrar) will store a mapping between
+        a SIP REGISTER request. A SIP proxy (e.g., the SIP registrar) will store a mapping between
         the registered contact and the PRID.
       </t>
       <t>
@@ -95,13 +95,13 @@ align="center"><artwork>
 <![CDATA[
 
     +--------+           +--------------+       +-----------------+
-    | SIP UA |           | Push Service |       | SIP Application |
-    +--------+           +--------------+       |   Server        |
-        |                      |                +-----------------+
+    | SIP UA |           | Push Service |       |    SIP Proxy    |
+    +--------+           +--------------+       +-----------------+
+        |                      |                         |
         |      Subscribe       |                         |
         |--------------------->|                         |
         |                      |                         |
-        |    Push Resource ID  |<------------------------|
+        |    Push Resource ID  |                         |
         |<---------------------|                         |
         |                      |                         |        
         |          SIP REGISTER (Push Resource ID)       |
@@ -125,7 +125,7 @@ align="center"><artwork>
     CSeq: 1826 REGISTER
     Contact: <sip:alice@alicemobile.example.com>;
       pn-type=acme;
-      pn-uri="https://pn.acme.example.com/ZTY4ZDJlMzODE1NmUgKi0K">
+      pn-token="https://pn.acme.example.com/ZTY4ZDJlMzODE1NmUgKi0K">
     Expires: 7200
     Content-Length: 0
 
@@ -133,72 +133,107 @@ align="center"><artwork>
     </section>
  
     <section title="Conventions">
-    <t>
-      The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-      "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-      document are to be interpreted as described in <xref target="RFC2119"></xref>.
-    </t>
-    </section>
-
-    <section anchor="section.ua" title="UA Behavior">
       <t>
-        When the UA application is enabled, it will reqister itself with
-        a push notification server. If the registation is succesful the push
-        notficiation will return a unique Push Resource ID (PRID). The PRID 
-        is typically a URI that can be used to send push requests to the push
-        server, and that will trigger push notifications associated with the
-        push notification towards the UA.
-      </t>
-      <t>
-        The details regarding discovery of the push server, and the procedures for
-        the push service registration and registration maintenance, are outside t
-        he scope of this document. The information needed to contact the push server 
-        is typically pre-configured in the operating system of the UA device.
-      </t>
-      <t>
-        Once the UA has received the PRID, and when then UA wants to become reachable, it
-        will send a SIP REGISTER using normal SIP registration procedures. The UA MUST
-        add a sip.pn-uri header field parameter to the SIP Contact header field of the request.
-        The UA MAY add a sip.pn-type header field parameter. If the UA expects to receive
-        application data in the push notification, it MAY add a sip.pn-enckey and a 
-        sip.pn-encsec header field parameter, in order to allow encryption of the data.
-      </t>
-      <t>
-        The details for data encryption are defined in <xref target="I-D.ietf-webpush-encryption"/>.
-      </t>
-      <t>
-        Whenever the UA receives a push notification, if the SIP UA is located behind a NAT, 
-        the UA might need to take actions in order to establish a binding in the NAT, in order 
-        for an incoming SIP request to reach the UA. <xref target="RFC5626"/> and <xref target="RFC6223"/> 
-        define such mechanisms. However, this document does not require usage of a specific mechanism.
+        The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+        "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+        document are to be interpreted as described in <xref target="RFC2119"></xref>.
       </t>
     </section>
 
-    <section anchor="section.proxy" title="Proxy Behavior">
-      <t>Add text</t>
+    <section title="Push Resource ID (PRID)">
+      <t>
+        When an entity registers with a Push Notification Server (PNS) is receives
+        a unique Push Resource ID (PRID), which is a value associated with the 
+        registration. 
+      </t>
+      <t>  
+        The format of the PRID may vary depending on the PNS provider. The PRID 
+        may be part of a URI that can be used to retrive the address and port of
+        the PNS when sending push requests to the PNS. The PRID may also be a token
+        value, in which case the address and port of the PNS needs to be provided 
+        using other means.
+      </t>
+      <t>
+        The details regarding discovery of the PNS, and the procedures for the 
+        push notification registration and maintenance are outside the scope of 
+        this document. The information needed to contact the PNS is typically 
+        pre-configured in the operating system (OS) of the device.
+      </t>
+    </section>
+
+    <section anchor="section.ua" title="SIP User Agent (UA) Behavior">
+      <t>
+        Once the SIP UA has registered with the PNS received the PRID, when then 
+        UA wants to receive push notifications triggered by the SIP proxy, the UA MUST 
+        send a SIP REGISTER using normal SIP registration procedures. The UA MUST add 
+        a sip.pn-token header field parameter, and MAY add a sip.pn-type header field 
+        parameter, to the SIP Contact header field of the request.
+      </t>
+      <t>
+        As long as the UA wants the SIP proxy to continue sending push requests, the 
+        UA MUST include the pn-token header field paraneter in every re-registration 
+        SIP REGISTER request sent towards the SIP proxy.
+      </t>
+      <t>
+        If the UA at some point wants to stop the SIP proxy from sending push requests, 
+        the UA MUST send a SIP REGISTER request without the push notification parameters.
+      </t>
+      <t>
+        If the UA expects to receive payload in the push notification, the UA MAY 
+        add a sip.pn-enckey and a sip.pn-encsec header field parameter, in order to allow 
+        encryption of the data. The details for data encryption are defined in 
+        <xref target="I-D.ietf-webpush-encryption"/>.
+      </t>
+      <t>
+        Whenever the UA recieves a push notification request, it MUST assume that it is about
+        to receive a SIP request.
+      </t>
+    </section>
+
+    <section anchor="section.proxy" title="SIP Proxy Behavior">
+      <t>
+        When the SIP proxy receives a SIP REGISTER request from a UA, it MUST create a mapping
+        between the registered contact and the associated PRID (provided in the pn-token header
+        field parameter of the request. The SIP proxy maintains the mapping until the UA
+        sends a SIP REGISTER request that either does not contain the sip.pn-token header field
+        parameter, or that terminates the registration.
+      </t>
+      <t>
+        When the SIP proxy receives a SIP request for a new dialog (e.g., a SIP INVITE reqest)
+        or a non-dialog SIP request (e.g., a SIP MESSAGE request) aimed for a SIP UA that provided
+        a PRID during registration, the SIP proxy triggers a push request towards the push
+        notification server associated with the PRID. After that, the SIP proxy forwards
+        the SIP request towards the SIP UA using normal SIP procedures.
+      </t>
+    </section>
+
+    <section anchor="section.nat" title="Network Address Translator (NAT) Considerations">
+      <t>
+        Whenever the UA receives a push notification, if the SIP UA is located behind a
+        Network Address Translator (NAT), the UA might need to take actions in order to 
+        establish a binding in the NAT, in order for an incoming SIP request to reach the 
+        UA. <xref target="RFC5626"/> and <xref target="RFC6223"/> define such mechanisms. 
+        This document does not require usage of a specific mechanism.
+      </t>
     </section>
 
     <section anchor="section.sec" title="Security considerations">
       <t>
-        In addition to the unique identifier generated by the push server, the mechanism
-        in this document does not require to reveal any user information to the push
-        server.
+        In addition to the information exchanged between a device and its
+        PNS in order to esatblish a push notification subscription, the mechanism 
+        in this document does not require entities to provide any additional
+        information to the PNS.
       </t>
       <t>
-        Push mechanisms provide different methods to ensure that malicious user cannot
-        trigger push notifications to a user. Users of the SIP Push mechanism MUST take
-        measures to prevent malicius push notifications from being sent to users.
+        Push notification mechanisms provide different methods to ensure that malicious 
+        user cannot trigger push notifications to a device. Users of the mechanism 
+        in this document MUST take measures to prevent push notifications from being
+        sent to a device from a malicious user.
       </t>
       <t>
-        In case endpoints want to send information, in addition to the unique identifier, 
-        this document defines support for a mechanism which allows such information to
-        be encrypted end-to-end, without the push server having access to the non-encrypted
-        information.
-      </t>
-      <t>
-        This specification assumes that the interfaces between the push event subscriber and 
-        the push server, and between the push event notifier and the push server, are properly
-        secured.
+        In case entities do want to include payload in the push notifications, this document 
+        defines the means for using end-to-end paylod encryption between the entity sending
+        the push request and the entity receiving the associated push notification.
       </t>
     </section>
     <section anchor="section.iana" title="IANA considerations">
@@ -207,29 +242,28 @@ align="center"><artwork>
         per the process defined in <xref target="RFC2506"/> and
         <xref target="RFC3840"/>.
       </t>
-      <section anchor="section.iana.pn-uri" title="sip.pn-uri">
-        <figure anchor="fig-iana-sip-pn-uri" align="center"><artwork>
+      <section anchor="section.iana.pn-token" title="sip.pn-token">
+        <figure anchor="fig-iana-sip-pn-token" align="center"><artwork>
 <![CDATA[
 
-  Media feature tag name:  sip.pn-uri
+  Media feature tag name:  sip.pn-token
 
   ASN.1 Identifier:
 
   Summary of the media feature indicated by this tag: This feature tag
     indicates that the UA supports receiving push notifications from
-    the push service indicated in the media feature tag value.
+    on the push notification subsription associated with the media
+    feature tag value.
 
   Values appropriate for use with this feature tag: string
 
   The feature tag is intended primarily for use in the following
   applications, protocols, services, or negotiation mechanisms:
     This feature tag is only useful when a SIP UA supports receiving
-    push notifications and the SIP UA is communicating with an
-    application server that can trigger such push notifications.
+    push notifications triggered by push requests sent by a SIP proxy.
 
-  Examples of typical use: Providing the URI associated with a push
-    notification service to an application service in a SIP 
-    REGISTER request.
+  Examples of typical use: Providing a value associated with a push
+    notification subscription to a SIP proxy in a SIP REGISTER request.
 
   Security Considerations:  Security considerations for this media
       feature tag are discussed in Section 11.1 of RFC 3840.
@@ -246,19 +280,17 @@ align="center"><artwork>
 
   Summary of the media feature indicated by this tag: This feature tag
     indicates the name of the push notification service associated with
-    the URI provided in the sip.pn-uri media feature tag.
+    the URI provided in the sip.pn-token media feature tag.
 
   Values appropriate for use with this feature tag: string
 
-  The feature tag is intended primarily for use in the following
-  applications, protocols, services, or negotiation mechanisms:
+ The feature tag is intended primarily for use in the following
+applications, protocols, services, or negotiation mechanisms:
     This feature tag is only useful when a SIP UA supports receiving
-    push notifications and the SIP UA is communicating with an
-    application server that can trigger such push notifications.
+    push notifications triggered by push requests sent by a SIP proxy.
 
   Examples of typical use: Providing a value identifying a push
-    notification service to an application service in a SIP 
-    REGISTER request.
+    notification service to a SIP proxy in a SIP REGISTER request.
 
   Security Considerations:  Security considerations for this media
       feature tag are discussed in Section 11.1 of RFC 3840.
@@ -267,12 +299,12 @@ align="center"><artwork>
       </section>
       <section anchor="section.iana.pn-enckey" title="sip.pn-enckey">
         <t>
-          Text
+          Add text.
         </t>
       </section>
       <section anchor="section.iana.pn-enccode" title="sip.pn-enccode">
         <t>
-          Text
+          Add text.
         </t>
       </section>
     </section>
