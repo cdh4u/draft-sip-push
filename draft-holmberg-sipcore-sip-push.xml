@@ -37,11 +37,12 @@
     <abstract>
       <t>
         This document describes how push notification mechanisms can be used to wake up
-        idle SIP applications, in order to be able to receive and process SIP requests.
-        The document defines new SIP URI parameters, that can be used in a SIP REGISTER
-        request to provide push notification information from the SIP UA to the SIP entity
-        (SIP proxy) that will send a push request to the push server in order to trigger a 
-        push notification towards the SIP UA.
+        idle Session Initiation Protocol (SIP) applications, in order to be able to receive 
+        and process SIP requests. The document defines new SIP URI parameters, that can be 
+        used in a SIP REGISTER request to provide push notification information from the 
+        SIP User Agent (UA) to the SIP entity (realized as a SIP proxy in this document) 
+        that will send a push request to the push server in order to trigger a push notification 
+        towards the SIP UA.
       </t>
     </abstract>
   </front>
@@ -56,20 +57,20 @@
       </t>
       <t>
         Due to the restriction above, applications can not be woken up by non-push notification
-        traffic. For SIP this means that an idle SIP application will not be able
-        to receive an incoming SIP request, e.g., an SIP INVITE request initiating a new
-        SIP session.
+        traffic. This means that an idle Session Initiation Protocol (SIP) <xref target="RFC3261"/> 
+        User Agent (UA) will not be able to receive an incoming SIP request, e.g., an SIP INVITE request 
+        initiating a new SIP session.
       </t>
       <t>
         This document describes how push notification mechanisms can be used to wake up
         idle SIP applications, in order to be able to receive and process SIP requests.
         The document defines new SIP URI parameters, that can be used in a SIP REGISTER
         request to provide push notification information from the SIP UA to the SIP entity
-        (SIP proxy) that will send a push request to the push server in order to trigger a 
-        push notification towards the SIP UA.
+        (realized as a SIP proxy in this document) that will send a push request to the 
+        push server in order to trigger a push notification towards the SIP UA.
       </t> 
       <t>
-        When a SIP UA registers to a push service, it will receive a unique Push Resoruce ID (PRID)
+        When a SIP UA registers to a push service, it will receive a unique Push Resource ID (PRID)
         associated to that registration. The SIP UA will provide the PRID to the SIP network in
         a SIP REGISTER request. A SIP proxy (e.g., the SIP registrar) will store a mapping between
         the registered contact and the PRID.
@@ -77,10 +78,10 @@
       <t>
         When the SIP entity receives a SIP request for a new session, or a stand-alone SIP request,
         addressed towards a SIP UA, the SIP entity will send a push request to the push
-        serivce used by the SIP UA, using the push resource ID associated with the registered
-        contact of the SIP UA, in order to trigger a push notficiation towards the SIP UA. The
+        service used by the SIP UA, using the push resource ID associated with the registered
+        contact of the SIP UA, in order to trigger a push notification towards the SIP UA. The
         SIP entity will then forward the SIP request towards the SIP UA using normal SIP routing
-        procedures. Once the SIP UA recieves the push notification, it will be able to receive
+        procedures. Once the SIP UA receives the push notification, it will be able to receive
         and process the SIP request.
       </t>
       <t>
@@ -148,7 +149,7 @@ align="center"><artwork>
       </t>
       <t>  
         The format of the PRID may vary depending on the PNS provider. The PRID 
-        may be part of a URI that can be used to retrive the address and port of
+        may be part of a URI that can be used to retrieve the address and port of
         the PNS when sending push requests to the PNS. The PRID may also be a token
         value, in which case the address and port of the PNS needs to be provided 
         using other means.
@@ -183,16 +184,18 @@ align="center"><artwork>
         If the UA expects to receive payload in the push notification, the UA MAY 
         add a pn-enckey and a pn-encsec Contact header field URI parameter, in order to allow 
         encryption of the data using the mechanism in <xref target="I-D.ietf-webpush-encryption"/>.
+        The pn-enckey URI parameter contains the public key, and the pn-encsec URI parameter 
+        contains the authentication secret <xref target="I-D.ietf-webpush-encryption"/>.
       </t>
       <t>
-        Whenever the UA recieves a push notification request, it MUST assume that it is about
+        Whenever the UA receives a push notification request, it MUST assume that it is about
         to receive a SIP request.
       </t>
     </section>
 
     <section anchor="section.proxy" title="SIP Proxy Behavior">
       <t>
-        When the SIP proxy receives a SIP request for a new dialog (e.g., a SIP INVITE reqest)
+        When the SIP proxy receives a SIP request for a new dialog (e.g., a SIP INVITE request)
         or a non-dialog SIP request (e.g., a SIP MESSAGE request) aimed for a SIP UA, if the
         Request-URI of the request contains a pn-token URI parameter, the SIP proxy triggers a 
         push request towards the push notification server associated with the PRID. After that, 
@@ -252,28 +255,30 @@ align="center"><artwork>
         This specification defines new SIP URI parameters that extend the
         registry created by <xref target="RFC3969"/>:
       </t>
-      <section anchor="section.iana.pn-token" title="sip.pn-token">
+      <section anchor="section.iana.pn-token" title="pn-token">
         <t>
           The "pn-token" parameter contains a push notification provider-specific 
           value that was provided by the push notification Provider to the UA.
           The value uniquely identifies the UA's push notification subscription.
         </t>
       </section>
-      <section anchor="section.iana.pn-type" title="sip.pn-type">
+      <section anchor="section.iana.pn-type" title="pn-type">
         <t>
-          The "pn-type" parameter identifies the push notification prover and can 
+          The "pn-type" parameter identifies the push notification provider and can 
           be used in combination with "pn-token".  It is up to the specific push
           notification provider to make use of this parameter.
         </t>
       </section>
-      <section anchor="section.iana.pn-enckey" title="sip.pn-enckey">
+      <section anchor="section.iana.pn-enckey" title="pn-enckey">
         <t>
-          Add text.
+          The "pn-enckey" parameter contains a public key, as defined in 
+          <xref target="I-D.ietf-webpush-encryption"/>.
         </t>
       </section>
-      <section anchor="section.iana.pn-enccode" title="sip.pn-enccode">
+      <section anchor="section.iana.pn-encsec" title="pn-enccode">
         <t>
-          Add text.
+          The "pn-encsec" parameter contains an authentication secret, 
+          as defined in <xref target="I-D.ietf-webpush-encryption"/>.
         </t>
       </section>
     </section>
