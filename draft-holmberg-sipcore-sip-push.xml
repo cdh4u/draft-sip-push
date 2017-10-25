@@ -231,6 +231,25 @@ align="center"><artwork>
       </t>
     </section>
 
+    <section anchor="section.sec-apns" title="pn-type URI parameter for Apple Push Notification Service">
+      <t>
+        When the Apple Push Notification Service (APNS) is used, the value of the pn-type URI parameter
+        pns-provider parameter part is "APNS". The pns-provider part contains the APNS App ID, which contains
+        of two parts, separated by a period (.): Team ID and Bundle ID. The Team ID is provided by Apple and 
+        is unique to a development team. The Bundle ID is unique to a development team, and is a string that will
+        can match a single application or a group of applications.
+      </t>
+      <t>
+        Example: pn-type = APNS:DEF123GHIJ.com.yourcompany.yourexampleapp
+      </t>
+      <t>
+        For more information on the APNS App ID:
+      </t>
+      <t>
+        https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/AppID.html
+      </t>
+    </section>
+
     <section anchor="section.sec" title="Security considerations">
       <t>
         In addition to the information exchanged between a device and its
@@ -246,7 +265,7 @@ align="center"><artwork>
       </t>
       <t>
         In case entities do want to include payload in the push notifications, this document 
-        defines the means for using end-to-end paylod encryption between the entity sending
+        defines the means for using end-to-end payload encryption between the entity sending
         the push request and the entity receiving the associated push notification.
       </t>
     </section>
@@ -256,30 +275,88 @@ align="center"><artwork>
         registry created by <xref target="RFC3969"/>:
       </t>
       <section anchor="section.iana.pn-token" title="pn-token">
-        <t>
-          The "pn-token" parameter contains a push notification provider-specific 
-          value that was provided by the push notification Provider to the UA.
-          The value uniquely identifies the UA's push notification subscription.
-        </t>
+        <figure align="center"><artwork>
+<![CDATA[
+
+  Parameter Name: pn-token
+
+  Predefined Values:  No
+
+  Reference:  RFC XXXX
+
+]]></artwork></figure>
       </section>
       <section anchor="section.iana.pn-type" title="pn-type">
-        <t>
-          The "pn-type" parameter identifies the push notification provider and can 
-          be used in combination with "pn-token".  It is up to the specific push
-          notification provider to make use of this parameter.
-        </t>
+        <figure align="center"><artwork>
+<![CDATA[
+
+  Parameter Name: pn-type
+
+  Predefined Values:  No
+
+  Reference:  RFC XXXX
+
+]]></artwork></figure>
       </section>
       <section anchor="section.iana.pn-enckey" title="pn-enckey">
-        <t>
-          The "pn-enckey" parameter contains a public key, as defined in 
-          <xref target="I-D.ietf-webpush-encryption"/>.
-        </t>
+        <figure align="center"><artwork>
+<![CDATA[
+
+  Parameter Name: pn-enckey
+
+  Predefined Values:  No
+
+  Reference:  RFC XXXX
+
+]]></artwork></figure>
       </section>
       <section anchor="section.iana.pn-encsec" title="pn-enccode">
+        <figure align="center"><artwork>
+<![CDATA[
+
+  Parameter Name: pn-enccode
+
+  Predefined Values:  No
+
+  Reference:  RFC XXXX
+
+]]></artwork></figure>
+      </section>
+
+      <section anchor="section.iana.pns-sub" title="PNS Sub-registry Establishment">
         <t>
-          The "pn-encsec" parameter contains an authentication secret, 
-          as defined in <xref target="I-D.ietf-webpush-encryption"/>.
+             This section creates a new sub-registry, "PNS", under the sip-parameters
+             registry: http://www.iana.org/assignments/sip-parameters.
         </t>
+        <t>
+            The purpose of the sub-registry is to register SIP URI pn-type values.
+        </t>
+        <figure align="center"><artwork>
+<![CDATA[
+
+   This sub-registry is defined as a table that contains the following
+   three columns:
+
+   Value:        The token under registration
+
+   Description:  The name of the push notification service
+
+   Document:     A reference to the document defining the registration
+
+]]></artwork></figure>
+
+        <figure align="center"><artwork>
+<![CDATA[
+
+  This specification registers the following value:
+
+  Value         Description                         Document
+  -------       ----------------------------------  ----------
+
+  APNS          Apple Push Notification Service     [RFC XXXX]
+                 
+
+]]></artwork></figure>
       </section>
     </section>
   </middle>
