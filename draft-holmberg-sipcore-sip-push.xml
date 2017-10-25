@@ -231,11 +231,39 @@ align="center"><artwork>
       </t>
     </section>
 
+<section anchor="section.grammar" title="Grammar">
+      <t>
+        The section defines new SIP URI parameters, by extending the grammar for "uri-parameter" 
+        as defined in <xref target="RFC5626"/>. The ABNF is as follows:
+      </t>
+        <figure align="center"><artwork>
+<![CDATA[
+
+  uri-parameter   =/ pn-token / pn-type / pn-enccode / pn-enckey
+  pn-token        = pvalue
+  pn-type         = pns-provider COLON pns-param
+  pn-enccode      = pvalue
+  pn-enckey       = pvalue
+
+  pns-provider    = pvalue ; Colon characters MUST be escaped
+  pns-param       = pvalue ; Colon characters MUST be escaped
+
+  ; pvalue as defined in RFC 3261
+  ; COLON as defined in RFC 3261
+  
+  The format and semantics of pns-param is specific to a given 
+  pns-provider value.
+
+]]></artwork></figure>
+
+      </t>
+    </section>
+
     <section anchor="section.sec-apns" title="pn-type URI parameter for Apple Push Notification Service">
       <t>
         When the Apple Push Notification Service (APNS) is used, the value of the pn-type URI parameter
-        pns-provider parameter part is "APNS". The pns-provider part contains the APNS App ID, which contains
-        of two parts, separated by a period (.): Team ID and Bundle ID. The Team ID is provided by Apple and 
+        pns-provider parameter part is "APNS". The pns-param part contains the APNS App ID, which is encoded
+        by two values, separated by a period (.): Team ID and Bundle ID. The Team ID is provided by Apple and 
         is unique to a development team. The Bundle ID is unique to a development team, and is a string that will
         can match a single application or a group of applications.
       </t>
