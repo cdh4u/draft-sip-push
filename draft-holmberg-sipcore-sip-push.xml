@@ -255,8 +255,6 @@ align="center"><artwork>
   pns-provider value.
 
 ]]></artwork></figure>
-
-      </t>
     </section>
 
     <section anchor="section.sec-apns" title="pn-type URI parameter for Apple Push Notification Service">
