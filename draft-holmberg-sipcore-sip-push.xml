@@ -127,7 +127,7 @@ align="center"><artwork>
     Call-ID: 843817637684230@998sdasdh09
     CSeq: 1826 REGISTER
     Contact: <sip:alice@alicemobile.example.com;
-      pn-type=acme;
+      pn-type=acme:acme-param;
       pn-prid="ZTY4ZDJlMzODE1NmUgKi0K">
     Expires: 7200
     Content-Length: 0
