@@ -191,6 +191,11 @@ align="center"><artwork>
         The pn-enckey URI parameter contains the public key, and the pn-encsec URI parameter 
         contains the authentication secret <xref target="I-D.ietf-webpush-encryption"/>.
       </t>
+      <t>
+        NOTE: End-to-end encryption of the payload between the SIP proxy and the SIP UA cannot
+        be used if the push notification request payload contains information that needs to be
+        accessible by the push notification server.
+       </t>
     </section>
 
     <section anchor="section.proxy" title="SIP Proxy Behavior">
@@ -258,6 +263,27 @@ align="center"><artwork>
 ]]></artwork></figure>
     </section>
 
+    <section anchor="section.sec-reqs" title="PNS Registration Requirements">
+        <t>
+            When a new value is registered to the PNS Sub-registry, a reference to a specification which 
+            describes the push notification service associated with the value is provided. That specification
+            MUST contain the following information:
+            <list style="symbols">
+            <t>
+                How the values for the pn-prid parameter is retrieved and set by the SIP UA.
+            </t>
+            <t>
+                The format of the pns-param part of the pns-type parameter, and how the value of the pns-param part is retrieved and set by the SIP UA.
+            </t>
+            <t>
+                Whether there are any restrictions regarding usage of payload encryption <xref target="I-D.ietf-webpush-encryption"/>
+                with the associated push notification service.
+            </t>
+          </list>
+        </t>
+    </section>
+    
+ 
     <section anchor="section.sec-apns" title="pn-prid and pn-type URI parameters for Apple Push Notification service">
       <t>
         When the Apple Push Notification service (APNs) is used, the value of the pn-type URI parameter
@@ -311,7 +337,7 @@ align="center"><artwork>
     <section anchor="section.sec" title="Security considerations">
       <t>
         In addition to the information exchanged between a device and its
-        PNS in order to esatblish a push notification subscription, the mechanism 
+        PNS in order to establish a push notification subscription, the mechanism 
         in this document does not require entities to provide any additional
         information to the PNS.
       </t>
