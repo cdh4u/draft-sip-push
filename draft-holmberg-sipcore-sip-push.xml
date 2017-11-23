@@ -59,7 +59,7 @@
       <t>
         Due to the restriction above, applications can not be woken up by non-push notification
         traffic. This means that a suspended SIP UA will not be able to receive an incoming 
-        SIP request (e.g., a SIP INVITE request).
+        SIP request (e.g., a SIP INVITE request), or to send periodic re-registration requests.
       </t>
       <t>
         This document describes how push notification mechanisms can be used to wake up
@@ -77,12 +77,13 @@
       </t>
       <t>
         When the SIP proxy receives a SIP request for a new session, or a stand-alone SIP request,
-        addressed towards a SIP UA, the SIP proxy will send a push request to the push notification
+        addressed towards a SIP UA, or when the SIP proxy determines that the SIP UA needs to perform
+        a re-registration, the SIP proxy will send a push request to the push notification
         service used by the SIP UA, using the push resource ID associated with the registered
         contact of the SIP UA, in order to trigger a push notification towards the SIP UA. The
         SIP proxy will then forward the SIP request towards the SIP UA using normal SIP routing
-        procedures. Once the SIP UA receives the push notification, it will be able to receive
-        the SIP request (and generate a SIP request itself, if needed).
+        procedures. Once the SIP UA receives the push notification, it will be to receive the 
+        SIP request, and to generate a SIP request (e.g., a SIP REGISTER) itself.
       </t>
       <t>
         Different push notification mechanisms exist today. Some are based on there
@@ -174,6 +175,15 @@ align="center"><artwork>
         The pn-type contains additional, PNS-specific, information.
       </t>
       <t>
+        When the SIP UA receives a push notification, it MUST perform a SIP re-registration
+        <xref target="RFC3261"/> by sending a SIP REGISTER request. If there are 
+        Network Address Translators (NATs) between the SIP UA and the SIP proxy, the SIP REGISTER
+        request will create NAT bindings allowing incoming SIP requests to reach the SIP UA. 
+        If the SIP proxy triggered the push notification because it wants to forward a SIP request
+        towards the SIP UA, the receival of the SIP REGISTER request can be used by the SIP proxy
+        as a trigger to forward the SIP request.
+      </t>
+      <t>
         As long as the UA wants the SIP proxy to continue sending push requests, the 
         UA MUST include the pn-prid and pn-type URI parameters in every re-registration 
         SIP REGISTER request sent towards the SIP proxy. Note that, in some cases, the
@@ -181,11 +191,11 @@ align="center"><artwork>
         will contain the new value.
       </t>
       <t>
-        If the UA at some point wants to stop the SIP proxy from sending push requests, 
-        the UA MUST send a SIP REGISTER request without the pn-prid and pn-type URI parameters.
+        If the SIP UA at some point wants to stop the SIP proxy from sending push requests, 
+        the SIP UA MUST send a SIP REGISTER request without the pn-prid and pn-type URI parameters.
       </t>
       <t>
-        If the UA expects to receive payload in the push notification, the UA MAY 
+        If the SIP UA expects to receive payload in the push notification, the SIP UA MAY 
         add a pn-enckey and a pn-encsec Contact header field URI parameter, in order to allow 
         encryption of the data using the mechanism in <xref target="I-D.ietf-webpush-encryption"/>.
         The pn-enckey URI parameter contains the public key, and the pn-encsec URI parameter 
@@ -199,31 +209,60 @@ align="center"><artwork>
     </section>
 
     <section anchor="section.proxy" title="SIP Proxy Behavior">
-      <t>
-        When the SIP proxy receives a SIP request for a new dialog (e.g., a SIP INVITE request)
-        or a non-dialog SIP request (e.g., a SIP MESSAGE request) aimed for a SIP UA, if the
-        Request-URI of the request contains a pn-prid URI parameter, the SIP proxy triggers a 
-        push request towards the push notification server associated with the PRID. After that, 
-        the SIP proxy forwards the SIP request towards the SIP UA using normal SIP procedures.
-      </t>
-      <t>
-        The SIP proxy MUST NOT transport the SIP request as push request payload, instead of
-        forwarding the request using normal SIP procedures.
-      </t>
-      <t>
-        In some cases the push notification provider can be retrieved from the pn-prid URI
-        parameter. In other cases the pn-type URI parameter is used to identity the push
-        notification provider.
-      </t>
-      <t>
-        If the proxy is not able to contact the push notification provider, or even determine
-        which push notification provider to contact, it SHOULD reject the SIP request.
-      </t>
-      <t>
-        The protocol and format used for the push request depends on the push notification provider,
-        and the details for constructing and sending the messages are outside the scope of this
-        specification.
-      </t>
+      <section anchor="section.proxy.pnid" title="Push Notification Provider Information">
+        <t>
+          In some cases the push notification provider can be retrieved from the pn-prid URI
+          parameter. In other cases the pn-type URI parameter is used to identity the push
+          notification provider.
+        </t>
+        <t>
+          The protocol and format used for the push request depends on the push notification provider,
+          and the details for constructing and sending the messages are outside the scope of this
+          specification.
+        </t>
+      </section>
+      <section anchor="section.proxy.rereg" title="Trigger Periodic Re-registration">
+        <t>
+          If the SIP UA needs to perform periodic re-registrations, the SIP proxy needs to have
+          information about when those re-registrations are to be performed. The SIP proxy
+          either needs to contain the SIP registrar functionality, or the SIP proxy needs to retreive 
+          the information from the registrar using some other mechanism.
+        </t>
+        <t>
+          When the SIP proxy receives an indication that the SIP UA needs to perform a 
+          re-registration, the SIP proxy triggers a push request towards the push notification 
+          server associated with the PRID.
+        </t>
+      </section>
+      <section anchor="section.proxy.inv" title="SIP Request">
+        <t>
+          When the SIP proxy receives a SIP request for a new dialog (e.g., a SIP INVITE request)
+          or a non-dialog SIP request (e.g., a SIP MESSAGE request) aimed for a SIP UA, if the
+          Request-URI of the request contains a pn-prid URI parameter, the SIP proxy triggers a 
+          push request towards the push notification server associated with the PRID. After that, 
+          the SIP proxy forwards the SIP request towards the SIP UA using normal SIP procedures.
+        </t>
+        <t>
+          As the push notification will trigger the SIP UA to perform a re-registration, the
+          SIP proxy can use the receival of the SIP REGISTER request as a trigger to forward
+          SIP request towards the SIP UA.
+        </t>
+        <t>
+          The SIP proxy MUST NOT transport the SIP request as push request payload, instead of
+          forwarding the request using normal SIP procedures.
+        </t>
+        <t>
+          If the proxy is not able to contact the push notification provider, or even determine
+          which push notification provider to contact, it SHOULD reject the SIP request.
+        </t>
+        <t>
+          If the SIP proxy is able to assume that the SIP UA is awake, and that the SIP UA
+          is able to receive the SIP request, the SIP proxy MAY choose to not trigger a push
+          notification request before trying to forward the SIP request towards the SIP UA.
+          The SIP proxy can make such assumption e.g., if a TLS connection previously established
+          by the SIP UA is still open.
+        </t>
+      </section>
     </section>
 
     <section anchor="section.nat" title="Network Address Translator (NAT) Considerations">
@@ -231,8 +270,7 @@ align="center"><artwork>
         Whenever the UA receives a push notification, if the SIP UA is located behind a
         Network Address Translator (NAT), the UA might need to take actions in order to 
         establish a binding in the NAT, in order for an incoming SIP request to reach the 
-        UA. <xref target="RFC5626"/> and <xref target="RFC6223"/> define such mechanisms. 
-        This document does not require usage of a specific mechanism.
+        UA. By performing the re-registration the SIP UA will establish such NAT binding.
       </t>
     </section>
 
@@ -453,8 +491,6 @@ align="center"><artwork>
       <?rfc include="reference.RFC.8030"?>
     </references>
     <references title="Informative references">
-      <?rfc include="reference.RFC.5626"?>
-      <?rfc include="reference.RFC.6223"?>
       <?rfc include="reference.I-D.ietf-webpush-encryption"?>
     </references>
   </back>
