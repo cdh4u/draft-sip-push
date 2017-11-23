@@ -175,7 +175,7 @@ align="center"><artwork>
         The pn-type contains additional, PNS-specific, information.
       </t>
       <t>
-        When the SIP UA receives a push notification, it SHOULD perform a SIP re-registration
+        When the SIP UA receives a push notification, it MUST perform a SIP re-registration
         <xref target="RFC3261"/> by sending a SIP REGISTER request. If there are 
         Network Address Translators (NATs) between the SIP UA and the SIP proxy, the SIP REGISTER
         request will create NAT bindings allowing incoming SIP requests to reach the SIP UA. 
