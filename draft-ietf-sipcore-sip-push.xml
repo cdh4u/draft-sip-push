@@ -197,9 +197,9 @@ align="center"><artwork>
       <t>
         If the SIP UA expects to receive payload in the push notification, the SIP UA MAY 
         add a pn-enckey and a pn-encsec Contact header field URI parameter, in order to allow 
-        encryption of the data using the mechanism in <xref target="I-D.ietf-webpush-encryption"/>.
+        encryption of the data using the mechanism in <xref target="RFC8291"/>.
         The pn-enckey URI parameter contains the public key, and the pn-encsec URI parameter 
-        contains the authentication secret <xref target="I-D.ietf-webpush-encryption"/>.
+        contains the authentication secret <xref target="RFC8291"/>.
       </t>
       <t>
         NOTE: End-to-end encryption of the payload between the SIP proxy and the SIP UA cannot
@@ -314,7 +314,7 @@ align="center"><artwork>
                 The format of the pns-param part of the pns-type parameter, and how the value of the pns-param part is retrieved and set by the SIP UA.
             </t>
             <t>
-                Whether there are any restrictions regarding usage of payload encryption <xref target="I-D.ietf-webpush-encryption"/>
+                Whether there are any restrictions regarding usage of payload encryption <xref target="RFC8291"/>
                 with the associated push notification service.
             </t>
           </list>
@@ -491,7 +491,7 @@ align="center"><artwork>
       <?rfc include="reference.RFC.8030"?>
     </references>
     <references title="Informative references">
-      <?rfc include="reference.I-D.ietf-webpush-encryption"?>
+      <?rfc include="reference.RFC.8291"?>
     </references>
   </back>
 </rfc>
