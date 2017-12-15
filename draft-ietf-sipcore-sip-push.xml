@@ -241,7 +241,7 @@ align="center"><artwork>
           information required for the specific PNS provider, the proxy MUST NOT forward the REGISTER request. 
           If the proxy is aware of another proxy that supports the PNS provider, the proxy MAY 
           redirect the SIP request (using a SIP 3xx response code) to that proxy. Otherwise the 
-          proxy MUST send a SIP 501 (Not Implemented) response to the REGISTER request.
+          proxy MUST send a SIP 555 (Push Notification Service Not Supported) response to the REGISTER request.
         </t>
         <t>
           When the SIP proxy receives (or, in case the proxy is the SIP registrar, creates) 
@@ -284,7 +284,16 @@ align="center"><artwork>
       </t>
     </section>
 
-<section anchor="section.grammar" title="Grammar">
+    <section anchor="section.grammar" title="Grammar">
+      <section title="555 (Push Notification Service Not Supported) Response Code">
+      <t>
+        The 555 response code is added to the "Server-Error" Status-Code
+        definition. 555 (Push Notification Service Not Supported) is used to indicate 
+        that the server did not support the push notification service specified in a 
+        'pn-provider' SIP URI parameter.
+      </t>
+      </section>
+      <section title="Syntax">
       <t>
         The section defines new SIP URI parameters, by extending the grammar for "uri-parameter" 
         as defined in <xref target="RFC3261"/>. The ABNF is as follows:
@@ -308,6 +317,7 @@ align="center"><artwork>
   pns-provider value.
 
 ]]></artwork></figure>
+      </section>
     </section>
 
     <section anchor="section.sec-reqs" title="PNS Registration Requirements">
@@ -414,9 +424,11 @@ align="center"><artwork>
       </t>
     </section>
     <section anchor="section.iana" title="IANA considerations">
+      <section title="SIP URI Parameters">
       <t>
-        This specification defines new SIP URI parameters that extend the
-        registry created by <xref target="RFC3969"/>:
+          This section defines new SIP URI Parameters that extend
+          the "SIP/SIPS URI Parameters" sub-registry <xref target="RFC3969"/>
+          under the sip-parameters registry: http://www.iana.org/assignments/sip-parameters.
       </t>
       <section anchor="section.iana.pn-provider" title="pn-provider">
         <figure align="center"><artwork>
@@ -478,7 +490,23 @@ align="center"><artwork>
 
 ]]></artwork></figure>
       </section>
+      </section>
 
+      <section anchor="section.iana.pns-res" title="SIP Response Code">
+        <t>
+          This section defines a new SIP response code that extends
+          the "Response Codes" sub-registry <xref target="RFC3261"/>
+          under the sip-parameters registry: http://www.iana.org/assignments/sip-parameters.
+        </t>
+        <figure align="center"><artwork>
+<![CDATA[
+
+   Response Code Number:   555
+   Default Reason Phrase:  Push Notification Service Not Supported
+
+]]></artwork></figure>
+      </section>
+      
       <section anchor="section.iana.pns-sub" title="PNS Sub-registry Establishment">
         <t>
              This section creates a new sub-registry, "PNS", under the sip-parameters
