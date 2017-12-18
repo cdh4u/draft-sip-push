@@ -168,7 +168,8 @@ align="center"><artwork>
 
     <section anchor="section.ua" title="SIP User Agent (UA) Behavior">
       <t>
-        Once the SIP UA has registered with the PNS and received the PRID, and when the 
+        Once the SIP UA has registered with the PNS and received the PRID (using the protocol 
+        and procedures associated with the PNS), and when the 
         UA wants to receive push notifications triggered by the SIP proxy, the UA MUST 
         send a SIP REGISTER using normal SIP registration procedures. The UA MUST add 
         a pn-provider, a pn-prid and a pn-param (if required for the specific PNS provider) SIP URI parameter 
