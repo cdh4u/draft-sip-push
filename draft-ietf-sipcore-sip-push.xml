@@ -243,6 +243,8 @@ align="center"><artwork>
           If the proxy is aware of another proxy that supports the PNS provider, the proxy MAY 
           redirect the SIP request (using a SIP 3xx response code) to that proxy. Otherwise the 
           proxy MUST send a SIP 555 (Push Notification Service Not Supported) response to the REGISTER request.
+          Unless the proxy does not support any PNS provider, the proxy SHOULD insert a Feature-Caps header field 
+          with a '+sip.pns' header field parameter in the response, indicating the PNS providers supported by the proxy.
         </t>
         <t>
           When the SIP proxy receives (or, in case the proxy is the SIP registrar, creates) 
@@ -293,8 +295,34 @@ align="center"><artwork>
         that the server did not support the push notification service specified in a 
         'pn-provider' SIP URI parameter.
       </t>
+      <t>
+        The use of the SIP 555 response code is defined for SIP REGISTER responses. Usage
+        with other SIP methods is undefined.
+      </t>
       </section>
-      <section title="Syntax">
+      <section title="sip.pns Feature-Capability Indicator">
+      <t>
+        The sip.pns feature-capability indicator is used in a SIP 555 (Push Notficiation
+        Service Not Supported) response to indicate which push notification services
+        the sender of the response supports.
+      </t>
+            <figure align="center"><artwork>
+<![CDATA[
+
+  sip.pns         = "<" pns-list ">"
+  pns-list        = pns *(COMMA pns)
+  pns             = pvalue
+
+  ; pvalue as defined in RFC 3261
+  
+  The value of the pns is identical to the corresponding pn-provider
+  SIP URI parameter for the push notification service associated with
+  the value.
+
+]]></artwork></figure>
+  
+      </section>
+      <section title="SIP URI Parameters">
       <t>
         The section defines new SIP URI parameters, by extending the grammar for "uri-parameter" 
         as defined in <xref target="RFC3261"/>. The ABNF is as follows:
@@ -503,11 +531,34 @@ align="center"><artwork>
 <![CDATA[
 
    Response Code Number:   555
+
    Default Reason Phrase:  Push Notification Service Not Supported
 
 ]]></artwork></figure>
       </section>
-      
+
+      <section anchor="section.iana.pns-featurecap" title="SIP Global Feature-Capability Indicator">
+        <t>
+          This section defines a new feature-capability indicator that extends
+          the "SIP Feature-Capability Indicator Registration Tree" sub-registry 
+          <xref target="RFC6809"/> under the sip-parameters registry: 
+          http://www.iana.org/assignments/sip-parameters.
+        </t>
+        <figure align="center"><artwork>
+<![CDATA[
+
+   Name: sip.pns
+
+   Description: This feature-capability indicator, when included in a
+      Feature-Caps header field of a REGISTER response, indicates that
+      the server supports the SIP push mechanism. The value is a list
+      of the push notification services supported by the server.
+
+   Reference: [RFCXXXX]
+
+]]></artwork></figure>
+      </section>
+
       <section anchor="section.iana.pns-sub" title="PNS Sub-registry Establishment">
         <t>
              This section creates a new sub-registry, "PNS", under the sip-parameters
@@ -551,6 +602,7 @@ align="center"><artwork>
       <?rfc include="reference.RFC.2119"?>
       <?rfc include="reference.RFC.3261"?>
       <?rfc include="reference.RFC.3969"?>
+      <?rfc include="reference.RFC.6809"?>
       <?rfc include="reference.RFC.8030"?>
     </references>
     <references title="Informative references">
