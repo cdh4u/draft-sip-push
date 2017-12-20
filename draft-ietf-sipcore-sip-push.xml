@@ -178,12 +178,20 @@ align="center"><artwork>
         the pn-param URI parameter contains additional PNS-specific information.
       </t>
       <t>
+        When the SIP UA receives a 200 (OK) response to the SIP REGISTER request, if the
+        response does not contain a Feature-Caps header field with a '+sip.pns' header field parameter, 
+        or if the response contains a Feature-Caps header field with a '+sip.pns' header field parameter
+        with a parameter value that the UA does not support, the UA cannot assume that push notifications
+        will be triggered by a SIP proxy. The actions taken by the UA might be dependent on implementation 
+        or deployment architecture, and are outside the scope of this document.
+      </t>
+      <t>
         When the SIP UA receives a push notification, it MUST perform a SIP re-registration
         <xref target="RFC3261"/> by sending a SIP REGISTER request. If there are 
         Network Address Translators (NATs) between the SIP UA and the SIP proxy, the REGISTER
         request will create NAT bindings allowing incoming SIP requests to reach the UA. 
         If the SIP proxy triggered the push notification because it wants to forward a SIP request
-        towards the UA, the receival of the REGISTER request can be used by the proxy
+        towards the UA, the receipt of the REGISTER request can be used by the proxy
         as a trigger to forward the request.
       </t>
       <t>
@@ -239,12 +247,17 @@ align="center"><artwork>
         <t>
           When the SIP proxy receives a SIP REGISTER request that contains a pn-provider SIP URI parameter value
           that the proxy does not support, or if the REGISTER request does not contain all
-          information required for the specific PNS provider, the proxy MUST NOT forward the REGISTER request. 
-          If the proxy is aware of another proxy that supports the PNS provider, the proxy MAY 
-          redirect the SIP request (using a SIP 3xx response code) to that proxy. Otherwise the 
-          proxy MUST send a SIP 555 (Push Notification Service Not Supported) response to the REGISTER request.
-          Unless the proxy does not support any PNS provider, the proxy SHOULD insert a Feature-Caps header field 
-          with a '+sip.pns' header field parameter in the response, indicating the PNS providers supported by the proxy.
+          information required for the specific PNS provider, the proxy MUST either forward the request (e.g., if the
+          proxy is aware of another proxy that supports the PNS provider) or send a SIP 555 (Push Notification Service Not Supported) 
+          response to the REGISTER request. If the proxy sends a SIP 555 (Push Notification Service Not Supported), the proxy SHOULD 
+          insert a Feature-Caps header field with a '+sip.pns' header field parameter in the response, indicating the PNS 
+          supported by the proxy.
+        </t>
+        <t>
+          If the SIP proxy supports the pn-provider SIP URI parameter value, when the proxy receives (or, in
+          case the proxy is the SIP registrar, creates) a 200 (OK) response to the REGISTER request, the proxy MUST 
+          insert a Feature-Caps header field with a '+sip.pns' header field parameter in the response, in order to
+          inform the SIP UA that the proxy supports the PNS indicated by the pn-provider SIP URI parameter value.
         </t>
         <t>
           When the SIP proxy receives (or, in case the proxy is the SIP registrar, creates) 
@@ -257,7 +270,7 @@ align="center"><artwork>
         </t>
         <t>
           As the push notification will trigger the SIP UA to perform a re-registration, the
-          SIP proxy can use the receival of the SIP REGISTER request as a trigger to forward
+          SIP proxy can use the receipt of the SIP REGISTER request as a trigger to forward
           SIP request towards the UA.
         </t>
         <t>
@@ -271,9 +284,9 @@ align="center"><artwork>
         <t>
           If the SIP proxy is able to assume that the SIP UA is awake, and that the UA
           is able to receive the SIP request, the proxy MAY choose to not trigger a push
-          notification request before trying to forward the SIP request towards the UA.
-          The proxy can make such assumption e.g., if a TLS connection previously established
-          by the UA is still open.
+          notification request before trying to forward the SIP request towards the UA. The
+          mechanisms for making such assumption might be dependent on implementation or 
+          deployment architecture, and are outside the scope of this document.
         </t>
       </section>
     </section>
