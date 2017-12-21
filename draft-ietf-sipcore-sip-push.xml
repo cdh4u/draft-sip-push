@@ -609,6 +609,14 @@ align="center"><artwork>
 ]]></artwork></figure>
       </section>
     </section>
+
+    <section anchor="sec-acks" title="Acknowledgements" toc="default">
+      <t>
+        Thanks to Mickey Arnold, Paul Kyzivat, Dale Worley, Ranjit Avasarala, Martin Thomson, 
+        Mikael Klein, Susanna Sjoholm and Kari-Pekka Perttula for reading the text, and providing 
+        useful feedback.
+      </t>
+    </section>
   </middle>
   <back>
     <references title="Normative references">
