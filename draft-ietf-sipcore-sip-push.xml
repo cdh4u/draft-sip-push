@@ -242,6 +242,10 @@ align="center"><artwork>
           re-registration, the proxy triggers a push request towards the push notification 
           server associated with the PRID.
         </t>
+        <t>
+          Note that the re-registration needs to be triggered early enough, in order for the re-registration request
+          to reach the registrar before the registration expires.
+        </t>
       </section>
       <section anchor="section.proxy.inv" title="SIP Request">
         <t>
