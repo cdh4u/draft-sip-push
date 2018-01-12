@@ -317,18 +317,18 @@ align="center"><artwork>
       </section>
       <section title="sip.pns Feature-Capability Indicator">
       <t>
-        The sip.pns feature-capability indicator is used in a SIP 555 (Push Notficiation
-        Service Not Supported) response to indicate which push notification services
-        the sender of the response supports.
+        The sip.pns feature-capability indicator is used in a SIP 200 (OK) response
+        or in a 555 (Push Notficiation Service Not Supported) response to indicate which 
+        push notification services the sender of the response supports.
       </t>
             <figure align="center"><artwork>
 <![CDATA[
 
-  sip.pns         = "<" pns-list ">"
+  pns-fc          = "+sip.pns" EQUAL LDQUOT pns-list RDQUOT
   pns-list        = pns *(COMMA pns)
-  pns             = pvalue
+  pns             = tag-value
 
-  ; pvalue as defined in RFC 3261
+  ; tag-value as defined in RFC 3840
   
   The value of the pns is identical to the corresponding pn-provider
   SIP URI parameter for the push notification service associated with
@@ -570,6 +570,8 @@ align="center"><artwork>
       of the push notification services supported by the server.
 
    Reference: [RFCXXXX]
+
+   Contact: Christer Holmberg (christer.holmberg@ericsson.com)
 
 ]]></artwork></figure>
       </section>
