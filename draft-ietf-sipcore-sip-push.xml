@@ -87,11 +87,16 @@
         request as a trigger to forward SIP request towards the UA, using normal SIP routing procedures.
       </t>
       <t>
-        Different push notification mechanisms exist today. Some are based on there
+        Different push notification mechanisms exist today. Some are based on the
         standardized mechanism defined in <xref target="RFC8030"/>, while others are
         proprietary (e.g., the Apple Push Notification service). <xref target="fig-sip-pn-arch"/>
         shows the generic push notification architecture supported by the mechanism
         in this document.
+      </t>
+      <t>
+        This document defines a new feature-capability indicator <xref target="RFC6809"/> 
+        that can be used by a SIP proxy to indicate which push notification mechanisms it 
+        supports.
       </t>
       <figure title="SIP Push Notification Architecture" anchor="fig-sip-pn-arch"
 align="center"><artwork>
@@ -318,7 +323,7 @@ align="center"><artwork>
       <section title="sip.pns Feature-Capability Indicator">
       <t>
         The sip.pns feature-capability indicator is used in a SIP 200 (OK) response
-        or in a 555 (Push Notficiation Service Not Supported) response to indicate which 
+        or in a 555 (Push Notificiation Service Not Supported) response to indicate which 
         push notification services the sender of the response supports.
       </t>
             <figure align="center"><artwork>
@@ -358,7 +363,7 @@ align="center"><artwork>
   ; COLON as defined in RFC 3261
   
   The format and semantics of pns-param is specific to a given 
-  pns-provider value.
+  pn-provider value.
 
 ]]></artwork></figure>
       </section>
@@ -617,8 +622,8 @@ align="center"><artwork>
     <section anchor="sec-acks" title="Acknowledgements" toc="default">
       <t>
         Thanks to Mickey Arnold, Paul Kyzivat, Dale Worley, Ranjit Avasarala, Martin Thomson, 
-        Mikael Klein, Susanna Sjoholm and Kari-Pekka Perttula for reading the text, and providing 
-        useful feedback.
+        Mikael Klein, Susanna Sjoholm, Kari-Pekka Perttula, Liviu Chircu and Roman Shpount for 
+        reading the text, and providing useful feedback.
       </t>
     </section>
   </middle>
