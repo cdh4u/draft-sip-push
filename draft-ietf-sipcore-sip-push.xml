@@ -362,7 +362,7 @@ align="center"><artwork>
   ; EQUAL as defined in RFC 3261
   ; COLON as defined in RFC 3261
   
-  The format and semantics of pns-param is specific to a given 
+  The format and semantics of pn-param is specific to a given 
   pn-provider value.
 
 ]]></artwork></figure>
@@ -588,6 +588,10 @@ align="center"><artwork>
         </t>
         <t>
             The purpose of the sub-registry is to register SIP URI pn-provider values.
+        </t>
+        <t>
+            When a SIP URI pn-provider value is registered in the sub-registry, it
+            needs to meet the "First Come First Served" policies defined in RFC 5226.
         </t>
         <figure align="center"><artwork>
 <![CDATA[
