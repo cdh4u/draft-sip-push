@@ -591,7 +591,8 @@ align="center"><artwork>
         </t>
         <t>
             When a SIP URI pn-provider value is registered in the sub-registry, it
-            needs to meet the "First Come First Served" policies defined in RFC 5226.
+            needs to meet the "First Come First Served" policies defined in 
+            <xref target="RFC5226"/>.
         </t>
         <figure align="center"><artwork>
 <![CDATA[
@@ -640,6 +641,7 @@ align="center"><artwork>
       <?rfc include="reference.RFC.8030"?>
     </references>
     <references title="Informative References">
+      <?rfc include="reference.RFC.5226"?>
       <?rfc include="reference.RFC.8291"?>
     </references>
   </back>
