@@ -60,6 +60,9 @@
         Due to the restriction above, applications can not be woken up by non-push notification
         traffic. This means that a suspended SIP UA will not be able to receive an incoming 
         SIP request (e.g., a SIP INVITE request), or to send periodic re-registration requests.
+        Also, the SIP UA will not be able to maintain connections e.g., using the SIP Outbound 
+        Mechanism <xref target="RFC5626"/>, as it requires the UA to send periodic keep-alive 
+        messages.
       </t>
       <t>
         This document describes how push notification mechanisms can be used to wake up
@@ -323,7 +326,7 @@ align="center"><artwork>
       <section title="sip.pns Feature-Capability Indicator">
       <t>
         The sip.pns feature-capability indicator is used in a SIP 200 (OK) response
-        or in a 555 (Push Notificiation Service Not Supported) response to indicate which 
+        or in a 555 (Push Notification Service Not Supported) response to indicate which 
         push notification services the sender of the response supports.
       </t>
             <figure align="center"><artwork>
@@ -642,6 +645,7 @@ align="center"><artwork>
     </references>
     <references title="Informative References">
       <?rfc include="reference.RFC.5226"?>
+      <?rfc include="reference.RFC.5626"?>
       <?rfc include="reference.RFC.8291"?>
     </references>
   </back>
