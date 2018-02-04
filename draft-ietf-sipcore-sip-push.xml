@@ -473,23 +473,39 @@ align="center"><artwork>
     </section>
 
     <section anchor="section.sec" title="Security Considerations">
-      <t>
-        In addition to the information exchanged between a device and its
-        PNS in order to establish a push notification subscription, the mechanism 
-        in this document does not require entities to provide any additional
-        information to the PNS.
-      </t>
-      <t>
-        Push notification mechanisms provide different methods to ensure that malicious 
-        user cannot trigger push notifications to a device. Users of the mechanism 
-        in this document MUST take measures to prevent push notifications from being
-        sent to a device from a malicious user.
-      </t>
-      <t>
-        In case entities do want to include payload in the push notifications, this document 
-        defines the means for using end-to-end payload encryption between the entity sending
-        the push request and the entity receiving the associated push notification.
-      </t>
+        <t>
+            PNS providers offer different mechanism for authenticating and authorizing devices 
+            and users registering to the PNS provider. The mechanisms for authorizing and authenticating 
+            the users are PNS-specific, and are outside the scope of this document. In addition to the 
+            information that needs to be exchanged between a device and the PNS provider in order to 
+            establish a push notification subscription, the mechanism defined in this document does not 
+            require any additional information to be exchanged between the device and the PNS provider.
+        </t>
+        <t>
+            Typically, the PNS provider also requires the SIP proxy requesting push notifications to be 
+            authenticated and authorized by the PNS provider. In some cases the PNS provider also require 
+            the SIP application (or the SIP application developer) to be identified in order for the 
+            application to request push notifications.
+        </t>
+        <t>
+            If the push notification related information carried in SIP could be used by a malicious user 
+            to trigger push notifications towards a device, operators MUST ensure that the SIP signalling 
+            in which the information is carried properly secured from malicious middlemen. In some cases 
+            the information carried in SIP cannot alone be used to request a push notification, as the 
+            SIP proxy requesting the push notification also needs to be authenticated and authorized by 
+            the PNS provider. However, even in such cases the information carried in SIP needs to be properly 
+            protected, in order to prevent a middleman from modifying the information in a way that would 
+            result in push notifications being sent towards non-intended devices. Some PNS providers allow 
+            device users to restrict which SIP proxies are allowed to trigger push notifications towards 
+            the device.
+        </t>
+        <t>
+            The mechanism in this document does not require a SIP proxy to include any payload (in addition 
+            to possible payload used for the PNS itself) when requesting push notifications. However, in case 
+            a SIP proxy do want to include payload in push notifications, this specification defines the means 
+            for using end-to-end payload encryption between the SIP proxy requesting the push notification 
+            and the device receiving it.
+        </t>
     </section>
     <section anchor="section.iana" title="IANA considerations">
       <section title="SIP URI Parameters">
