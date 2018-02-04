@@ -270,18 +270,33 @@ align="center"><artwork>
           inform the SIP UA that the proxy supports the PNS indicated by the pn-provider SIP URI parameter value.
         </t>
         <t>
-          When the SIP proxy receives (or, in case the proxy is the SIP registrar, creates) 
-          a SIP request for a new dialog (e.g., a SIP INVITE request)
-          or a non-dialog SIP request (e.g., a SIP MESSAGE request) aimed for a SIP UA, if the
-          Request-URI of the request contains a pn-provider, a pn-prid and a pn-param 
-          (if required for the specific PNS provider) SIP URI parameter, the proxy triggers a push request 
-          towards the PNS associated with the PRID. After that the proxy forwards the SIP request towards 
-          the UA using normal SIP procedures.
+            When the SIP proxy receives (or, in case the proxy is the SIP
+            registrar, creates) a SIP request for a new dialog (e.g., a SIP
+            INVITE request) or a non-dialog SIP request (e.g., a SIP MESSAGE
+            request) aimed for a SIP UA, if the Request-URI of the request
+            contains a pn-provider, a pn-prid and a pn-param (if required for the
+            specific PNS provider) SIP URI parameter, the proxy triggers a push
+            request towards the PNS associated with the PRID.
         </t>
         <t>
-          As the push notification will trigger the SIP UA to perform a re-registration, the
-          SIP proxy can use the receipt of the SIP REGISTER request as a trigger to forward
-          SIP request towards the UA.
+            The push notification will trigger the SIP UA to perform a
+            re-registration. The SIP proxy will either forward the REGISTER request 
+            towards the registrar using normal SIP routing procedures or, in the case
+            the proxy is the SIP registrar, process the REGISTER request. If the SIP proxy
+            receives (or, in case the proxy is the SIP registrar, creates) a 200 (OK) response 
+            to the REGISTER request it can forward the SIP request towards the UA. 
+            If the SIP proxy receives (or creates) a non-200 response to the REGISTER request 
+            is rejected the proxy MUST NOT forward the request towards the UA. Instead the 
+            SIP proxy MUST reject the SIP request with a 404 (Not Found) response. In
+            addition, if the contact in the REGISTER response does not match the Request-URI
+            of the SIP request the SIP proxy MUST reject the SIP request with a 404 (Not Found)
+            response. 
+        </t>
+        <t>
+            NOTE: The reason the SIP proxy needs to wait for the REGISTER response before
+            forwarding the SIP request is to make sure that the REGISTER request has been
+            accepted by the registrar, and that the registered contact matches the Request-URI
+            of the request.
         </t>
         <t>
           The SIP proxy MUST NOT transport the SIP request as push request payload, instead of
@@ -290,9 +305,10 @@ align="center"><artwork>
         <t>
           If the SIP proxy is able to assume that the SIP UA is awake, and that the UA
           is able to receive the SIP request, the proxy MAY choose to not trigger a push
-          notification request before trying to forward the SIP request towards the UA. The
-          mechanisms for making such assumption might be dependent on implementation or 
-          deployment architecture, and are outside the scope of this document.
+          notification request (and wait for the associated registration transaction) before 
+          trying to forward the SIP request towards the UA. The mechanisms for making such 
+          assumption might be dependent on implementation or  deployment architecture, and 
+          are outside the scope of this document.
         </t>
         <t>
           If the SIP proxy is not able to contact the push notification provider, or to forward the
