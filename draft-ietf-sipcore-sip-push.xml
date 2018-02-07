@@ -210,19 +210,6 @@ align="center"><artwork>
         the UA MUST send a SIP REGISTER request without the URI parameters described above, or
         remove the registration.
       </t>
-      <t>
-        If the SIP UA expects to receive payload in the push notification, the UA MAY 
-        add a pn-enckey and a pn-encsec SIP Contact header field SIP URI parameter, in order to allow 
-        encryption of the data using the mechanism in <xref target="RFC8291"/>.
-        The pn-enckey URI parameter contains the public key, and the pn-encsec URI parameter 
-        contains the authentication secret <xref target="RFC8291"/>. The format of such payload
-        is outside the scope of this document.
-      </t>
-      <t>
-        NOTE: End-to-end encryption of the payload between the SIP proxy and the SIP UA cannot
-        be used if the push notification request payload contains information that needs to be
-        accessible by the PNS provider.
-       </t>
     </section>
 
     <section anchor="section.proxy" title="SIP Proxy Behavior">
@@ -369,13 +356,10 @@ align="center"><artwork>
         <figure align="center"><artwork>
 <![CDATA[
 
-  uri-parameter   =/ pn-provider / pn-param / pn-prid / pn-enccode / 
-                     pn-enckey
+  uri-parameter   =/ pn-provider / pn-param / pn-prid
   pn-provider     = "pn-provider" EQUAL pvalue
   pn-param        = "pn-param" EQUAL pvalue
   pn-prid         = "pn-prid" EQUAL pvalue
-  pn-enccode      = "pn-enccode" EQUAL pvalue
-  pn-enckey       = "pn-enckey" EQUAL pvalue
 
   ; pvalue as defined in RFC 3261
   ; EQUAL as defined in RFC 3261
@@ -401,10 +385,6 @@ align="center"><artwork>
             </t>
             <t>
                 How the pn-param SIP URI parameter (if required for the specific PNS provider) value is retrieved and set by the SIP UA.
-            </t>
-            <t>
-                Whether there are any restrictions regarding usage of payload encryption <xref target="RFC8291"/>
-                with the associated PNS.
             </t>
           </list>
         </t>
@@ -501,10 +481,7 @@ align="center"><artwork>
         </t>
         <t>
             The mechanism in this document does not require a SIP proxy to include any payload (in addition 
-            to possible payload used for the PNS itself) when requesting push notifications. However, in case 
-            a SIP proxy do want to include payload in push notifications, this specification defines the means 
-            for using end-to-end payload encryption between the SIP proxy requesting the push notification 
-            and the device receiving it.
+            to possible payload used for the PNS itself) when requesting push notifications.
         </t>
     </section>
     <section anchor="section.iana" title="IANA considerations">
@@ -543,30 +520,6 @@ align="center"><artwork>
 <![CDATA[
 
   Parameter Name: pn-prid
-
-  Predefined Values:  No
-
-  Reference:  RFC XXXX
-
-]]></artwork></figure>
-      </section>
-      <section anchor="section.iana.pn-enckey" title="pn-enckey">
-        <figure align="center"><artwork>
-<![CDATA[
-
-  Parameter Name: pn-enckey
-
-  Predefined Values:  No
-
-  Reference:  RFC XXXX
-
-]]></artwork></figure>
-      </section>
-      <section anchor="section.iana.pn-encsec" title="pn-enccode">
-        <figure align="center"><artwork>
-<![CDATA[
-
-  Parameter Name: pn-enccode
 
   Predefined Values:  No
 
@@ -678,7 +631,6 @@ align="center"><artwork>
     <references title="Informative References">
       <?rfc include="reference.RFC.5226"?>
       <?rfc include="reference.RFC.5626"?>
-      <?rfc include="reference.RFC.8291"?>
     </references>
   </back>
 </rfc>
