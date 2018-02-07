@@ -579,7 +579,7 @@ align="center"><artwork>
         </t>
         <t>
             When a SIP URI pn-provider value is registered in the sub-registry, it
-            needs to meet the "First Come First Served" policies defined in 
+            needs to meet the "Expert Review" policies defined in 
             <xref target="RFC5226"/>.
         </t>
         <figure align="center"><artwork>
