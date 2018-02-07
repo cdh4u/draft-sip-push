@@ -454,7 +454,7 @@ align="center"><artwork>
 
     <section anchor="section.sec" title="Security Considerations">
         <t>
-            PNS providers offer different mechanism for authenticating and authorizing devices 
+            PNS providers offer different mechanisms for authenticating and authorizing devices 
             and users registering to the PNS provider. The mechanisms for authorizing and authenticating 
             the users are PNS-specific, and are outside the scope of this document. In addition to the 
             information that needs to be exchanged between a device and the PNS provider in order to 
