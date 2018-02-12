@@ -719,8 +719,8 @@ align="center"><artwork>
     <section anchor="sec-acks" title="Acknowledgements" toc="default">
       <t>
         Thanks to Mickey Arnold, Paul Kyzivat, Dale Worley, Ranjit Avasarala, Martin Thomson, 
-        Mikael Klein, Susanna Sjoholm, Kari-Pekka Perttula, Liviu Chircu and Roman Shpount for 
-        reading the text, and providing useful feedback.
+        Mikael Klein, Susanna Sjoholm, Kari-Pekka Perttula, Liviu Chircu, Roman Shpount and
+        Yehoshua Gev for reading the text, and providing useful feedback.
       </t>
     </section>
   </middle>
