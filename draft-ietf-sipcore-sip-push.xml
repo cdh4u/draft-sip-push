@@ -228,6 +228,11 @@ align="center"><artwork>
         If the UA no longer wants to receive push notifications (requested by the proxy), the UA MUST send a re-registration REGISTER request 
         without including the SIP URI parameters described above, or the UA MUST remove the registration.
       </t>
+      <t>
+        For privacy and security reasons, the UA MUST NOT include the SIP URI parameters defined in this document in non-REGISTER request, to
+        prevent the PNS information associated with the UA from reaching the remote peer. For example, the UA MUST NOT include the SIP URI parameters
+        in the Contact header field of an INVITE request.
+      </t>
     </section>
 
     <section anchor="section.proxy" title="SIP Proxy Behavior">
