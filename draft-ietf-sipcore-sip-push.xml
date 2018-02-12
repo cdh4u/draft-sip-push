@@ -205,13 +205,13 @@ align="center"><artwork>
       </t>
       <t>
         When the UA receives a 2xx response to the REGISTER request, if the response contains a Feature-Caps header field
-        with a '+sip.pns' header field parameter with a parameter value identifying the same PNS that was identified by the pn-provider 
+        with a 'sip.pns' feature-capability indicator with a parameter value identifying the same PNS that was identified by the pn-provider 
         URI parameter in the REGISTER request, the UA can assume that a SIP proxy will request push notifications towards the UA. 
         In other cases, the UA MUST NOT assume that push notifications will be requested, and the actions taken by the UA might 
         be dependent on implementation or deployment architecture, and are outside the scope of this document.
       </t>
       <t>
-         In addition, if the response contains a Feature-Caps header field with a '+sip.vapid' header field parameter, the UA can 
+         In addition, if the response contains a Feature-Caps header field with a 'sip.vapid' feature-capability indicator, the UA can 
          use the Voluntary Application Server Identification VAPID) mechanism <xref target="RFC8292"> to restrict push notifications 
          to the proxy (assuming that the PNS supports VAPID).
       </t>
@@ -286,7 +286,7 @@ align="center"><artwork>
         </t>
         <t>
           When the proxy receives a REGISTER request, if the REGISTER request contains a Feature-Caps header field 
-          with a '+sip.pns' header field parameter, it indicates that an upstream proxy supports, and will request, push 
+          with a 'sip.pns' feature-capability indicator, it indicates that an upstream proxy supports, and will request, push 
           notifications towards the UA. The proxy MUST skip the rest of the procedures in this section, and process the
           REGISTER request using normal SIP procedures. 
         </t>
@@ -295,23 +295,23 @@ align="center"><artwork>
           request does not contain all additional information required for the specific PNS, the proxy MUST either forward the request 
           (e.g., if the proxy knows that a downstream proxy supports the PNS) or send a SIP 555 (Push Notification Service Not Supported) 
           response to the REGISTER request. If the proxy sends a SIP 555 (Push Notification Service Not Supported) response, the proxy SHOULD 
-          insert a Feature-Caps header field with a '+sip.pns' header field parameter in the response, identifying each PNS 
+          insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, identifying each PNS 
           that the proxy supports.
         </t>
         <t>
           If the proxy supports the PNS identified by the pn-provider SIP URI parameter, the proxy MUST insert a Feature-Caps header field 
-          with a '+sip.pns' header field parameter in the REGISTER request before forwarding the REGISTER request (in case the proxy is not the registrar,
+          with a 'sip.pns' feature-capability indicator in the REGISTER request before forwarding the REGISTER request (in case the proxy is not the registrar,
           in which case the proxy will terminate the REGISTER request). This will inform downstream proxies that the proxy supports, and will request, 
           push notifications towards the UA.
         </t>
         <t>
-          If the proxy inserted a Feature-Caps header field with a '+sip.pns' header field parameter in the REGISTER request (see above), when the proxy 
+          If the proxy inserted a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the REGISTER request (see above), when the proxy 
           receives (or, in case the proxy is the SIP registrar, creates) a 2xx response to the REGISTER request, the proxy MUST 
-          insert a Feature-Caps header field with a '+sip.pns' header field parameter in the response, identifying the PNS. This will inform
+          insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, identifying the PNS. This will inform
           the UA that the proxy supports, and will request, push notifications towards the UA. The proxy MUST only indicate support of 
           the same PNS that was identified in the pn-provider SIP URI parameter in the REGISTER request.
-          In addition, if the proxy supports, and will use, the VAPID mechanism, the proxy MUST insert a Feature-Caps header field with a '+sip.vapid' header field 
-          parameter in the response. The header field parameter contains the public key identifying the proxy <xref target="RFC8292">.
+          In addition, if the proxy supports, and will use, the VAPID mechanism, the proxy MUST insert a Feature-Caps header field with a 'sip.vapid'  
+          feature-capability indicator in the response. The header field parameter contains the public key identifying the proxy <xref target="RFC8292">.
         </t>
         </section>
         <section anchor="section.proxy.req.oth" title="Initial Request for Dialog or Stand-Alone Request">
