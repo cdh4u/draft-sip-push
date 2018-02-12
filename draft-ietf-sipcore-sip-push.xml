@@ -271,11 +271,12 @@ align="center"><artwork>
         </t>
         <t>
           NOTE: If the proxy does not request a push notification towards the UA, but still receives a re-registration
-          REGISTER request, it means that the UA has awaken using some non-push mechanism. The proxy can choose to not 
-          request a push notification towards the UA, but instead wait until the next time the registration is about to expire before
-          requesting a push notification (unless the proxy again receives a re-registration REGISTER request before the expiration).
-          This allows the UA to use timers for performing re-registrations, but still use push notifications to be awoken when
-          a SIP request addressed towards the UA arrives.
+          REGISTER request, it means that the UA has awaken using some non-push mechanism (e.g., using a timer). If the
+          REGISTER request updates the registration expiration value, the proxy does not need to request a push notification
+          until the next time the registration is about to expire (in which case it might again receive a REGISTER request
+          before requesting the push notification ). This allows the UA to use timers for sending re-registration REGISTER 
+          requests, but to use push notification to awaken the UA when a SIP request addressed towards the UA arrives (in 
+          which case the proxy will request a push notification using the procedures in <xref target="section.proxy.req.oth">.
         </t>
       </section>
       <section anchor="section.proxy.req" title="SIP Request">
