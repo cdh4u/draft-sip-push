@@ -27,6 +27,18 @@
         <email>christer.holmberg@ericsson.com</email>
       </address>
     </author>
+     <author initials="M." surname="Arnold" fullname="Michael Arnold">
+      <organization>Metaswitch Networks</organization>
+      <address>
+        <postal>
+          <street>100 Church Street</street>
+          <city>Enfield</city>
+          <country>United Kingdom</country>
+          <code>EN2 6BQ</code>
+        </postal>
+        <email>Michael.Arnold@metaswitch.com</email>
+      </address>
+    </author>
   
     <date year="2018"/>
     <area>Transport</area>
@@ -71,7 +83,7 @@
       <t>
         This document describes how PNSs can be used to awake suspended UAs, to be able to send
         re-registration REGISTER requests and to receive incoming SIP requests. The document defines 
-        new SIP URI parameters and new feature-capability indicators <xref target="RFC6898"/> 
+        new SIP URI parameters and new feature-capability indicators <xref target="RFC6809"/> 
         that can be used in SIP messages to indicate support of the mechanism defined in this document, 
         to exchange PNS information between the UA the SIP entity (realized as a SIP proxy in this document) 
         that will request push notifications towards the UA, and to trigger such push notification requests.
@@ -212,7 +224,7 @@ align="center"><artwork>
       </t>
       <t>
          In addition, if the response contains a Feature-Caps header field with a 'sip.vapid' feature-capability indicator, the UA can 
-         use the Voluntary Application Server Identification VAPID) mechanism <xref target="RFC8292"> to restrict push notifications 
+         use the Voluntary Application Server Identification VAPID) mechanism <xref target="RFC8292"></xref> to restrict push notifications 
          to the proxy (assuming that the PNS supports VAPID).
       </t>
       <t>
@@ -274,7 +286,7 @@ align="center"><artwork>
           re-registration REGISTER requests. Such REGISTER request will update the registration expiration timer, 
           and the proxy does not need to request a push notification towards the UA in order to awake the UA. The
           proxy will still request a push notification towards the UA when the proxy receives a SIP request addressed
-          towards the UA (<xref target="section.proxy.req.oth">). This allows the UA to e.g., use timers for sending 
+          towards the UA (<xref target="section.proxy.req.oth"></xref>). This allows the UA to e.g., use timers for sending 
           re-registration REGISTER requests, but to be suspended (in order to save battery resources etc) between sending 
           the REGISTER requests and use push notification to awaken the UA to process incoming calls.
         </t>
@@ -312,7 +324,7 @@ align="center"><artwork>
           the UA that the proxy supports, and will request, push notifications towards the UA. The proxy MUST only indicate support of 
           the same PNS that was identified in the pn-provider SIP URI parameter in the REGISTER request.
           In addition, if the proxy supports, and will use, the VAPID mechanism, the proxy MUST insert a Feature-Caps header field with a 'sip.vapid'  
-          feature-capability indicator in the response. The header field parameter contains the public key identifying the proxy <xref target="RFC8292">.
+          feature-capability indicator in the response. The header field parameter contains the public key identifying the proxy <xref target="RFC8292"></xref>.
         </t>
         </section>
         <section anchor="section.proxy.req.oth" title="Initial Request for Dialog or Stand-Alone Request">
@@ -333,6 +345,7 @@ align="center"><artwork>
           to be forwarded, the proxy can also forwards the SIP request towards the UA, using normal SIP procedures. If the contact and Request-URI do not match, the proxy
           MUST reject the SIP request with a 404 (Not Found) response.
         </t>
+        <t>
           In case of non-2xx response to the REGISTER request, theproxy MUST reject the SIP request with a 404 (Not Found) response. 
         </t>
         <t>
@@ -353,6 +366,7 @@ align="center"><artwork>
           REGISTER request and 2xx response) before it tries to forward the SIP request towards the UA. The mechanisms for getting such knowledge 
           assumption might be dependent on implementation or deployment architecture, and are outside the scope of this document.
         </t>
+      </section>
       </section>
     </section>
 
