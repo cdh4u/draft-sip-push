@@ -651,8 +651,8 @@ align="center"><artwork>
 
    Description: This feature-capability indicator, when included in a
       Feature-Caps header field of a REGISTER response, indicates 
-      that the server supports the SIP push mechanism. The value indicates
-      the push notification service supported by the server.
+      that the server supports the SIP push mechanism. The value 
+      indicates the push notification service supported by the server.
 
    Reference: [RFCXXXX]
 
@@ -674,9 +674,9 @@ align="center"><artwork>
 
    Description: This feature-capability indicator, when included in a
       Feature-Caps header field of a REGISTER response, indicates that
-      the server supports the Voluntary Application Server Identification 
-      (VAPID) mechanism, defined in RFC 8292. The value is a public key
-      of the server.
+      the server supports the Voluntary Application Server 
+      Identification (VAPID) mechanism, defined in RFC 8292. The value
+      is a public key of the server.
 
    Reference: [RFCXXXX]
 
@@ -698,7 +698,7 @@ align="center"><artwork>
         <t>
             When a SIP URI pn-provider value is registered in the sub-registry, it
             needs to meet the "Expert Review" policies defined in 
-            <xref target="RFC5226"/>.
+            <xref target="RFC8126"/>.
         </t>
         <figure align="center"><artwork>
 <![CDATA[
@@ -748,8 +748,8 @@ align="center"><artwork>
       <?rfc include="reference.RFC.8292"?>
     </references>
     <references title="Informative References">
-      <?rfc include="reference.RFC.5226"?>
       <?rfc include="reference.RFC.5626"?>
+      <?rfc include="reference.RFC.8126"?>
     </references>
   </back>
 </rfc>
