@@ -193,7 +193,8 @@ align="center"><artwork>
     <section title="Push Resource ID (PRID)">
       <t>
         When a SIP UA registers with a PNS it receives a unique Push Resource ID (PRID), 
-        which is a value associated with the registration. 
+        which is a value associated with the registration that can be used to generate
+        push notifications. 
       </t>
       <t>  
         The format of the PRID may vary depending on the PNS.
@@ -244,6 +245,14 @@ align="center"><artwork>
       <t>
         If the UA no longer wants to receive push notifications (requested by the proxy), the UA MUST send a re-registration REGISTER request 
         without including the SIP URI parameters described above, or the UA MUST remove the registration.
+      </t>
+      <t>
+        If a UA's subscription to a PNS (and the assosciated PRID) is only valid for a limited time then the UA is responsible for retrieving 
+        new subscription details from the PNS and sending a REGISTER request with the updated pn parameters to the proxy
+        prior to the expiry of the existing subscription. If a UA's subscription to a PNS expires then the UA MUST send a REGISTER without the
+        pn parameters (to tell the proxy that it no longer wants push notifications) or
+        terminate the registration. The exact mechanisms for expiry and renewal of PRIDs 
+        will be PNS-specific and are outside the scope of this document.
       </t>
       <t>
         For privacy and security reasons, the UA MUST NOT include the SIP URI parameters defined in this document in non-REGISTER request, to
