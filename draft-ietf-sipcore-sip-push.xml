@@ -237,6 +237,23 @@ align="center"><artwork>
         might reach the UA before the REGISTER response.
       </t>
       <t>
+        If the UA is able to generate re-registration REGISTER requests without recieving push notifications (e.g., using
+        a timer), the UA MUST insert a 'sip.pushreq' feature-capability indicator in each REGISTER request. The UA MUST NOT
+        include an indicator value. Then, if the response to the REGISTER request contains a 'sip.pushreq' feature-capability indicator with an
+        indicator value, the UA MUST send REGISTER requests prior to the registration expires. The indicator value
+        indicates a minimum time (given in seconds), prior to the registration expires when the UA MUST send the REGISTER request.
+      </t>
+      <t>  
+        Note that even if the UA is able to send re-registration REGISTER requests without receiving push notifications, the UA MUST still 
+        send a REGISTER request whenever it receives a push notification, according to the procedures in this section. 
+      </t>
+      <t>
+        NOTE: As described above, in some cases the UA might be able to use a non-push mechanism (e.g., a timer) to awake and send 
+        re-registration REGISTER requests. This allows the UA to e.g., use timers for sending REGISTER requests, but 
+        to be suspended (in order to save battery resources etc) between sending the REGISTER requests and use push notification to 
+        awaken the UA to process incoming calls.
+      </t>      
+      <t>
         As long as the UA wants to receive push notifications (requested by the proxy), the UA MUST include a pn-provider, pn-prid 
         and a pn-param (if required for the specific PNS provider) SIP URI parameter in each re-registration REGISTER request. Note that, 
         in some cases, the PNS might update the PRID value, in which case the UA will include the new value in the pn-prid SIP URI parameter
@@ -287,8 +304,14 @@ align="center"><artwork>
         <t>
           Note that the push notification needs to be requested early enough, in order for the associated
           re-registration REGISTER request to reach the SIP registrar before the registration expires. It is
-          RECOMMENDED that the proxy requests the push notification at least 10 seconds before the registration
+          RECOMMENDED that the proxy requests the push notification at least 120 seconds before the registration
           expires.
+        </t>
+        <t>
+          If the UA has indicated, using the 'sip.reqpush' feature-capability indicator, that it is able to sending
+          re-registration REGISTER requests without receiving push notifications, if the proxy does not receive
+          a REGISTER request prior to 120 seconds before the registration expires, the proxy SHOULD request a
+          push notification towards the UA, to trigger the UA to send a REGISTER request.
         </t>
         <t>
           NOTE: In some cases the UA might be able to use a non-push mechanism (e.g., a timer) to awake and send 
@@ -303,8 +326,11 @@ align="center"><artwork>
       <section anchor="section.proxy.req" title="SIP Request">
       <section anchor="section.proxy.req.reg" title="REGISTER Request">
         <t>
-          The procedures in this section apply when the SIP proxy receives a SIP REGISTER request that contains
-          a pn-provider SIP URI parameter identifying a PNS.
+          The procedures in this section apply when the SIP proxy receives a SIP REGISTER request (initial REGISTER request
+          for a regisration, or a re-registration REGISTER request) that contains a pn-provider SIP URI parameter identifying a PNS.
+          If the proxy receives a REGISTER request that does not contain a pn-provider SIP URI parameter, or that removes the
+          registration, the proxy MUST NOT request push notifications towards the UA associated with the REGISTER request, or perform 
+          any other procedures in this section.
         </t>
         <t>
           When the proxy receives a REGISTER request, if the REGISTER request contains a Feature-Caps header field 
@@ -332,8 +358,15 @@ align="center"><artwork>
           insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, identifying the PNS. This will inform
           the UA that the proxy supports, and will request, push notifications towards the UA. The proxy MUST only indicate support of 
           the same PNS that was identified in the pn-provider SIP URI parameter in the REGISTER request.
+        </t>
+        <t>
           In addition, if the proxy supports, and will use, the VAPID mechanism, the proxy MUST insert a Feature-Caps header field with a 'sip.vapid'  
           feature-capability indicator in the response. The header field parameter contains the public key identifying the proxy <xref target="RFC8292"></xref>.
+        </t>
+        <t>
+          In addition, if the proxy received a 'sip.reqpush' feature-capability indicator in the REGISTER request, the proxy SHOULD include a 'sip.reqpush'
+          feature-capability indicator with an indicator value bigger than 120 in the response, unless the proxy always want to request push notifications
+          to trigger the UA to send a REGISTER request.
         </t>
         </section>
         <section anchor="section.proxy.req.oth" title="Initial Request for Dialog or Stand-Alone Request">
@@ -443,6 +476,26 @@ align="center"><artwork>
 
   ; tag-value as defined in RFC 3840
 
+]]></artwork></figure>
+  
+      </section>
+      <section title="sip.pnsreg Feature-Capability Indicator">
+      <t>
+        The sip.pnsreg feature-capability indicator is used in a SIP REGISTER request to indicate that
+        the entity associated with the indicator supports sending of periodic re-registration REGISTER
+        requests, while still using push notifications to be awaken when reciving incoming SIP requests.
+        The indicator is used in a 2xx response to a REGISTER request to indicate that the entity associated
+        with the indicator expects to receive re-registration REGISTER requests before the registration expires.
+        The indicator value indicates the minimum value (given in seconds) before the registration expireation
+        when the entity expects to receive the re-registration REGISTER request.
+      </t>
+      </t>
+            <figure align="center"><artwork>
+<![CDATA[
+
+  pns-fc          = "+sip.pnsreg" EQUAL LDQUOT reg RDQUOT
+  reg             = 1*DIGIT
+  
 ]]></artwork></figure>
   
       </section>
@@ -686,6 +739,32 @@ align="center"><artwork>
       the server supports the Voluntary Application Server 
       Identification (VAPID) mechanism, defined in RFC 8292. The value
       is a public key of the server.
+
+   Reference: [RFCXXXX]
+
+   Contact: IESG (iesg@ietf.org)
+
+]]></artwork></figure>
+      </section>
+      <section anchor="section.iana.featurecap-pns" title="sip.pns">
+        <t>
+          This section defines a new feature-capability indicator that extends
+          the "SIP Feature-Capability Indicator Registration Tree" sub-registry 
+          <xref target="RFC6809"/> under the sip-parameters registry: 
+          http://www.iana.org/assignments/sip-parameters.
+        </t>
+        <figure align="center"><artwork>
+<![CDATA[
+
+   Name: sip.pnsreg
+
+   Description: This feature-capability indicator, when included in a
+      Feature-Caps header field of a REGISTER request, indicates 
+      that the client is able to send re-registration REGISTER requests
+      without being awaken by a push notification. When included in a
+      Feature-Caps header field of a REGISTER response, the value indicates
+      the minimum time before the registration expires when the server 
+      expects the client to send re-registration REGISTER requests.
 
    Reference: [RFCXXXX]
 
