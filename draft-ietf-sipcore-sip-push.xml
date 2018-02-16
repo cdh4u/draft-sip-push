@@ -329,7 +329,7 @@ align="center"><artwork>
       <section anchor="section.proxy.req.reg" title="REGISTER Request">
         <t>
           The procedures in this section apply when the SIP proxy receives a SIP REGISTER request (initial REGISTER request
-          for a regisration, or a re-registration REGISTER request) that contains a pn-provider SIP URI parameter identifying a PNS.
+          for a registration, or a re-registration REGISTER request) that contains a pn-provider SIP URI parameter identifying a PNS.
           If the proxy receives a REGISTER request that does not contain a pn-provider SIP URI parameter, or that removes the
           registration, the proxy MUST NOT request push notifications towards the UA associated with the REGISTER request, or perform 
           any other procedures in this section.
@@ -500,7 +500,6 @@ align="center"><artwork>
         that the entity associated with the indicator expects to receive re-registration REGISTER requests before 
         the registration expires. The indicator value indicates the minimum value (given in seconds) before the 
         registration expireation when the entity expects to receive the REGISTER request.
-      </t>
       </t>
             <figure align="center"><artwork>
 <![CDATA[
