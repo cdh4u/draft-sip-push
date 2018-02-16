@@ -238,10 +238,12 @@ align="center"><artwork>
       </t>
       <t>
         If the UA is able to generate re-registration REGISTER requests without recieving push notifications (e.g., using
-        a timer), the UA MUST insert a 'sip.pushreq' feature-capability indicator in each REGISTER request. The UA MUST NOT
-        include an indicator value. Then, if the response to the REGISTER request contains a 'sip.pushreq' feature-capability indicator with an
+        a timer), the UA MUST insert a 'sip.pnsreg' media feature tag <xref target="RFC3840"></xref> in the Contact header field of
+        each REGISTER request. Then, if the response to the REGISTER request contains a 'sip.pnsreg' feature-capability indicator with an
         indicator value, the UA MUST send REGISTER requests prior to the registration expires. The indicator value
         indicates a minimum time (given in seconds), prior to the registration expires when the UA MUST send the REGISTER request.
+        If the REGISTER response does not contain a a 'sip.pnsreg' feature-capability indicator, the UA only sends REGISTER requests
+        when it receives a push notification.
       </t>
       <t>  
         Note that even if the UA is able to send re-registration REGISTER requests without receiving push notifications, the UA MUST still 
@@ -308,7 +310,7 @@ align="center"><artwork>
           expires.
         </t>
         <t>
-          If the UA has indicated, using the 'sip.reqpush' feature-capability indicator, that it is able to sending
+          If the UA has indicated, using the 'sip.pnsreg' media feature tag, that it is able to sending
           re-registration REGISTER requests without receiving push notifications, if the proxy does not receive
           a REGISTER request prior to 120 seconds before the registration expires, the proxy SHOULD request a
           push notification towards the UA, to trigger the UA to send a REGISTER request.
@@ -364,7 +366,7 @@ align="center"><artwork>
           feature-capability indicator in the response. The header field parameter contains the public key identifying the proxy <xref target="RFC8292"></xref>.
         </t>
         <t>
-          In addition, if the proxy received a 'sip.reqpush' feature-capability indicator in the REGISTER request, the proxy SHOULD include a 'sip.reqpush'
+          In addition, if the proxy received a 'sip.pnsreg' media feature tag in the REGISTER request, the proxy SHOULD include a 'sip.pnsreg'
           feature-capability indicator with an indicator value bigger than 120 in the response, unless the proxy always want to request push notifications
           to trigger the UA to send a REGISTER request.
         </t>
@@ -481,13 +483,10 @@ align="center"><artwork>
       </section>
       <section title="sip.pnsreg Feature-Capability Indicator">
       <t>
-        The sip.pnsreg feature-capability indicator is used in a SIP REGISTER request to indicate that
-        the entity associated with the indicator supports sending of periodic re-registration REGISTER
-        requests, while still using push notifications to be awaken when reciving incoming SIP requests.
-        The indicator is used in a 2xx response to a REGISTER request to indicate that the entity associated
-        with the indicator expects to receive re-registration REGISTER requests before the registration expires.
-        The indicator value indicates the minimum value (given in seconds) before the registration expireation
-        when the entity expects to receive the re-registration REGISTER request.
+        The sip.pnsreg feature-capability indicator is used in a 2xx response to a SIP REGISTER request to indicate 
+        that the entity associated with the indicator expects to receive re-registration REGISTER requests before 
+        the registration expires. The indicator value indicates the minimum value (given in seconds) before the 
+        registration expireation when the entity expects to receive the REGISTER request.
       </t>
       </t>
             <figure align="center"><artwork>
@@ -746,7 +745,7 @@ align="center"><artwork>
 
 ]]></artwork></figure>
       </section>
-      <section anchor="section.iana.featurecap-pns" title="sip.pns">
+      <section anchor="section.iana.featurecap-pnsreg" title="sip.pnsreg">
         <t>
           This section defines a new feature-capability indicator that extends
           the "SIP Feature-Capability Indicator Registration Tree" sub-registry 
@@ -759,12 +758,12 @@ align="center"><artwork>
    Name: sip.pnsreg
 
    Description: This feature-capability indicator, when included in a
-      Feature-Caps header field of a REGISTER request, indicates 
-      that the client is able to send re-registration REGISTER requests
-      without being awaken by a push notification. When included in a
-      Feature-Caps header field of a REGISTER response, the value indicates
-      the minimum time before the registration expires when the server 
-      expects the client to send re-registration REGISTER requests.
+      Feature-Caps header field of a SIP REGISTER response, indicates
+      that the server supports the case where the client will send a 
+      re-registration REGISTER request, without the use of a push 
+      notification, before the registration expires. The indicator 
+      value indicates the minimum time before the registration expires
+      that the server expects the client to send the REGISTER requests.
 
    Reference: [RFCXXXX]
 
@@ -773,7 +772,41 @@ align="center"><artwork>
 ]]></artwork></figure>
       </section>
       </section>
-      
+
+      <section anchor="section.iana.mediatag" title="SIP Media Feature Tag">
+      <section anchor="section.iana.mediatag-pnsreg" title="sip.pnsreg">
+        <t>
+          This section defines a new media feature tag that extends
+          the "SIP Media Feature Tag Registration Tree" sub-registry 
+          <xref target="RFC3840"/> under the Media Feature Tag registry: 
+          https://www.iana.org/assignments/media-feature-tags/media-feature-tags.xhtml.
+        </t>
+        <figure align="center"><artwork>
+<![CDATA[
+
+   Media feature tag name: sip.pnsreg
+
+   Summary of the media feature indicated by this feature tag: This
+      media feature tag, when included in a Contact header field of 
+      a REGISTER request, indicates that the client is able to send 
+      re-registration REGISTER requests without being awaken by a push
+      notification.
+
+   Values appropriate for use with this feature tag: none
+
+   Related standards or documents: [RFCXXXX]
+
+   Security considerations: This media feature tag does not introduce
+      new security considerations, as it simply indicates support for
+      a basic SIP feature. If an attacker manages to remove the media
+      feature tag, push notifications towards the client will be 
+      requested.
+
+   Contact: IESG (iesg@ietf.org)
+
+]]></artwork></figure>
+      </section>
+      </section>      
       
       <section anchor="section.iana.pns-sub" title="PNS Sub-registry Establishment">
         <t>
