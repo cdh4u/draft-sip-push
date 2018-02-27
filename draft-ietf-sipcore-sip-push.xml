@@ -211,10 +211,11 @@ align="center"><artwork>
       <t>
         Once the SIP UA has registered with the PNS, has received the PRID (using the protocol 
         and procedures associated with the PNS), and when the UA wants to receive push notifications, 
-        the UA MUST send a SIP REGISTER request using normal SIP procedures. The UA MUST include a pn-provider, 
-        a pn-prid and a pn-param (if required for the specific PNS) SIP URI parameter in the SIP Contact header 
-        field URI of the REGISTER request. The pn-provider URI parameter identifies the PNS, the pn-prid URI parameter 
-        contains the PRID value and the pn-param URI parameter contains additional PNS-specific information.
+        the UA MUST send a SIP REGISTER request using normal SIP procedures. The UA MUST include the 
+        following SIP URI parameters in the SIP Contact header field URI of the REGISTER request: pn-provider, 
+        pn-prid and pn-param (if required for the specific PNS). The pn-provider URI parameter identifies the 
+        PNS, the pn-prid URI parameter contains the PRID value and the pn-param URI parameter contains additional 
+        PNS-specific information.
       </t>
       <t>
         When the UA receives a 2xx response to the REGISTER request, if the response contains a Feature-Caps header field
@@ -376,7 +377,7 @@ align="center"><artwork>
           The procedures in this section apply when the SIP proxy has indicated that it supports, and will request, push notifications
           towards the SIP UA.
         </t>
-        <t>
+        <t>        
           When the proxy receives (or, in case the proxy is the registrar, creates) a SIP request for a new dialog (e.g., a SIP
           INVITE request) or a stand-alone SIP request (e.g., a SIP MESSAGE request) addressed towards a SIP UA, if the Request-URI of the request
           contains a pn-provider, a pn-prid and a pn-param (if required for the specific PNS provider) SIP URI parameter, the proxy requests a push
