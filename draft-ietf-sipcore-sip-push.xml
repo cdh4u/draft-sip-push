@@ -350,9 +350,9 @@ align="center"><artwork>
         </t>
         <t>
           If the proxy supports the PNS identified by the pn-provider SIP URI parameter, the proxy MUST insert a Feature-Caps header field 
-          with a 'sip.pns' feature-capability indicator in the REGISTER request before forwarding the REGISTER request (unless the proxy is the registrar,
-          in which case the proxy will terminate the REGISTER request). This will inform downstream proxies that the proxy supports, and will request, 
-          push notifications towards the UA.
+          with a 'sip.pns' feature-capability indicator, identifying the PNS, in the REGISTER request before forwarding the REGISTER request
+          (unless the proxy is the registrar, in which case the proxy will terminate the REGISTER request). This will inform downstream proxies 
+          that the proxy supports, and will request, push notifications towards the UA.
         </t>
         <t>
           If the proxy inserted a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the REGISTER request (see above), when the proxy 
@@ -406,6 +406,10 @@ align="center"><artwork>
           of the SIP request to be forwarded.
         </t>
         <t>
+          If the proxy does not receive the REGISTER request from the UA within a given time after the proxy has requested the push notification,
+          the proxy MUST reject the request with a 404 (Not Found) response. The time value is set based on local policy.
+        </t>
+        <t>
           The proxy MUST NOT include the SIP request as payload in the requested push message.
         </t>
         <t>
@@ -453,12 +457,16 @@ align="center"><artwork>
       </section>
       <section title="sip.pns Feature-Capability Indicator">
       <t>
-        The sip.pns feature-capability indicator is used in a SIP request, or in a SIP 2xx 
-        response to a REGISTER request, to indicate that the entity associated with the indicator supports,
-        and will use, the push notification service identified by the indicator value. 
-        The feature-capability indicator is used in a SIP 555 (Push Notification Service Not Supported)
-        response to a REGISTER request to indicate which push notification services the entity associated
-        with the indicator supports. The values defined for the pn-provider SIP URI parameter are used.
+       The sip.pns feature-capability indicator, when included in a
+       Feature-Caps header field of a SIP REGISTER request or a SIP 2xx response
+       to a REGISTER request, indicates that the entity associated with the 
+       indicator supports, and will use, the SIP push mechanism and the push 
+       notification service identified by the indicator value. When included 
+       in a 555 (Push Notification Service Not Supported) response to a REGISTER 
+       request, the the indicator indicates that the entity associated with the 
+       indicator supports the SIP push mechanism, and the push notification service(s) 
+       identified by the indicator value. The values defined for the pn-provider SIP URI 
+       parameter are used as indicator values.
       </t>
             <figure align="center"><artwork>
 <![CDATA[
@@ -474,13 +482,13 @@ align="center"><artwork>
       </section>
       <section title="sip.vapid Feature-Capability Indicator">
       <t>
-        The sip.vapid feature-capability indicator is used in a SIP 2xx
-        response to a SIP REGISTER request to indicate that the entity
+        The sip.vapid feature-capability indicator, when included in a SIP 2xx
+        response to a SIP REGISTER request, indicates that the entity
         associated with the indicator supports, and will use, the 
         Voluntary Application Server Identification (VAPID) 
         <xref target="RFC8292"/> mechanism when requesting push notifications 
         towards the SIP UA associated with the SIP registration. The indicator
-        value contains a public key identifying the entity, that can be used
+        value is a public key identifying the entity, that can be used
         by a SIP UA to restrict subscriptions to that entity.
       </t>
             <figure align="center"><artwork>
@@ -496,9 +504,12 @@ align="center"><artwork>
       </section>
       <section title="sip.pnsreg Feature-Capability Indicator">
       <t>
-        The sip.pnsreg feature-capability indicator is used in a 2xx response to a SIP REGISTER request to indicate 
-        that the entity associated with the indicator expects to receive re-registration REGISTER requests before 
-        the registration expires. The indicator value indicates the minimum value (given in seconds) before the 
+        The sip.pnsreg feature-capability indicator, when included in a SIP 2xx
+        response to a SIP REGISTER request, indicates that the entity associated with
+        the indicator expects to receive re-registration REGISTER requests from the
+        SIP UA associated with the registration before the registration expires, without 
+        the entity having to request push notifications towards the SIP UA in order to trigger
+        the REGISTER requests. The indicator value is the minimum value (given in seconds) before the 
         registration expireation when the entity expects to receive the REGISTER request.
       </t>
             <figure align="center"><artwork>
@@ -506,7 +517,25 @@ align="center"><artwork>
 
   pns-fc          = "+sip.pnsreg" EQUAL LDQUOT reg RDQUOT
   reg             = 1*DIGIT
+
+  ; DIGIT as defined in RFC 3261
+
+]]></artwork></figure>
   
+      </section>
+      <section title="sip.pnsreg Media Feature Tag">
+      <t>
+        The sip.pnsreg media feature tag, when included in the SIP Contact
+        header field of a SIP REGISTER request, indciates that the SIP UA
+        associated with the tag is able to send re-registration REGISTER requests
+        associated with the registration without being awaken by push notifications.
+        The media feature tag has no values.
+      </t>
+            <figure align="center"><artwork>
+<![CDATA[
+
+  pns-mt          = "+sip.pnsreg"
+
 ]]></artwork></figure>
   
       </section>
@@ -723,9 +752,15 @@ align="center"><artwork>
    Name: sip.pns
 
    Description: This feature-capability indicator, when included in a
-      Feature-Caps header field of a REGISTER request or response, indicates 
-      that the server supports the SIP push mechanism. The value 
-      indicates the push notification service supported by the server.
+       Feature-Caps header field of a SIP REGISTER request or a SIP 2xx
+       response to a REGISTER request, indicates that the entity 
+       associated with the indicator supports, and will use, the SIP
+       push mechanism and the push notification service identified by
+       the indicator value. When included in a 555 (Push Notification 
+       Service Not Supported) response to a REGISTER request, the the 
+       indicator indicates that the entity associated with the 
+       indicator supports the SIP push mechanism, and the push 
+       notification service(s) identified by the indicator value. 
 
    Reference: [RFCXXXX]
 
@@ -745,11 +780,14 @@ align="center"><artwork>
 
    Name: sip.vapid
 
-   Description: This feature-capability indicator, when included in a
-      Feature-Caps header field of a REGISTER response, indicates that
-      the server supports the Voluntary Application Server 
-      Identification (VAPID) mechanism, defined in RFC 8292. The value
-      is a public key of the server.
+   Description: This feature-capability indicator, when included in a 
+        SIP 2xx response to a SIP REGISTER request, indicates that the
+        entity associated with the indicator supports, and will use, 
+        the Voluntary Application Server Identification (VAPID) 
+        mechanism when requesting push notifications towards the SIP UA
+        associated with the SIP registration. The indicator value is a
+        public key identifying the entity, that can be used by a SIP UA
+        to restrict subscriptions to that entity.
 
    Reference: [RFCXXXX]
 
@@ -769,13 +807,16 @@ align="center"><artwork>
 
    Name: sip.pnsreg
 
-   Description: This feature-capability indicator, when included in a
-      Feature-Caps header field of a SIP REGISTER response, indicates
-      that the server supports the case where the client will send a 
-      re-registration REGISTER request, without the use of a push 
-      notification, before the registration expires. The indicator 
-      value indicates the minimum time before the registration expires
-      that the server expects the client to send the REGISTER requests.
+   Description: This feature-capability indicator, when included in a 
+        SIP 2xx response to a SIP REGISTER request, indicates that the
+        entity associated with the indicator expects to receive 
+        re-registration REGISTER requests from the SIP UA associated 
+        with the registration before the registration expires, without 
+        the entity having to request push notifications towards the SIP
+        UA in order to trigger the REGISTER requests. The indicator 
+        value is the minimum value (given in seconds) before the 
+        registration expireation when the entity expects to receive the
+        REGISTER request.
 
    Reference: [RFCXXXX]
 
@@ -799,10 +840,11 @@ align="center"><artwork>
    Media feature tag name: sip.pnsreg
 
    Summary of the media feature indicated by this feature tag: This
-      media feature tag, when included in a Contact header field of 
-      a REGISTER request, indicates that the client is able to send 
-      re-registration REGISTER requests without being awaken by a push
-      notification.
+        media feature tag, when included in the SIP Contact header 
+        field of a SIP REGISTER request, indciates that the SIP UA
+        associated with the tag is able to send re-registration 
+        REGISTER requests associated with the registration without
+        being awaken by push notifications.
 
    Values appropriate for use with this feature tag: none
 
