@@ -77,8 +77,8 @@
       </t>
       <t>
         Also, without being able to use internal timers in order to awake applications, a UA 
-        will not be able to maintain connections e.g., using the SIP Outbound Mechanism <xref target="RFC5626"/>, 
-        as it requires the UA to send periodic keep-alive messages.
+        will not be able to maintain connections e.g., using the SIP Outbound Mechanism 
+        <xref target="RFC5626"/>, as it requires the UA to send periodic keep-alive messages.
       </t>
       <t>
         This document describes how PNSs can be used to awake suspended UAs, to be able to send
