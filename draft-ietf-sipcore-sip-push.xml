@@ -657,6 +657,31 @@ align="center"><artwork>
       </t>
     </section>
 
+    <section anchor="section.sec-fcm" title="pn-provider, pn-param and pn-prid URI Parameters for RFC 8030 (Generic Event Delivery Using HTTP Push)">
+      <t>
+        When Firebase Cloud Messaging (FCM) is used, the PNS related URI parameters are set as described below.
+      </t>
+      <t>
+        The value of the pn-provider URI parameter is "webpush". 
+      </t>
+      <t>
+        The value of the pn-param URI parameter is the push message subscription resource URI.
+      </t>
+      <t>
+        The value of the pn-prid URI parameter is the push URI.
+      </t>
+      <t>
+        See RFC 8030 for more details:
+      </t>
+      <t>
+        https://tools.ietf.org/html/rfc8030
+      </t>
+      <t>
+        Note that encryption for web push <xref target="RFC8291"/> is not used, therefore parameters for message encryption are not defined in this specification.
+        Web push permits the sending of a push message without a payload without encryption.
+      </t>
+    </section>
+
     <section anchor="section.sec" title="Security Considerations">
         <t>
             Different mechanisms exist for authenticating and authorizing devices and users registering 
@@ -905,11 +930,12 @@ align="center"><artwork>
 
   This specification registers the following values:
 
-  Value         Description                         Document
-  -------       ----------------------------------  ----------
+  Value         Description                             Document
+  -------       --------------------------------------  ----------
 
-  apns          Apple Push Notification service     [RFC XXXX]
-  fcm           Firebase Cloud Messaging            [RFC XXXX]
+  apns          Apple Push Notification service         [RFC XXXX]
+  fcm           Firebase Cloud Messaging                [RFC XXXX]
+  webpush       Generic Event Delivery Using HTTP Push  [RFC XXXX]     
                  
 
 ]]></artwork></figure>
@@ -937,6 +963,7 @@ align="center"><artwork>
     <references title="Informative References">
       <?rfc include="reference.RFC.5626"?>
       <?rfc include="reference.RFC.8126"?>
+      <?rfc include="reference.RFC.8291"?>
     </references>
   </back>
 </rfc>
