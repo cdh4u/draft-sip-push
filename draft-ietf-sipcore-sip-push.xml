@@ -657,7 +657,7 @@ align="center"><artwork>
       </t>
     </section>
 
-    <section anchor="section.sec-fcm" title="pn-provider, pn-param and pn-prid URI Parameters for RFC 8030 (Generic Event Delivery Using HTTP Push)">
+    <section anchor="section.sec-webpush" title="pn-provider, pn-param and pn-prid URI Parameters for RFC 8030 (Generic Event Delivery Using HTTP Push)">
       <t>
         When Firebase Cloud Messaging (FCM) is used, the PNS related URI parameters are set as described below.
       </t>
