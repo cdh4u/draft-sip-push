@@ -379,6 +379,7 @@ align="center"><artwork>
             <t>
                if the proxy supports, and will use, the VAPID mechanism, the proxy MUST insert a Feature-Caps header field with a 'sip.vapid'  
                feature-capability indicator in the response. The header field parameter contains the public key identifying the proxy <xref target="RFC8292"></xref>.
+               The proxy MUST be able to determine whether the PNS supports the VAPID mechanism before it inserts the feature-capability indicator.
             </t>
             <t>
                if the proxy received a 'sip.pnsreg' media feature tag in the REGISTER request, the proxy SHOULD include a 'sip.pnsreg'
