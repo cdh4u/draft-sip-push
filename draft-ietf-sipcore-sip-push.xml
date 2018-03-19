@@ -683,7 +683,7 @@ align="center"><artwork>
         The value of the pn-provider URI parameter is "webpush". 
       </t>
       <t>
-        The value of the pn-param URI parameter is the push message subscription resource URI.
+        The value of the pn-param URI parameter MUST NOT be used.
       </t>
       <t>
         The value of the pn-prid URI parameter is the push URI.
