@@ -405,8 +405,11 @@ align="center"><artwork>
           and the associated response as described in <xref target="section.proxy.req.reg"/>. In case of a 2xx response to the REGISTER request,
           once the proxy has forwarded the REGISTER response towards the UA, if the contact in the REGISTER response matches the Request-URI of the SIP request
           to be forwarded, the proxy can also forward the SIP request towards the UA, using normal SIP procedures. If the contact of the most recent REGISTER 2xx
-          response and Request-URI do not match, the proxy MUST reject the SIP request with a 404 (Not Found) response.
-        </t>
+          response and Request-URI do not match, the proxy MUST reject the SIP request with a 404 (Not Found) response. As both the SIP request to be forwarded 
+          towards the UA, and the re-registration REGISTER request triggered by the push notification request, will convey pn- URI parameters associated with the 
+          SIP registration, those can be used to match the SIP request with the re-registration REGISTER request (even if the most recent contact and the Request-URI
+          of the SIP request do not match).
+        </t>          
         <t>
           NOTE: If the proxy is not the registrar, it needs to store (or be able to retrieve) the contact of the most recent REGISTER 2xx response, to be able to 
           compare it with the Request-URI of the request to be forwarded towards the UA.
