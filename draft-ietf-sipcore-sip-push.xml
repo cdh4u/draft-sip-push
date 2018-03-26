@@ -96,9 +96,8 @@
       </t>
       <t>
         When a UA registers to a PNS, it will receive a unique Push Resource ID (PRID)
-        associated with the push notification registration. The UA will provide the PRID to the 
-        SIP proxy that will request push notifications towards the UA in a REGISTER 
-        request. 
+        associated with the push notification registration. The UA will use a REGISTER request to
+        provide the PRID to the SIP proxy that will request push notifications towards the UA.
       </t>
       <t>
         When the proxy receives (or, if the proxy is the SIP registrar <xref target="RFC3261"/>, initiates) 
@@ -225,9 +224,9 @@ align="center"><artwork>
         be dependent on implementation or deployment architecture, and are outside the scope of this document.
       </t>
       <t>
-         In addition, if the response contains a Feature-Caps header field with a 'sip.vapid' feature-capability indicator, the UA can 
-         use the Voluntary Application Server Identification VAPID) mechanism <xref target="RFC8292"></xref> to restrict push notifications 
-         to the proxy (assuming that the PNS supports VAPID).
+        In addition, if the response contains a Feature-Caps header field with a 'sip.vapid' feature-capability indicator, the proxy supports
+        use of the Voluntary Application Server Identification (VAPID) mechanism <xref target="RFC8292"></xref> to restrict push notifications 
+        to the proxy.
       </t>
       <t>
         When the UA receives a push notification, it MUST send a re-registration REGISTER request, using normal SIP procedures.
@@ -297,7 +296,7 @@ align="center"><artwork>
           In order to request push notifications towards a SIP UA that will trigger the UA to send 
           re-registration SIP REGISTER requests, the SIP proxy MUST have information about when a registration
           will expire. The proxy either needs to be the SIP registrar, or the proxy needs to retrieve 
-          the information from the registrar using some other mechanism. Such mechanisms are outside 
+          the information from the registrar using some mechanism. Such mechanisms are outside 
           the scope of this document.
         </t>
         <t>
@@ -313,7 +312,7 @@ align="center"><artwork>
         <t>
           If the UA has indicated, using the 'sip.pnsreg' media feature tag, that it is able to sending
           re-registration REGISTER requests without receiving push notifications, if the proxy does not receive
-          a REGISTER request prior to 120 seconds before the registration expires, the proxy SHOULD request a
+          a REGISTER request prior to 120 seconds before the registration expires, the proxy MAY request a
           push notification towards the UA, to trigger the UA to send a REGISTER request.
         </t>
         <t>
@@ -357,7 +356,7 @@ align="center"><artwork>
           (e.g., if the proxy knows that a downstream proxy supports the PNS) or send a SIP 555 (Push Notification Service Not Supported) 
           response to the REGISTER request. If the proxy sends a SIP 555 (Push Notification Service Not Supported) response, the proxy SHOULD 
           insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, identifying each PNS 
-          that the proxy supports.
+          that the proxy supports. 
         </t>
         <t>
           If the proxy supports the PNS identified by the pn-provider SIP URI parameter, the proxy MUST insert a Feature-Caps header field 
@@ -366,20 +365,28 @@ align="center"><artwork>
           that the proxy supports, and will request, push notifications towards the UA.
         </t>
         <t>
-          If the proxy inserted a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the REGISTER request (see above), when the proxy 
+          If the proxy inserted a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the REGISTER request (see above), if the proxy 
           receives (or, in case the proxy is the SIP registrar, creates) a 2xx response to the REGISTER request, the proxy MUST 
           insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, identifying the PNS. This will inform
           the UA that the proxy supports, and will request, push notifications towards the UA. The proxy MUST only indicate support of 
-          the same PNS that was identified in the pn-provider SIP URI parameter in the REGISTER request.
+          the same PNS that was identified in the pn-provider SIP URI parameter in the REGISTER request. If the proxy receives a receives a 
+          SIP 555 (Push Notification Service Not Supported) response, the proxy SHOULD insert a Feature-Caps header field with a 'sip.pns' feature-capability 
+          indicator in the response, identifying each PNS that the proxy supports.
         </t>
         <t>
-          In addition, if the proxy supports, and will use, the VAPID mechanism, the proxy MUST insert a Feature-Caps header field with a 'sip.vapid'  
-          feature-capability indicator in the response. The header field parameter contains the public key identifying the proxy <xref target="RFC8292"></xref>.
-        </t>
-        <t>
-          In addition, if the proxy received a 'sip.pnsreg' media feature tag in the REGISTER request, the proxy SHOULD include a 'sip.pnsreg'
-          feature-capability indicator with an indicator value bigger than 120 in the response, unless the proxy always want to request push notifications
-          to trigger the UA to send a REGISTER request.
+          In addition, if the proxy receives a 2xx response to the REGISTER request:
+            <list style="symbols">
+            <t>
+               if the proxy supports, and will use, the VAPID mechanism, the proxy MUST insert a Feature-Caps header field with a 'sip.vapid'  
+               feature-capability indicator in the response. The header field parameter contains the public key identifying the proxy <xref target="RFC8292"></xref>.
+               The proxy MUST be able to determine whether the PNS supports the VAPID mechanism before it inserts the feature-capability indicator.
+            </t>
+            <t>
+               if the proxy received a 'sip.pnsreg' media feature tag in the REGISTER request, the proxy SHOULD include a 'sip.pnsreg'
+               feature-capability indicator with an indicator value bigger than 120 in the response, unless the proxy always want to request push notifications
+               to trigger the UA to send a REGISTER request.
+            </t>
+            </list>
         </t>
         </section>
         <section anchor="section.proxy.req.oth" title="Initial Request for Dialog or Stand-Alone Request">
@@ -398,8 +405,11 @@ align="center"><artwork>
           and the associated response as described in <xref target="section.proxy.req.reg"/>. In case of a 2xx response to the REGISTER request,
           once the proxy has forwarded the REGISTER response towards the UA, if the contact in the REGISTER response matches the Request-URI of the SIP request
           to be forwarded, the proxy can also forward the SIP request towards the UA, using normal SIP procedures. If the contact of the most recent REGISTER 2xx
-          response and Request-URI do not match, the proxy MUST reject the SIP request with a 404 (Not Found) response.
-        </t>
+          response and Request-URI do not match, the proxy MUST reject the SIP request with a 404 (Not Found) response. As both the SIP request to be forwarded 
+          towards the UA, and the re-registration REGISTER request triggered by the push notification request, will convey pn- URI parameters associated with the 
+          SIP registration, those can be used to match the SIP request with the re-registration REGISTER request (even if the most recent contact and the Request-URI
+          of the SIP request do not match).
+        </t>          
         <t>
           NOTE: If the proxy is not the registrar, it needs to store (or be able to retrieve) the contact of the most recent REGISTER 2xx response, to be able to 
           compare it with the Request-URI of the request to be forwarded towards the UA.
@@ -409,7 +419,7 @@ align="center"><artwork>
         </t>
         <t>
           If the push notification request fails (see PNS-specific documentation for details), the proxy MUST reject the SIP request with a 
-          555 (Push Notification Service Not Supported) response.
+          556 (Push Notification Failed) response.
         </t>
         <t>
           NOTE: As described above, the reason the proxy needs to wait for the REGISTER response before forwarding the SIP request is to 
@@ -457,12 +467,23 @@ align="center"><artwork>
         The 555 response code is added to the "Server-Error" Status-Code
         definition. 555 (Push Notification Service Not Supported) is used to indicate 
         that the server did not support the push notification service identified in a 
-        'pn-provider' SIP URI parameter, or that the server failed to request a
-        push notification from the push notification service.
+        'pn-provider' SIP URI parameter.
       </t>
       <t>
-        The use of the SIP 555 response code is defined for SIP REGISTER responses,
-        responses to SIP requests initiating dialogs and responses to stand-alone
+        The use of the SIP 555 response code is defined for SIP REGISTER responses.
+      </t>
+      </section>
+      <section title="556 (Push Notification Failed) Response Code">
+      <t>
+        The 556 response code is added to the "Server-Error" Status-Code
+        definition. 556 (Push Notification Failed) is used to indicate 
+        that the server failed to request a push notification from the 
+        push notification service identified in a 'pn-provider' SIP URI 
+        parameter.
+      </t>
+      <t>
+        The use of the SIP 556 response code is defined for responses to 
+        SIP requests initiating dialogs, and responses to stand-alone
         SIP requests.
       </t>
       </section>
@@ -665,7 +686,7 @@ align="center"><artwork>
         The value of the pn-provider URI parameter is "webpush". 
       </t>
       <t>
-        The value of the pn-param URI parameter is the push message subscription resource URI.
+        The value of the pn-param URI parameter MUST NOT be used.
       </t>
       <t>
         The value of the pn-prid URI parameter is the push URI.
@@ -758,7 +779,8 @@ align="center"><artwork>
       </section>
       </section>
 
-      <section anchor="section.iana.pns-res" title="SIP Response Code">
+      <section anchor="section.iana.pns-res" title="SIP Response Codes">
+      <section anchor="section.iana.pns-res-555" title="555 (Push Notification Service Not Supported)">
         <t>
           This section defines a new SIP response code that extends
           the "Response Codes" sub-registry <xref target="RFC3261"/>
@@ -772,6 +794,22 @@ align="center"><artwork>
    Default Reason Phrase:  Push Notification Service Not Supported
 
 ]]></artwork></figure>
+      </section>
+      <section anchor="section.iana.pns-res-556" title="556 (Push Notification Failed)">
+        <t>
+          This section defines a new SIP response code that extends
+          the "Response Codes" sub-registry <xref target="RFC3261"/>
+          under the sip-parameters registry: http://www.iana.org/assignments/sip-parameters.
+        </t>
+        <figure align="center"><artwork>
+<![CDATA[
+
+   Response Code Number:   556
+
+   Default Reason Phrase:  Push Notififcation Failed
+
+]]></artwork></figure>
+      </section>
       </section>
 
       <section anchor="section.iana.featurecap" title="SIP Global Feature-Capability Indicator">
