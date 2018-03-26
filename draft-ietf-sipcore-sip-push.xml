@@ -312,7 +312,7 @@ align="center"><artwork>
         <t>
           If the UA has indicated, using the 'sip.pnsreg' media feature tag, that it is able to sending
           re-registration REGISTER requests without receiving push notifications, if the proxy does not receive
-          a REGISTER request prior to 120 seconds before the registration expires, the proxy SHOULD request a
+          a REGISTER request prior to 120 seconds before the registration expires, the proxy MAY request a
           push notification towards the UA, to trigger the UA to send a REGISTER request.
         </t>
         <t>
