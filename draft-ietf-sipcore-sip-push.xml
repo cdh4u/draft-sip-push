@@ -245,7 +245,7 @@ align="center"><artwork>
         might reach the UA before the REGISTER response.
       </t>
       <t>
-        If the UA is able to generate re-registration REGISTER requests without recieving push notifications (e.g., using
+        If the UA is able to generate re-registration REGISTER requests without receiving push notifications (e.g., using
         a timer), the UA MUST insert a 'sip.pnsreg' media feature tag <xref target="RFC3840"></xref> in the Contact header field of
         each REGISTER request. Then, if the response to the REGISTER request contains a 'sip.pnsreg' feature-capability indicator with an
         indicator value, the UA MUST send REGISTER requests prior to the registration expires. The indicator value
@@ -263,6 +263,11 @@ align="center"><artwork>
         to be suspended (in order to save battery resources etc) between sending the REGISTER requests and use push notification to 
         awaken the UA to process incoming calls.
       </t>      
+      <t>
+        NOTE: If the SIP UA application wants to use push notifications for other purposes than to trigger re-registration requests, it needs 
+        to be able to distinguish between the different purposes when receiving push notifications. Mechanisms for doing that are outside the 
+        scope of this specification.
+      </t>
       <t>
         As long as the UA wants to receive push notifications (requested by the proxy), the UA MUST include a pn-provider, pn-prid 
         and a pn-param (if required for the specific PNS provider) SIP URI parameter in each re-registration REGISTER request. Note that, 
