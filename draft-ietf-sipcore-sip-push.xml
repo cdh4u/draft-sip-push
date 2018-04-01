@@ -207,16 +207,13 @@ align="center"><artwork>
     </section>
 
     <section anchor="section.ua" title="SIP User Agent (UA) Behavior">
+    <section anchor="section.ua.req" title="Request Push Notifications from Network">
       <t>
         Once the SIP UA has registered with the PNS, has received the PRID (using the protocol 
-        and procedures associated with the PNS), and when the UA wants to receive push notifications, 
-        the UA MUST send a SIP REGISTER request using normal SIP procedures. The UA MUST include 'sip.pns' 
-        media feature tag in the Contact header field of each REGISTER request. The 'sip.pns' media feature tag value 
-        identifies the PNS supported by the UA. In addition, the UA MUST include the following SIP URI parameters in 
+        and procedures associated with the PNS), the UA MUST include the following SIP URI parameters in 
         the SIP Contact header field URI of the REGISTER request: pn-provider, pn-prid and pn-param (if required for the specific PNS). 
-        The pn-provider URI parameter identifies the PNS, and MUST match the 'sip.pns' media feature tag value. The pn-prid URI parameter 
-        contains the PRID value and the pn-param URI parameter contains additional PNS-specific information. In addition, the UA MUST 
-        insert a 'sip.pns' media feature tag <xref target="RFC3840"></xref> in the Contact header field of each REGISTER request. 
+        The pn-provider URI parameter identifies the PNS, the pn-prid URI parameter contains the PRID value and the pn-param URI parameter 
+        contains additional PNS-specific information.  
       </t>
       <t>
         When the UA receives a 2xx response to the REGISTER request, if the response contains a Feature-Caps header field
@@ -296,14 +293,14 @@ align="center"><artwork>
         establish a binding in the NAT, in order for an incoming SIP request to reach the 
         UA. By sending the re-registration SIP REQUEST the UA will establish such a NAT binding.
       </t>
+      </section>
+      <section anchor="section.ua.que" title="Query Network Push Notification Capabilities">
       <t>
-        When a SIP UA sends a SIP REGISTER request, before the UA indicates that it wants to receive push notifications, the UA can query the network 
-        about the push notification capabilities, and retrieve push notification information (e.g., related to VAPID) that the UA needs when it register 
-        with the PNS. The UA can do so by inserting the 'sip.pns' media feature tag in the Contact header field of the REGISTER request, but without 
-        including any pn- URI parameters in the SIP Contact header field URI of the REGISTER request. The 'sip.pns' media feature tag value identifies the 
-        PNS supported by the UA. Then, once the UA has received a 2xx response to the REGISTER request, if the UA wants to receive push notifications, the 
-        UA will send a re-registration REGISTER request, including both the 'sip.pns' media feature tag and the pn- URI parameters, following the procedures 
-        in this section.
+        A SIP UA might need to query the network for push notification capabilities (e.g., related to VAPID) before it registers with the
+        PNS, and before it indicates that it wants to receive push notifications. The UA can do so by only including the pn-provider URI parameter 
+        in the SIP Contact header field URI of the REGISTER request, but without including any other pn- URI parameter. Later, once the UA has 
+        received a 2xx response to the REGISTER request, if the UA wants to receive push notifications, the UA will send a re-registration REGISTER 
+        request, including all pn- URI parameters required by the specific PNS, following the procedures in <xref target="section.ua.req"></xref>.
       </t>
     </section>
 
@@ -355,10 +352,10 @@ align="center"><artwork>
       <section anchor="section.proxy.req" title="SIP Request">
       <section anchor="section.proxy.req.reg" title="REGISTER">
         <t>
-          The procedures in this section apply when the SIP proxy receives a SIP REGISTER request (initial REGISTER request
-          for a registration, or a re-registration REGISTER request) that contains a 'sip.pns' media feature tag in the Contact
-          header field of the request. If the proxy receives a REGISTER request that does not contain a 'sip.pns' media feature tag, 
-          or a request that removes a previously established registration, the proxy MUST NOT perform any other procedures defined 
+          The procedures in this section apply when the SIP proxy receives a SIP REGISTER request (initial REGISTER request 
+          for a registration, or a re-registration REGISTER request) that contains a pn-provider SIP URI parameter identifying a PNS. 
+          If the proxy receives a REGISTER request that does not contain a pn-provider SIP URI parameter, or that removes the registration, 
+          the proxy MUST NOT request push notifications towards the UA associated with the REGISTER request, or perform any other procedures 
           in this section.
         </t>       
         <t>
@@ -366,12 +363,6 @@ align="center"><artwork>
           with a 'sip.pns' feature-capability indicator, it indicates that an upstream proxy supports, and will request, push 
           notifications towards the UA. The proxy MUST skip the rest of the procedures in this section, and process the
           REGISTER request using normal SIP procedures. 
-        </t>
-        <t>
-          If the proxy supports the PNS identified by the 'sip.pns' media feature tag, the proxy MUST insert a Feature-Caps header field 
-          with a 'sip.pns' feature-capability indicator, identifying the PNS, in the REGISTER request before forwarding the REGISTER request
-          (unless the proxy is the registrar, in which case the proxy will terminate the REGISTER request). This will inform downstream proxies 
-          that the proxy supports, and will request, push notifications towards the UA.
         </t>
         <t>
           If the proxy considers the requested registration expiration interval <xref target="RFC3261"/> to be too short, the
@@ -390,6 +381,12 @@ align="center"><artwork>
           response to the REGISTER request. If the proxy sends a SIP 555 (Push Notification Service Not Supported) response, the proxy SHOULD 
           insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, identifying each PNS 
           that the proxy supports. The decision whether to forward the request, or to send a response, is done based on local policy.
+        </t>
+        <t>
+          If the proxy supports the PNS identified by the pn-provider SIP URI parameter, the proxy MUST insert a Feature-Caps header field 
+          with a 'sip.pns' feature-capability indicator, identifying the PNS, in the REGISTER request before forwarding the REGISTER request 
+          (unless the proxy is the registrar, in which case the proxy will terminate the REGISTER request). This will inform downstream proxies that the
+          proxy supports, and will request, push notifications towards the UA.
         </t>
         <t>
           If the proxy inserted a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the REGISTER request (see above), if the proxy 
@@ -465,10 +462,11 @@ align="center"><artwork>
           sending a REGISTER request, the proxy MAY choose to not request a push notification towards the UA (and wait for the associated 
           REGISTER request and 2xx response) before it tries to forward the SIP request towards the UA. The mechanisms for getting such knowledge 
           might be dependent on implementation or deployment architecture, and are outside the scope of this document.
-          Similarly, if the Request-URI of the SIP request does not contain any pn- URI parameters (e.g., because the SIP UA has not included them in 
-          a REGISTER request) the proxy is not able to request a push notification towards the UA. If the proxy has knowledge that the UA is awake, 
-          and that the UA is able to receive the SIP request, the proxy MAY forwards the request towards the UA. Otherwise the proxy MUST reject 
-          the SIP request with a 556 (Push Notification Failed) response.
+          Similarly, if the Request-URI of the SIP request only contains any pn-provider URI parameter, but no other pn- URI parameters, e.g., because 
+          the SIP UA has not included them in a REGISTER request (<xref target="section.ua.que"></xref>), the proxy is not able to request a 
+          push notification towards the UA. If the proxy has knowledge that the UA is awake, and that the UA is able to receive the SIP request, 
+          the proxy MAY forwards the request towards the UA. Otherwise the proxy MUST reject the SIP request with a 556 (Push Notification Failed) 
+          response.
         </t>
         <t>
           If the UA and the SIP proxy are operating in an environment where one or more NATs might
@@ -590,25 +588,6 @@ align="center"><artwork>
 
   pnsreg-mt          = "+sip.pnsreg"
 
-]]></artwork></figure>
-  
-      </section>
-      <section title="sip.pns Media Feature Tag">
-      <t>
-        The sip.pns media feature tag, when included in the SIP Contact
-        header field of a SIP REGISTER request, indicates that the SIP UA
-        associated with the tag is able to receive push notifications, and to
-        send re-registration REGISTER requests associated with the registration
-        when receiving such push notifications.
-      </t>
-            <figure align="center"><artwork>
-<![CDATA[
-
-  pns-mt          = "+sip.pns" EQUAL LDQUOT pns RDQUOT
-  pns             = tag-value
-
-  ; tag-value as defined in RFC 3840
- 
 ]]></artwork></figure>
   
       </section>
@@ -939,40 +918,6 @@ align="center"><artwork>
       </section>
 
       <section anchor="section.iana.mediatag" title="SIP Media Feature Tag">
-      <section anchor="section.iana.mediatag-pns" title="sip.pns">
-        <t>
-          This section defines a new media feature tag that extends
-          the "SIP Media Feature Tag Registration Tree" sub-registry 
-          <xref target="RFC3840"/> under the Media Feature Tag registry: 
-          https://www.iana.org/assignments/media-feature-tags/media-feature-tags.xhtml.
-        </t>
-        <figure align="center"><artwork>
-<![CDATA[
-
-   Media feature tag name: sip.pns
-
-   Summary of the media feature indicated by this feature tag: This
-        media feature tag, when included in the SIP Contact header 
-        field of a SIP REGISTER request, indicates that the SIP UA
-        associated with the tag is able to receive push notifiations, 
-        and to send re-registration REGISTER requests triggered by push
-        notifications. The value identifies the supported push 
-        notification service.
-
-   Values appropriate for use with this feature tag: Token
-
-   Related standards or documents: [RFCXXXX]
-
-   Security considerations: This media feature tag does not introduce
-      new security considerations, as it simply indicates support for
-      a basic SIP feature. If an attacker manages to remove the media
-      feature tag, push notifications towards the client will be 
-      requested.
-
-   Contact: IESG (iesg@ietf.org)
-
-]]></artwork></figure>
-      </section>
       <section anchor="section.iana.mediatag-pnsreg" title="sip.pnsreg">
         <t>
           This section defines a new media feature tag that extends
