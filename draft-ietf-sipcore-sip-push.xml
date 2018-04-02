@@ -297,10 +297,11 @@ align="center"><artwork>
       <section anchor="section.ua.que" title="Query Network Push Notification Capabilities">
       <t>
         A SIP UA might need to query the network for push notification capabilities (e.g., related to VAPID) before it registers with the
-        PNS, and before it indicates that it wants to receive push notifications. The UA can do so by only including the pn-provider URI parameter 
-        in the SIP Contact header field URI of the REGISTER request, but without including any other pn- URI parameter. Later, once the UA has 
-        received a 2xx response to the REGISTER request, if the UA wants to receive push notifications, the UA will send a re-registration REGISTER 
-        request, including all pn- URI parameters required by the specific PNS, following the procedures in <xref target="section.ua.req"></xref>.
+        PNS, and before it indicates that it wants to receive push notifications. The UA can do so by only including the pn-provider SIP URI parameter 
+        in the SIP Contact header field URI of the REGISTER request, but without including the pn-prid SIP URI parameter (and any other pn- SIP URI 
+        parameter required by the specific PNS). Later, once the UA has received a 2xx response to the REGISTER request, with the push notification
+        information from the network, if the UA wants to receive push notifications, the UA will send a re-registration REGISTER request, including 
+        all pn- SIP URI parameters required by the specific PNS, following the procedures in <xref target="section.ua.req"></xref>.
       </t>
     </section>
 
@@ -357,7 +358,12 @@ align="center"><artwork>
           If the proxy receives a REGISTER request that does not contain a pn-provider SIP URI parameter, or that removes the registration, 
           the proxy MUST NOT request push notifications towards the UA associated with the REGISTER request, or perform any other procedures 
           in this section.
-        </t>       
+        </t>
+        <t>
+          NOTE: As described in <xref target="section.ua.que"></xref>, a SIP UA might send a REGISTER request without including a pn-prid SIP URI parameter, 
+          in order to retrieve push notification capabilities from the network before it requests the proxy to request push notifications towards the UA. 
+          The procedures in this section apply to both the case when the REGISTER request contains a pn-prid SIP URI parameter, and when it does not.
+        </t>
         <t>
           When the proxy receives a REGISTER request, if the REGISTER request contains a Feature-Caps header field 
           with a 'sip.pns' feature-capability indicator, it indicates that an upstream proxy supports, and will request, push 
@@ -430,7 +436,7 @@ align="center"><artwork>
           once the proxy has forwarded the REGISTER response towards the UA, if the contact in the REGISTER response matches the Request-URI of the SIP request
           to be forwarded, the proxy can also forward the SIP request towards the UA, using normal SIP procedures. If the contact of the most recent REGISTER 2xx
           response and Request-URI do not match, the proxy MUST reject the SIP request with a 404 (Not Found) response. As both the SIP request to be forwarded 
-          towards the UA, and the re-registration REGISTER request triggered by the push notification request, will convey pn- URI parameters associated with the 
+          towards the UA, and the re-registration REGISTER request triggered by the push notification request, will convey pn- SIP URI parameters associated with the 
           SIP registration, those can be used to match the SIP request with the re-registration REGISTER request (even if the most recent contact and the Request-URI
           of the SIP request do not match).
         </t>
@@ -462,7 +468,7 @@ align="center"><artwork>
           sending a REGISTER request, the proxy MAY choose to not request a push notification towards the UA (and wait for the associated 
           REGISTER request and 2xx response) before it tries to forward the SIP request towards the UA. The mechanisms for getting such knowledge 
           might be dependent on implementation or deployment architecture, and are outside the scope of this document.
-          Similarly, if the Request-URI of the SIP request only contains any pn-provider URI parameter, but no other pn- URI parameters, e.g., because 
+          Similarly, if the Request-URI of the SIP request only contains any pn-provider SIP URI parameter, but no other pn- SIP URI parameters, e.g., because 
           the SIP UA has not included them in a REGISTER request (<xref target="section.ua.que"></xref>), the proxy is not able to request a 
           push notification towards the UA. If the proxy has knowledge that the UA is awake, and that the UA is able to receive the SIP request, 
           the proxy MAY forwards the request towards the UA. Otherwise the proxy MUST reject the SIP request with a 556 (Push Notification Failed) 
