@@ -369,9 +369,11 @@ align="center"><artwork>
         </t>
         <t>
           If the proxy considers the requested registration expiration interval <xref target="RFC3261"/> to be too short, the
-          proxy MUST either send a 423 (Interval Too Brief) response to the REGISTER request or skip the rest of the procedures 
-          in this section, and process the REGISTER request using normal SIP procedures. Similarly, when the proxy receives a 2xx 
-          response to the REGISTER request (see below), if the proxy considers the registration expiration internal indicated by the registrar too
+          proxy MUST either send a 423 (Interval Too Brief) response to the REGISTER request, or skip the rest of the procedures 
+          in this section and process the REGISTER request using normal SIP procedures. If the proxy sends a 423 (Interval Too Brief) 
+          response, the proxy SHOULD insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, 
+          identifying the type of each PNS that the proxy supports. Similarly, when the proxy receives a 2xx response to the 
+          REGISTER request (see below), if the proxy considers the registration expiration internal indicated by the registrar too
           short, the proxy MUST NOT insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, and the
           proxy MUST NOT request push notifications associated with the registration. A registration expiration interval MUST be considered 
           too short if the interval is smaller than the time prior to expiration that the proxy would request a push notification. The proxy 
@@ -380,7 +382,7 @@ align="center"><artwork>
         <t>
           Otherwise, if the pn-provider SIP URI parameter identifies a type of PNS that the proxy does not support, or if the REGISTER 
           request does not contain all additional information required for the specific PNS, the proxy MUST either forward the request 
-          (e.g., if the proxy knows that a downstream proxy supports the PNS) or send a SIP 555 (Push Notification Service Not Supported) 
+          (e.g., if the proxy knows that a downstream proxy supports the type of PNS) or send a SIP 555 (Push Notification Service Not Supported) 
           response to the REGISTER request. If the proxy sends a SIP 555 (Push Notification Service Not Supported) response, the proxy SHOULD 
           insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, identifying the type of each PNS 
           that the proxy supports. The decision whether to forward the request, or to send a response, is done based on local policy.
