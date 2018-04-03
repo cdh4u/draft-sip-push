@@ -236,19 +236,24 @@ align="center"><artwork>
         might reach the UA before the REGISTER response.
       </t>
       <t>
-        If the UA is able to send re-registration REGISTER requests without receiving push notifications (e.g., using
-        an internal timer that periodically awakes the UA), the UA MUST insert a 'sip.pnsreg' media feature tag <xref target="RFC3840"></xref> in the Contact header field of
-        each REGISTER request. Then, if the response to the REGISTER request contains a 'sip.pnsreg' feature-capability indicator with an
-        indicator value, the UA MUST send REGISTER requests prior to the registration expires. The indicator value
-        indicates a minimum time (given in seconds), prior to the registration expires when the UA MUST send the REGISTER request.
-        If the REGISTER response does not contain a a 'sip.pnsreg' feature-capability indicator, the UA only sends REGISTER requests
-        when it receives a push notification.
+        If the UA is able to send re-registration REGISTER requests using a non-push mechanism (e.g., using
+        an internal timer that periodically awakes the UA), the UA MUST insert a 'sip.pnsreg' media feature tag <xref target="RFC3840"></xref> 
+        in the Contact header field of each REGISTER request. Then, if the response to the REGISTER request contains a 'sip.pnsreg' 
+        feature-capability indicator with an indicator value, the UA MUST send REGISTER requests prior to the registration expires. 
+        The indicator value indicates a minimum time (given in seconds), prior to the registration expires when the UA MUST send the REGISTER request.
+        If the REGISTER response does not contain a a 'sip.pnsreg' feature-capability indicator, the UA only SHOULD only send a re-registration 
+        REGISTER request when it receives a push notification (even if the UA is able to use a non-push mechanism for sending re-registration
+        REGISTER requests).
       </t>
-      <t>  
-        Note that even if the UA is able to send re-registration REGISTER requests without receiving push notifications, the UA MUST still 
-        send a REGISTER request whenever it receives a push notification (the proxy will still request a push notification when it receives
-        a request addressed towards the UA), following to the procedures in this section. 
-      </t>
+      <t>
+        NOTE: In some cases the UA might be able to use a non-push mechanism to awake and send 
+        re-registration REGISTER requests. Such REGISTER request will update the registration expiration timer, 
+        and the proxy does not need to request a push notification towards the UA in order to awake the UA. The
+        proxy will still request a push notification towards the UA when the proxy receives a SIP request addressed
+        towards the UA (<xref target="section.proxy.req.oth"></xref>). This allows the UA to e.g., use timers for sending 
+        re-registration REGISTER requests, but to be suspended (in order to save battery resources etc) between sending 
+        the REGISTER requests and use push notification to awaken the UA to process incoming calls.
+      </t>      
       <t>
         NOTE: As described above, in some cases the UA might be able to use a non-push mechanism (e.g., a timer) to awake and send 
         re-registration REGISTER requests. This allows the UA to e.g., use timers for sending REGISTER requests, but 
@@ -332,19 +337,10 @@ align="center"><artwork>
           expires.
         </t>
         <t>
-          If the UA has indicated, using the 'sip.pnsreg' media feature tag, that it is able to sending
-          re-registration REGISTER requests without receiving push notifications, if the proxy does not receive
+          If the UA has indicated, using the 'sip.pnsreg' media feature tag, that it is able to awake using
+          a non-push mechanism for sending re-registration REGISTER requests, if the proxy does not receive
           a REGISTER request prior to 120 seconds before the registration expires, the proxy MAY request a
           push notification towards the UA, to trigger the UA to send a REGISTER request.
-        </t>
-        <t>
-          NOTE: In some cases the UA might be able to use a non-push mechanism (e.g., a timer) to awake and send 
-          re-registration REGISTER requests. Such REGISTER request will update the registration expiration timer, 
-          and the proxy does not need to request a push notification towards the UA in order to awake the UA. The
-          proxy will still request a push notification towards the UA when the proxy receives a SIP request addressed
-          towards the UA (<xref target="section.proxy.req.oth"></xref>). This allows the UA to e.g., use timers for sending 
-          re-registration REGISTER requests, but to be suspended (in order to save battery resources etc) between sending 
-          the REGISTER requests and use push notification to awaken the UA to process incoming calls.
         </t>
       </section>
       <section anchor="section.proxy.req" title="SIP Request">
