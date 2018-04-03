@@ -236,7 +236,7 @@ align="center"><artwork>
         might reach the UA before the REGISTER response.
       </t>
       <t>
-        If the UA is able to generate re-registration REGISTER requests without receiving push notifications (e.g., using
+        If the UA is able to send re-registration REGISTER requests without receiving push notifications (e.g., using
         a timer), the UA MUST insert a 'sip.pnsreg' media feature tag <xref target="RFC3840"></xref> in the Contact header field of
         each REGISTER request. Then, if the response to the REGISTER request contains a 'sip.pnsreg' feature-capability indicator with an
         indicator value, the UA MUST send REGISTER requests prior to the registration expires. The indicator value
