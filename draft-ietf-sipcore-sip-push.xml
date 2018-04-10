@@ -347,6 +347,10 @@ align="center"><artwork>
           the network before it requests the proxy to request push notifications towards the UA. 
           A proxy will not request push notifications towards a UA that has not provided a pn-prid SIP URI parameter.
         </t>
+        <t>
+          If the proxy receives information that a registration has expired, the proxy MUST NOT request further 
+          push notifications towards the UA.
+        </t>
       </section>
       <section anchor="section.proxy.req" title="SIP Request">
       <section anchor="section.proxy.req.reg" title="REGISTER">
