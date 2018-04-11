@@ -90,7 +90,7 @@
         that will request push notifications towards the UA, and to request such push notification requests.
       </t>  
       <t>
-        NOTE: Even if a UA is able to awake by other means than recieving push notifications (e.g., by using internal timers) in order to 
+        NOTE: Even if a UA is able to awake by other means than receiving push notifications (e.g., by using internal timers) in order to 
         send periodic re-registration REGISTER requests, it might still be useful to suspend the application
         between the sending of re-registration requests (as it will save battery life etc) and use push notifications
         to awake the UA when an incoming SIP request UA arrives.
@@ -564,7 +564,7 @@ align="center"><artwork>
         SIP UA associated with the registration before the registration expires, without 
         the entity having to request push notifications towards the SIP UA in order to trigger
         the REGISTER requests. The indicator value is the minimum value (given in seconds) before the 
-        registration expireation when the entity expects to receive the REGISTER request.
+        registration expiration when the entity expects to receive the REGISTER request.
       </t>
             <figure align="center"><artwork>
 <![CDATA[
