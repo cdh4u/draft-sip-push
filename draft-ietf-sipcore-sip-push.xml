@@ -242,9 +242,10 @@ align="center"><artwork>
         in the Contact header field URI of each REGISTER request. Then, if the response to the REGISTER request contains a 'sip.pnsreg' 
         feature-capability indicator with an indicator value, the UA MUST send REGISTER requests prior to the registration expires. 
         The indicator value indicates a minimum time (given in seconds), prior to the registration expires when the UA MUST send the REGISTER request.
-        If the REGISTER response does not contain a a 'sip.pnsreg' feature-capability indicator, the UA SHOULD only send a re-registration 
-        REGISTER request when it receives a push notification (even if the UA is able to use a non-push mechanism for sending re-registration
-        REGISTER requests).
+        Even if the UA is able to to send REGISTER requests using a non-push mechanism, the UA MUST still send a REGISTER request when
+        it receives a push notification, following the procedures in this section. If the REGISTER response does not contain a a 'sip.pnsreg' 
+        feature-capability indicator, the UA SHOULD only send a re-registration REGISTER request when it receives a push notification (even if 
+        the UA is able to use a non-push mechanism for sending re-registration REGISTER requests).
       </t>
       <t>
         NOTE: In some cases the UA might be able to use a non-push mechanism to awake and send 
@@ -255,12 +256,6 @@ align="center"><artwork>
         re-registration REGISTER requests, but to be suspended (in order to save battery resources etc) between sending 
         the REGISTER requests and use push notification to awaken the UA to process incoming calls.
       </t>      
-      <t>
-        NOTE: As described above, in some cases the UA might be able to use a non-push mechanism (e.g., an internal timer) to awake and send 
-        re-registration REGISTER requests. This allows the UA to e.g., use timers for sending re-registration requests, but 
-        to be suspended (in order to save battery resources etc) between sending the re-registration requests and use push notification to 
-        awaken the UA to process incoming calls.
-      </t>
       <t>
         NOTE: This specification does not define any usage of a push notification payload. As defined in  <xref target="section.proxy.req.oth"></xref>,
         a proxy must not include any payload in the push notification request. If a SIP UA receives a push notification that contains a payload the UA 
