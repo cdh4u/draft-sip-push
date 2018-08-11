@@ -109,7 +109,8 @@
         the incoming SIP request. The proxy will receive the REGISTER request. If the push notification request was
         triggered by a SIP request addressed towards the UA (see above), once the REGISTER request has been 
         accepted by the SIP registrar <xref target="RFC3261"/>, and the associated SIP 2xx response has been forwarded by the proxy towards the UA, 
-        the proxy can forward the SIP request towards the UA using normal SIP routing procedures.
+        the proxy can forward the SIP request towards the UA using normal SIP routing procedures. In some cases the proxy can forward the SIP
+        request without waiting for the SIP 2xx response to the REGISTER request.
       </t>
       <t>
         Different PNSs exist today. Some are based on the standardized mechanism defined in 
@@ -456,6 +457,12 @@ align="center"><artwork>
           response and Request-URI do not match, the proxy MUST reject the SIP request with a 404 (Not Found) response. This can happen if the UA sends a binding refresh
           REGISTER request with a new contact at the same time the registrar forwards a SIP request towards a UA using the previously registered contact in the Request-URI.
         </t>
+        <t>
+          The reason the proxy needs to wait for the REGISTER response before forwarding the SIP request is to make sure that the REGISTER request has been accepted by
+          the registrar, and the sender of the REGISTER request has been authenticated. However, if the proxy is able to authenticate the sender of the REGISTER request, 
+          it does not need to wait for the associated 2xx response before it forwards the SIP request towards the UA. The mechanism for authentication the UA is outside
+          the scope of this document.
+        </t>
         <t> 
           As both the SIP request to be forwarded towards the UA, and the binding refresh REGISTER request triggered by the push notification request, will convey pn- SIP URI 
           parameters associated with the SIP registration, those can be used to match the SIP request with the binding refresh REGISTER request (even if the most recent contact 
@@ -466,23 +473,18 @@ align="center"><artwork>
           compare it with the Request-URI of the request to be forwarded towards the UA.
         </t>
         <t>
-          In case of non-2xx response to the REGISTER request, the proxy MUST reject the SIP request with a 404 (Not Found) response. 
+          In case of non-2xx response to the REGISTER request, and the proxy has not yet forwarded the SIP request towards the UA, the proxy MUST reject the SIP request with a 404 (Not Found) response. 
         </t>
         <t>
           If the push notification request fails (see PNS-specific documentation for details), the proxy MUST reject the SIP request with a 
           556 (Push Notification Failed) response.
         </t>
         <t>
-          NOTE: As described above, the reason the proxy needs to wait for the REGISTER response before forwarding the SIP request is to 
-          make sure that the REGISTER request has been accepted by the registrar, and that the registered contact matches the Request-URI 
-          of the SIP request to be forwarded.
-        </t>
-        <t>
           If the proxy does not receive the REGISTER request from the UA within a given time after the proxy has requested the push notification,
           the proxy MUST reject the request with a 404 (Not Found) response. The time value is set based on local policy.
         </t>
         <t>
-           As describe above, there are cases where the proxy will reject the SIP request with an error response.While waiting for the push notification request 
+           As describe above, there are cases where the proxy will reject the SIP request with an error response. While waiting for the push notification request 
            to succeed, and the associated REGISTER request to arrive from the SIP UA, the proxy needs to take into consideration that the transaction associated 
            with the SIP request will eventually time out at the sender of the request (UAC), and the sender will consider the transaction a failure. If the proxy 
            forwards the SIP request towards the SIP UA, the SIP UA accepts the request and the transaction times out at the sender before it receives the successful 
