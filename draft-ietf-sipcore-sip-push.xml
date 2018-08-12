@@ -459,9 +459,9 @@ align="center"><artwork>
         </t>
         <t>
           The reason the proxy needs to wait for the REGISTER response before forwarding the SIP request is to make sure that the REGISTER request has been accepted by
-          the registrar, and the sender of the REGISTER request has been authenticated. However, if the proxy is able to authenticate the sender of the REGISTER request, 
-          it does not need to wait for the associated 2xx response before it forwards the SIP request towards the UA. The mechanism for authentication the UA is outside
-          the scope of this document.
+          the registrar, and that the UA which initiated the REGISTER request is authorized to receive messages for the Request-URI. However, if the proxy is able to authorize 
+          the sender of the REGISTER request, it does not need to wait for the associated 2xx response before it forwards the SIP request towards the UA. The mechanism for authorizing 
+          the UA is outside the scope of this document.
         </t>
         <t> 
           As both the SIP request to be forwarded towards the UA, and the binding refresh REGISTER request triggered by the push notification request, will convey pn- SIP URI 
