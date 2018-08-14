@@ -4,6 +4,8 @@
 <!ENTITY RFC3261 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3261.xml">
 <!ENTITY RFC3311 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3261.xml">
 <!ENTITY RFC4028 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4028.xml">
+<!ENTITY RFC4320 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4320.xml">
+<!ENTITY RFC4321 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4321.xml">
 ]>
 <?rfc toc="yes" ?>
 <?rfc compact="yes" ?>
@@ -110,7 +112,9 @@
         triggered by a SIP request addressed towards the UA (see above), once the REGISTER request has been 
         accepted by the SIP registrar <xref target="RFC3261"/>, and the associated SIP 2xx response has been forwarded by the proxy towards the UA, 
         the proxy can forward the SIP request towards the UA using normal SIP routing procedures. In some cases the proxy can forward the SIP
-        request without waiting for the SIP 2xx response to the REGISTER request.
+        request without waiting for the SIP 2xx response to the REGISTER request. Note that this mechanism necessarily adds
+        delay to responding to non-INVITE requests requiring push notification. The consequences of that delay are discussed
+        in <xref target="section.proxy.req.oth">.
       </t>
       <t>
         Different PNSs exist today. Some are based on the standardized mechanism defined in 
@@ -488,13 +492,18 @@ align="center"><artwork>
           the proxy MUST reject the request with a 404 (Not Found) response. The time value is set based on local policy.
         </t>
         <t>
-           As describe above, there are cases where the proxy will reject the SIP request with an error response. While waiting for the push notification request 
+           As dicussed in <xref target="RFC4320"> and <xref target="RFC4321">, non-INVITE transactions must complete immediately or risk losing race that results
+           in stress on intermediaries and state misalignment at the endpoints. The mechanism defined in this document inherently delays the final response to any
+           non-INVITE request that requires a push notification. In particular, while waiting for the push notification request 
            to succeed, and the associated REGISTER request to arrive from the SIP UA, the proxy needs to take into consideration that the transaction associated 
            with the SIP request will eventually time out at the sender of the request (UAC), and the sender will consider the transaction a failure. If the proxy 
            forwards the SIP request towards the SIP UA, the SIP UA accepts the request and the transaction times out at the sender before it receives the successful 
            response, this will cause state misalignment between the endpoints (the sender will consider the transaction a failure, while the receiver will consider 
            the transaction a success). The SIP proxy needs to take this into account when deciding for how long to wait before it considers the transaction associated 
-           with the SIP request a failure, to make sure that the error response reaches the sender before the transaction times out.
+           with the SIP request a failure, to make sure that the error response reaches the sender before the transaction times out. If the accumulated delay of this 
+           mechanism combined with any other mechanisms in the path of processing the non-INVITE transaction is not kept short, this mechanism should not be used. 
+           For networks encountering such conditions, an alternative (left for possible future work) would be for the proxy to immediately return an new error code 
+           meaning "wait at least the number of seconds specified in this response, and retry your request" before initiating the push notification.
         </t>
         <t>
             NOTE: While this work on this document was ongoing, implementation test results showed that the time it takes for a proxy to receive the REGISTER request, from when the proxy has
@@ -1054,6 +1063,8 @@ align="center"><artwork>
       <?rfc include="reference.RFC.8292"?>
     </references>
     <references title="Informative References">
+      <?rfc include="reference.RFC.4320"?>
+      <?rfc include="reference.RFC.4321"?>
       <?rfc include="reference.RFC.5626"?>
       <?rfc include="reference.RFC.8126"?>
       <?rfc include="reference.RFC.8291"?>
