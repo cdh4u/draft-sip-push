@@ -114,7 +114,7 @@
         the proxy can forward the SIP request towards the UA using normal SIP routing procedures. In some cases the proxy can forward the SIP
         request without waiting for the SIP 2xx response to the REGISTER request. Note that this mechanism necessarily adds
         delay to responding to non-INVITE requests requiring push notification. The consequences of that delay are discussed
-        in <xref target="section.proxy.req.oth">.
+        in <xref target="section.proxy.req.oth"/>.
       </t>
       <t>
         Different PNSs exist today. Some are based on the standardized mechanism defined in 
@@ -481,7 +481,7 @@ align="center"><artwork>
           compare it with the Request-URI of the request to be forwarded towards the UA.
         </t>
         <t>
-          In case of non-2xx response to the REGISTER request, and the proxy has not yet forwarded the SIP request towards the UA, the proxy MUST reject the SIP request with a 404 (Not Found) response. 
+          In case of non-2xx response to the REGISTER request, the proxy MUST reject the SIP request with a 404 (Not Found) response. 
         </t>
         <t>
           If the push notification request fails (see PNS-specific documentation for details), the proxy MUST reject the SIP request with a 
@@ -489,10 +489,10 @@ align="center"><artwork>
         </t>
         <t>
           If the proxy does not receive the REGISTER request from the UA within a given time after the proxy has requested the push notification,
-          the proxy MUST reject the request with a 404 (Not Found) response. The time value is set based on local policy.
+          the proxy MUST reject the request with a 480 (Temporarily Unavailable) response. The time value is set based on local policy.
         </t>
         <t>
-           As dicussed in <xref target="RFC4320"> and <xref target="RFC4321">, non-INVITE transactions must complete immediately or risk losing race that results
+           As dicussed in <xref target="RFC4320"/> and <xref target="RFC4321"/>, non-INVITE transactions must complete immediately or risk losing race that results
            in stress on intermediaries and state misalignment at the endpoints. The mechanism defined in this document inherently delays the final response to any
            non-INVITE request that requires a push notification. In particular, while waiting for the push notification request 
            to succeed, and the associated REGISTER request to arrive from the SIP UA, the proxy needs to take into consideration that the transaction associated 
