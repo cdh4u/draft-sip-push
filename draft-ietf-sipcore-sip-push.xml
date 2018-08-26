@@ -469,12 +469,16 @@ align="center"><artwork>
         <t>
           The push notification will trigger the UA to send a binding refresh REGISTER request. The proxy will process the REGISTER request
           and the associated response as described in <xref target="section.proxy.req.reg"/>. In case of a 2xx response to the REGISTER request,
-          once the proxy has forwarded the REGISTER response towards the UA, if one of the contacts in the REGISTER response matches the Request-URI of the SIP request
-          to be forwarded, and matches the contact in the corresponding REGISTER request, and if the contact binding has not expired, the proxy can also forward the SIP request towards the UA, 
-          using normal SIP procedures. If none of the contacts of the most recent REGISTER 2xx response matches the Request-URI of the SIP request to be forwarded, and the
-          contact of the corresponding REGISTER request, the proxy MUST reject the SIP request with a 404 (Not Found) response. This can happen if the UA sends a binding refresh
+          once the proxy has forwarded the REGISTER response towards the UA, if the contact of the SIP REGISTER request associated with the REGISTER response matches the Request-URI of the SIP request
+          to be forwarded, and the contact was also present (and has not expired) in the REGISTER response, the proxy can forward the SIP request towards the UA, 
+          using normal SIP procedures. If the contact of the REGISTER request does not match the Request-URI of the SIP request to be forwarded, or if the contact
+          was not present in the REGISTER response, the proxy MUST reject the SIP request with a 404 (Not Found) response. This can happen if the UA sends a binding refresh
           REGISTER request with a new contact at the same time the registrar forwards a SIP request towards a UA using the previously registered contact in the Request-URI.
         </t>
+        <t>
+          When matching the Request-URI of the SIP request to be forwarded with a contact of a REGISTER request, the proxy uses the URI comparison rules in
+          <xref target="RFC8292"></xref>, with the following addition: the pn-prid SIP URI parameter MUST also match. If the parameter is not present in the Request-URI of
+          the SIP request, or in the contact of the REGISTER, there is no match.
         <t>
           The reason the proxy needs to wait for the REGISTER response before forwarding the SIP request is to make sure that the REGISTER request has been accepted by
           the registrar, and that the UA which initiated the REGISTER request is authorized to receive messages for the Request-URI. However, if the proxy is able to authorize 
