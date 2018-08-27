@@ -374,7 +374,7 @@ align="center"><artwork>
         </t>
       </section>
       <section anchor="section.proxy.req" title="SIP Requests">
-      <section anchor="section.proxy.req.reg" title="REGISTER">
+      <section anchor="section.proxy.req.reg" title="REGISTER Requests from the UA">
         <t>
           The procedures in this section apply when the SIP proxy receives a SIP REGISTER request (initial REGISTER request 
           for a registration, or a binding refresh REGISTER request) that contains a pn-provider SIP URI parameter identifying a type of PNS. 
@@ -446,14 +446,14 @@ align="center"><artwork>
             </list>
         </t>
         </section>
-        <section anchor="section.proxy.req.oth" title="Initial Request for Dialog or Stand-Alone Request">
+        <section anchor="section.proxy.req.oth" title="SIP Requests Towards the UA">
         <t>
           The procedures in this section apply when the SIP proxy has indicated that it supports, and will request, push notifications
           towards the SIP UA.
         </t>
         <t>        
           When the proxy receives a SIP request for a new dialog (e.g., a SIP
-          INVITE request) or a stand-alone SIP request (e.g., a SIP MESSAGE request) addressed towards a SIP UA, if the Request-URI of the request
+          INVITE or SUBSCRIBE request), an in-dialog request (such as NOTIFY), or a stand-alone SIP request (e.g., a SIP MESSAGE request) addressed towards a SIP UA, if the Request-URI of the request
           contains a pn-provider, a pn-prid and a pn-param (if required for the specific PNS provider) SIP URI parameter, the proxy requests a push
           notification towards the UA, using the PRID included in the pn-prid SIP URI parameter and the PNS identified by the pn-provider SIP URI parameter.
         </t>
