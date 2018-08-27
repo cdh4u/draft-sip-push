@@ -499,8 +499,11 @@ align="center"><artwork>
         </t>
         <t>
           If the push notification request fails (see PNS-specific documentation for details), the proxy MUST reject the SIP request with a 
-          556 (Push Notification Failed) response.
+          480 (Temporarily Unavailable) or a 556 (Push Notification Failed) response.
         </t>
+        <t>
+          NOTE; Before sending a 556 (Push Notification Failed) response, the proxy operator needs to determine whether it could have privacy implications.
+        </tZ
         <t>
           If the proxy does not receive the REGISTER request from the UA within a given time after the proxy has requested the push notification,
           the proxy MUST reject the request with a 480 (Temporarily Unavailable) response. The time value is set based on local policy.
@@ -534,8 +537,8 @@ align="center"><artwork>
           Similarly, if the Request-URI of the SIP request only contains any pn-provider SIP URI parameter, but no other pn- SIP URI parameters, e.g., because 
           the SIP UA has not included them in a REGISTER request (<xref target="section.ua.que"></xref>), the proxy is not able to request a 
           push notification towards the UA. If the proxy has knowledge that the UA is wake, and that the UA is able to receive the SIP request, 
-          the proxy MAY forwards the request towards the UA. Otherwise the proxy MUST reject the SIP request with a 556 (Push Notification Failed) 
-          response.
+          the proxy MAY forwards the request towards the UA. Otherwise the proxy MUST reject the SIP request with a 480 (Temporarily Unavailable) or a 
+          556 (Push Notification Failed) response.
         </t>
       </section>
       </section>
@@ -1023,7 +1026,7 @@ align="center"><artwork>
         </t>
         <t>
             When a SIP URI pn-provider value is registered in the sub-registry, it
-            needs to meet the "Expert Review" policies defined in 
+            needs to meet the "Specification Required" policies defined in 
             <xref target="RFC8126"/>.
         </t>
         <figure align="center"><artwork>
