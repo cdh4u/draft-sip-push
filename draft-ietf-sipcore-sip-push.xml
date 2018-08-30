@@ -479,6 +479,7 @@ align="center"><artwork>
           When matching the Request-URI of the SIP request to be forwarded with a contact of a REGISTER request, the proxy uses the URI comparison rules in
           <xref target="RFC8292"></xref>, with the following addition: the pn-prid SIP URI parameter MUST also match. If the parameter is not present in the Request-URI of
           the SIP request, or in the contact of the REGISTER, there is no match.
+        </t>
         <t>
           The reason the proxy needs to wait for the REGISTER response before forwarding the SIP request is to make sure that the REGISTER request has been accepted by
           the registrar, and that the UA which initiated the REGISTER request is authorized to receive messages for the Request-URI. However, if the proxy is able to authorize 
@@ -503,7 +504,7 @@ align="center"><artwork>
         </t>
         <t>
           NOTE; Before sending a 556 (Push Notification Failed) response, the proxy operator needs to determine whether it could have privacy implications.
-        </tZ
+        </t>
         <t>
           If the proxy does not receive the REGISTER request from the UA within a given time after the proxy has requested the push notification,
           the proxy MUST reject the request with a 480 (Temporarily Unavailable) response. The time value is set based on local policy.
