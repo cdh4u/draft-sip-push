@@ -545,6 +545,76 @@ align="center"><artwork>
       </section>
     </section>
 
+    <section anchor="section.subscription" title="SIP Event Notification Considerations">
+      <t>
+        When a SIP UA creats a dialog for receiving SIP event notifications <xref target="RFC6665"/>,
+        there may be a long period between mid-dialog SIP NOTIFY requests carrying the event notifications. 
+        During that time the UA might get suspended, and needs to be awaken in order to receive
+        such NOTIFY request. However, unlike an initial request for a dialog, the NOTIFY request will not contain
+        the pn- SIP URI parameters needed by the proxy to request a push notification towards the UA. Instead, the proxy
+        need to support a mechanism, where it stores the information needed to request a push notification towards the UA,
+        and when the proxy receives the initial SUBSCRIBE request for the subscription dialog it needs to associate the
+        subscription dialog with that information. This section describes the UA- and proxy procedures for such mechanism.
+        The procedures are applied in addition to the generic procedures for the UA and the proxy.
+      </t>
+      <section anchor="section.subscription.ua" title="SIP UA Behavior">
+        <section anchor="section.subscription.ua.sub" title="SUBSCRIBE">
+          <t>
+            When the UA sends a SIP SUBSCRIBE request (initial for a subscription dialog or subscription refresh), for the UA
+            to receive a push notification request when the proxy receives a mid-dialog NOTIFY request addressed towards the UA,
+            the UA MUST include a '+sip.prid' Contact header field parameter in the SUBSCRIBE request. The UA MUST include the same 
+            parameter value that it included in the pn-prid SIP URI parameter of the last successful REGISTER request.
+          </t>
+        </section>
+      </section>  
+      <section anchor="section.subscription.proxy" title="SIP Proxy Behavior">
+        <section anchor="section.subscription.proxy.reg" title="REGISTER">
+          <t>
+            When the proxy receives a REGISTER request from the UA, if the UA indicates support of the SUBSCRIBE and
+            the NOTIFY methods <xref target="RFC3261"/> the proxy MUST store the information (the pn- SIP URI parameters)
+            needed to request push notifications associated with the registration towards the UA, and use the pn-prid SIP URI parameter
+            value as key to access the data. The proxy MUST store the information until the registration expires. As described in
+            <xref target="section.proxy.rereg"></xref> the proxy needs to be able to retrieve the registration state information from
+            the registrar using some mechanism.
+          </t>
+        </section>
+        <section anchor="section.subscription.proxy.sub" title="SUBSCRIBE">
+          <t>
+            When the proxy receives an initial SUBSCRIBE request for a subscription dialog from a UA, if the request
+            contains a '+sip.prid' Contact header field parameters and if the proxy has stored the information needed
+            in order to request push notifications towards the UA (<xref target="section.subscription.proxy.reg"></xref>), 
+            the proxy MUST store the subscription dialog information, including the '+sip.prid' Contact header field parameter 
+            value. In addition, the proxy MUST add a Record-Route header field to the request and add itself to the 
+            dialog route <xref target="RFC3261"/> before it forwards the request.
+          </t>
+          <t>
+            If the proxy receives a SUBSCRIBE subscription refresh request from the UA, and the request contains
+            a '+sip.prid' Contact header field parameter with an updated parameter value, the proxy MUST update the value
+            in the stored dialog information.
+          </t>
+          <t>
+            Before the proxy forwards a SUBSCRIBE request, it MUST remove the 'sip.prid' Contact header field parameter from
+            the request.
+          </t>
+        </section>
+        <section anchor="section.subscription.proxy.not" title="NOTIFY">
+          <t>
+            When the proxy receives a mid-dialog NOTIFY request addressed towards the UA, if the proxy has stored the associated
+            dialog information (<xref target="section.subscription.proxy.sub"></xref>) and the proxy is able to retrieve the stored 
+            information needed to request a push notification towards the UA (<xref target="section.subscription.proxy.reg"></xref>), 
+            the proxy MUST request a push notification towards the UA. Once the proxy has received the triggered REGISTER request, 
+            and the associated successful response, the proxy can forward the NOTIFY request towards the UA.
+          </t>
+          <t>
+            As described in <xref target="section.proxy.req.oth"></xref>, while waiting for the push notification request to
+            succeed, and the associated REGISTER request to arrive from the SIP UA, the proxy needs to take into consideration 
+            that the transaction associated with the NOTIFY request will eventually time out at the sender of the request (UAC), 
+            and the sender will consider the transaction a failure.
+          </t>
+        </section>
+      </section>
+    </section>
+
     <section anchor="section.grammar" title="Grammar">
       <section anchor="section.grammar.555" title="555 (Push Notification Service Not Supported) Response Code">
       <t>
@@ -651,6 +721,23 @@ align="center"><artwork>
 <![CDATA[
 
   pnsreg-mt          = "+sip.pnsreg"
+
+]]></artwork></figure>
+  
+      </section>
+      <section title="sip.prid Media Feature Tag">
+      <t>
+        The sip.prid media feature tag, when included in the SIP Contact
+        header field of a SIP SUBSCRIBE request, indicates the PRID value 
+        associated with the notification subscription on which the UA
+        wants to receive a push notification request in order to receive
+        a SIP NOTIFY request. 
+      </t>
+            <figure align="center"><artwork>
+<![CDATA[
+
+  pnsreg-mt          = "+sip.prid" EQUAL LDQUOT prid RDQUOT
+  prid               = pvalue
 
 ]]></artwork></figure>
   
@@ -1075,6 +1162,7 @@ align="center"><artwork>
       <?rfc include="reference.RFC.3261"?>
       <?rfc include="reference.RFC.3840"?>
       <?rfc include="reference.RFC.3969"?>
+      <?rfc include="reference.RFC.6665"?>
       <?rfc include="reference.RFC.6809"?>
       <?rfc include="reference.RFC.8030"?>
       <?rfc include="reference.RFC.8174"?>
