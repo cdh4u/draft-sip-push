@@ -755,7 +755,7 @@ align="center"><artwork>
         <figure align="center"><artwork>
 <![CDATA[
 
-  uri-parameter   =/ pn-provider / pn-param / pn-prid / purk
+  uri-parameter   =/ pn-provider / pn-param / pn-prid / pn-purk
   pn-provider     = "pn-provider" EQUAL pvalue
   pn-param        = "pn-param" EQUAL pvalue
   pn-prid         = "pn-prid" EQUAL pvalue
@@ -951,6 +951,18 @@ align="center"><artwork>
 
 ]]></artwork></figure>
       </section>
+      <section anchor="section.iana.pn-purk" title="pn-purk">
+        <figure align="center"><artwork>
+<![CDATA[
+
+  Parameter Name: pn-purk
+
+  Predefined Values:  No
+
+  Reference:  RFC XXXX
+
+]]></artwork></figure>
+      </section>
       </section>
 
       <section anchor="section.iana.pns-res" title="SIP Response Codes">
@@ -1065,6 +1077,32 @@ align="center"><artwork>
         value is the minimum value (given in seconds) before the 
         registration expireation when the entity expects to receive the
         REGISTER request.
+
+   Reference: [RFCXXXX]
+
+   Contact: IESG (iesg@ietf.org)
+
+]]></artwork></figure>
+      </section>
+      <section anchor="section.iana.featurecap-pnspurk" title="sip.pnspurk">
+        <t>
+          This section defines a new feature-capability indicator that extends
+          the "SIP Feature-Capability Indicator Registration Tree" sub-registry 
+          <xref target="RFC6809"/> under the sip-parameters registry: 
+          http://www.iana.org/assignments/sip-parameters.
+        </t>
+        <figure align="center"><artwork>
+<![CDATA[
+
+   Name: sip.pnspurk
+
+   Description: This feature-capability indicator, when included in a
+        SIP 2xx response to a SIP REGISTER request, indicates that the
+        entity associated with the indicator is able to request push
+        notifications towards a SIP UA triggered by mid-dialog SIP 
+        NOTIFY requests. The indicator value is a random number that
+        entity associated with the indicator can use as a key to 
+        retrieve information needed to request push notifications.
 
    Reference: [RFCXXXX]
 
