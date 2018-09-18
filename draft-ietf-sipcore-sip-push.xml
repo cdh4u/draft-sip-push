@@ -704,9 +704,9 @@ align="center"><artwork>
 <![CDATA[
 
   pns-fc          = "+sip.pnsreg" EQUAL LDQUOT reg RDQUOT
-  reg             = 1*DIGIT
+  reg             = tag-value
 
-  ; DIGIT as defined in RFC 3261
+  ; tag-value as defined in RFC 3840
 
 ]]></artwork></figure>
   
@@ -731,17 +731,16 @@ align="center"><artwork>
       <t>
         The sip.pnspurk feature-capability indicator, when included in a SIP 2xx
         response to a SIP REGISTER request, indicates that the entity associated with
-        the indicator expects to receive binding refresh REGISTER requests from the
-        SIP UA associated with the registration before the registration expires, without 
-        the entity having to request push notifications towards the SIP UA in order to trigger
-        the REGISTER requests. The indicator value is the minimum value (given in seconds) before the 
-        registration expiration when the entity expects to receive the REGISTER request.
+        the indicator is able to request push notifications towards a SIP UA triggered 
+        by mid-dialog SIP NOTIFY requests. The indicator value is a random number that
+        entity associated with the indicator can use as a key to retrieve information 
+        needed to request push notifications.
       </t>
             <figure align="center"><artwork>
 <![CDATA[
 
-  pns-fc          = "+sip.pnsreg" EQUAL LDQUOT reg RDQUOT
-  reg             = 1*DIGIT
+  pns-purk        = "+sip.pnspurk" EQUAL LDQUOT purk RDQUOT
+  purk            = 1*DIGIT
 
   ; DIGIT as defined in RFC 3261
 
