@@ -562,11 +562,6 @@ align="center"><artwork>
         request. This section defines such mechanism. The UA and proxy procedures in this section are 
         applied in addition to the generic procedures defined in this specification.
       </t>
-      <t>
-        Note that a proxy is not required to request a push notification for each mid-dialog request. The
-        proxy makes a decision based on local policy. Such policy might be based on the type of SIP dialog,
-        the type of media (if any) negotiated for the dialog <xref target="RFC3264"/>, etc.
-      </t>
       <section anchor="section.subscription.ua" title="SIP UA Behavior">
         <section anchor="section.subscription.ua.sub" title="Initial Request for Dialog">
           <t>
@@ -575,6 +570,11 @@ align="center"><artwork>
             a 'pn-purk' SIP URI parameter in the Contact header of the request or response. The UA MUST include a 
             parameter value identical to the the last 'sip.pnspurk' feature-capability indicator that it received 
             in a REGISTER response.
+          </t>
+          <t>
+            The UA decision whether it is willing to receive push notifications triggered by incoming mid-dialog requests
+            is done based on local policy. Such policy might be based on the type of SIP dialog, the type of media (if any) 
+            negotiated for the dialog <xref target="RFC3264"/>, etc.
           </t>
         </section>
       </section>  
