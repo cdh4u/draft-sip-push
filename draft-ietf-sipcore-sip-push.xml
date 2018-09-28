@@ -567,8 +567,8 @@ align="center"><artwork>
           <t>
             When the UA sends in initial request for a dialog, or a 2xx response to such requests, if the UA is 
             willing to receive push notifications triggered by incoming mid-dialog requests, the UA MUST include 
-            a 'pn-purk' SIP URI parameter in the Contact header of the request or response. The UA MUST include a 
-            parameter value identical to the the last 'sip.pnspurk' feature-capability indicator that it received 
+            a 'pn-purr' SIP URI parameter in the Contact header of the request or response. The UA MUST include a 
+            parameter value identical to the the last 'sip.pnspurr' feature-capability indicator that it received 
             in a REGISTER response.
           </t>
           <t>
@@ -584,18 +584,18 @@ align="center"><artwork>
             When the proxy receives an initial REGISTER request for a registration from the UA, if the proxy supports
             requesting push notifications, triggered by mid-dialog requests, towards the registered UA, the proxy MUST 
             store the information (the pn- SIP URI parameters) needed to request push notifications associated with the registration 
-            towards the UA. In addition the proxy MUST generate a unique (within the context of the proxy) value, referred to as the PURK (Proxy Unique Registration Key), 
+            towards the UA. In addition the proxy MUST generate a unique (within the context of the proxy) value, referred to as the PURR (Proxy Unique Registration Reference), 
             that is unique within the context of the proxy and that can be used as a key to retrieve the information. When the proxy
-            receives the associated 2xx REGISTER response, it adds a 'sip.pnspurk' feature-capability indicator with the PURK value 
-            to the associated 2xx REGISTER response. When the proxy receives a binding refresh REGISTER request, it MUST add a 'sip.pnspurk' 
+            receives the associated 2xx REGISTER response, it adds a 'sip.pnspurr' feature-capability indicator with the PURR value 
+            to the associated 2xx REGISTER response. When the proxy receives a binding refresh REGISTER request, it MUST add a 'sip.pnspurr' 
             feature-capability indicator with the previously generated key as the value to the associated 2xx REGISTER response.
           </t>
           <t>
-            The PURK value MUST be generated in such a way so that it cannot be used to retrieve information about the user or associate it 
+            The PURR value MUST be generated in such a way so that it cannot be used to retrieve information about the user or associate it 
             with registrations. It can be generated e.g., by utilizing a cryptographically secure random function.
           </t>
           <t>
-            In order to prevent client fingerprinting, the proxy MUST periodically generate a new PURK value (even if pn- parameters did not change) and 
+            In order to prevent client fingerprinting, the proxy MUST periodically generate a new PURR value (even if pn- parameters did not change) and 
             provide the new value to the UA in a 2xx binding refresh REGISTER response. However, as long as there are ongoing dialogs associated
             with the old value, the proxy MUST store it so that it can request push notifications towards the UA when it receives a mid-dialog
             request addressed towards the UA.
@@ -603,20 +603,20 @@ align="center"><artwork>
         </section>
         <section anchor="section.subscription.proxy.sub" title="Initial Request for Dialog">
           <t>
-            When the proxy receives an initial request for a dialog from the UA, and if the request contains a 'pn-purk' SIP URI parameter 
-            in the Contact header field with a PURK value that the proxy has generated <xref target="section.subscription.proxy.sub"/>, the proxy 
+            When the proxy receives an initial request for a dialog from the UA, and if the request contains a 'pn-purr' SIP URI parameter 
+            in the Contact header field with a PURR value that the proxy has generated <xref target="section.subscription.proxy.sub"/>, the proxy 
             MUST add a Record-Route header to the request, to insert itself in the dialog route <xref target="RFC3261"/>.
           </t>
           <t>
             When the proxy receives an initial request for a dialog addressed towards the UA, and if the proxy has generated
-            a PURK value associated with the pn- parameters included in the SIP-URI of the request <xref target="section.subscription.proxy.sub"/>, 
+            a PURR value associated with the pn- parameters included in the SIP-URI of the request <xref target="section.subscription.proxy.sub"/>, 
             the proxy MUST add a Record-Route header to the request, to insert itself in the dialog route <xref target="RFC3261"/>.
           </t>
         </section>
         <section anchor="section.subscription.proxy.not" title="Mid-Dialog Request">
           <t>
             When the proxy receives a mid-dialog request addressed towards the UA, if the request contains 
-            a 'pn-purk' SIP URI parameter and if the proxy is able to retrieve the stored information needed to request 
+            a 'pn-purr' SIP URI parameter and if the proxy is able to retrieve the stored information needed to request 
             a push notification towards the UA (<xref target="section.subscription.proxy.reg"></xref>), the proxy MUST 
             request a push notification towards the UA. Once the proxy has received the triggered REGISTER request, 
             and the associated successful response, the proxy can forward the mid-dialog request towards the UA.
