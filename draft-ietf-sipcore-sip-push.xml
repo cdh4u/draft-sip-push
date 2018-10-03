@@ -639,7 +639,7 @@ align="center"><artwork>
         Contact header field URI of the peer.
       </t>
       <t>
-        In order for the SIP Proxy to be able to request push notifications towards a UA when it receives an initial request for
+        If the SIP Proxy wants to be able to request push notifications towards a UA when it receives an initial request for
         a dialog that replaces an existing dialog, using the mechanism in <xref target="RFC3891"/>, the following apply:
         <list style="symbols">
             <t>
