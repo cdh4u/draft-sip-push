@@ -640,10 +640,14 @@ align="center"><artwork>
       </t>
       <t>
         In order for the SIP Proxy to be able to request push notifications towards a UA when it receives an initial request for
-        a dialog that replaces an existing dialog, using the mechanism in the following apply:
+        a dialog that replaces an existing dialog, using the mechanism in <xref target="RFC3891"/>, the following apply:
         <list style="symbols">
             <t>
-                The SIP proxy MUST provide a PURR to the UA during registration <xref target="section.subscription.proxy.reg"></xref>.
+                The proxy MUST provide a PURR to the UA during registration <xref target="section.subscription.proxy.reg"></xref>.
+            </t>
+            <t>
+                The UA MUST include a 'pn-purr' SIP URI parameter in the Contact header of initial request for a dialog, or a 2xx response to such requests
+                <xref target="section.subscription.ua.sub"></xref>. This includes dialogs replacing other dialogs, as those dialogs might also get replaced.
             </t>
             <t>
                 The proxy MUST apply the mechanism defined in <xref target="section.subscription.proxy.not"></xref> for the initial request, and use
