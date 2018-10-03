@@ -631,6 +631,37 @@ align="center"><artwork>
       </section>
     </section>
 
+     <section anchor="section.replaces" title="Support Of SIP Replaces">
+      <t>
+        <xref target="RFC3891"/> defines a mechanism that allows a SIP UA to replace a dialog
+        with another dialog. A UA that wants to replace a dialog with another one will send
+        an initial request for the new dialog. The Request-URI of the request will contain
+        Contact header field URI of the peer.
+      </t>
+      <t>
+        If the SIP Proxy wants to be able to request push notifications towards a UA when it receives an initial request for
+        a dialog that replaces an existing dialog, using the mechanism in <xref target="RFC3891"/>, the following apply:
+        <list style="symbols">
+            <t>
+                The proxy MUST provide a PURR to the UA during registration <xref target="section.subscription.proxy.reg"></xref>.
+            </t>
+            <t>
+                The UA MUST include a 'pn-purr' SIP URI parameter in the Contact header of initial request for a dialog, or a 2xx response to such requests
+                <xref target="section.subscription.ua.sub"></xref>. This includes dialogs replacing other dialogs, as those dialogs might also get replaced.
+            </t>
+            <t>
+                The proxy MUST apply the mechanism defined in <xref target="section.subscription.proxy.not"></xref> for the initial request, and use
+                the 'pn-purr' SIP URI parameter to retrieve the stored information needed to request a push notification towards the UA.
+            </t>
+        </list>
+      </t>
+      <t>  
+        In addition, the operator needs to make sure that initial request for dialogs, addressed towards the UA using the contact of the replaced dialog,
+        will be routed to the SIP proxy (in order to request push notifications towards the UA). The procedures for doing that are operator
+        specific, and are outside the scope of this specification.
+      </t>
+    </section>
+
     <section anchor="section.grammar" title="Grammar">
       <section anchor="section.grammar.555" title="555 (Push Notification Service Not Supported) Response Code">
       <t>
@@ -1168,6 +1199,7 @@ align="center"><artwork>
     </references>
     <references title="Informative References">
       <?rfc include="reference.RFC.3264"?>
+      <?rfc include="reference.RFC.3891"?>
       <?rfc include="reference.RFC.4320"?>
       <?rfc include="reference.RFC.4321"?>
       <?rfc include="reference.RFC.5626"?>
