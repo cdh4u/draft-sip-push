@@ -708,7 +708,7 @@ align="center"><artwork>
   pns-list        = pns *(COMMA pns)
   pns             = tag-value
 
-  ; tag-value as defined in RFC 3840
+  tag-value = <tag-value defined in [RFC3840]>
   
 ]]></artwork></figure>
   
@@ -730,7 +730,7 @@ align="center"><artwork>
   vapid-fc          = "+sip.vapid" EQUAL LDQUOT vapid RDQUOT
   vapid             = tag-value
 
-  ; tag-value as defined in RFC 3840
+  tag-value = <tag-value defined in [RFC3840]>
 
 ]]></artwork></figure>
   
@@ -751,7 +751,7 @@ align="center"><artwork>
   pns-fc          = "+sip.pnsreg" EQUAL LDQUOT reg RDQUOT
   reg             = 1*DIGIT
 
-  ; DIGIT as defined in RFC 3261
+  DIGIT = <DIGIT defined in [RFC3261]>
 
 ]]></artwork></figure>
   
@@ -785,9 +785,9 @@ align="center"><artwork>
   pn-param        = "pn-param" EQUAL pvalue
   pn-prid         = "pn-prid" EQUAL pvalue
 
-  ; pvalue as defined in RFC 3261
-  ; EQUAL as defined in RFC 3261
-  ; COLON as defined in RFC 3261
+  pvalue = <pvalue defined in [RFC3261]>
+  EQUAL = <EQUAL defined in [RFC3261]>
+  COLON = <COLON defined in [RFC3261]>
   
   The format and semantics of pn-prid and pn-param are 
   specific to the pn-provider value.
