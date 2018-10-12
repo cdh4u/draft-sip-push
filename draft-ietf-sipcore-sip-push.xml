@@ -243,6 +243,10 @@ align="center"><artwork>
         and the pn-param URI parameter contains additional PNS-specific information.  
       </t>
       <t>
+        If the SIP UA creates multiple bindings (e.g., one for IPv4 and one for IPv6), the UA SHOULD use the same 'expires' Contact header field
+        parameter value <xref target="RFC3261"></xref> for each binding. The UA MUST NOT create bindings for other UAs (using a different PRID).
+      </t>
+      <t>
         When the UA receives a 2xx response to the REGISTER request, if the response contains a Feature-Caps header field <xref target="RFC6809"></xref>
         with a 'sip.pns' feature-capability indicator with a parameter value identifying the same type of PNS that was identified by the pn-provider 
         URI parameter in the REGISTER request, the UA can assume that a SIP proxy will request push notifications towards the UA. 
@@ -708,7 +712,7 @@ align="center"><artwork>
   pns-list        = pns *(COMMA pns)
   pns             = tag-value
 
-  ; tag-value as defined in RFC 3840
+  tag-value = <tag-value defined in [RFC3840]>
   
 ]]></artwork></figure>
   
@@ -730,7 +734,7 @@ align="center"><artwork>
   vapid-fc          = "+sip.vapid" EQUAL LDQUOT vapid RDQUOT
   vapid             = tag-value
 
-  ; tag-value as defined in RFC 3840
+  tag-value = <tag-value defined in [RFC3840]>
 
 ]]></artwork></figure>
   
@@ -751,7 +755,7 @@ align="center"><artwork>
   pns-fc          = "+sip.pnsreg" EQUAL LDQUOT reg RDQUOT
   reg             = 1*DIGIT
 
-  ; DIGIT as defined in RFC 3261
+  DIGIT = <DIGIT defined in [RFC3261]>
 
 ]]></artwork></figure>
   
@@ -785,9 +789,9 @@ align="center"><artwork>
   pn-param        = "pn-param" EQUAL pvalue
   pn-prid         = "pn-prid" EQUAL pvalue
 
-  ; pvalue as defined in RFC 3261
-  ; EQUAL as defined in RFC 3261
-  ; COLON as defined in RFC 3261
+  pvalue = <pvalue defined in [RFC3261]>
+  EQUAL = <EQUAL defined in [RFC3261]>
+  COLON = <COLON defined in [RFC3261]>
   
   The format and semantics of pn-prid and pn-param are 
   specific to the pn-provider value.
