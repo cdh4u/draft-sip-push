@@ -404,7 +404,7 @@ align="center"><artwork>
         </t>
         <t>
           When the proxy receives a REGISTER request, if the REGISTER request contains a Feature-Caps header field 
-          with a 'sip.pns' feature-capability indicator, it indicates that an upstream proxy supports, and will request (if the Contact header field 
+          with a 'sip.pns' feature-capability indicator, it indicates that a proxy between this proxy and the UA supports, and will request (if the Contact header field 
           URI of the REGISTER request contains a pn-prid SIP URI parameter), push notifications towards the UA. The proxy MUST skip the rest of the 
           procedures in this section, and process the REGISTER request using normal SIP procedures. 
         </t>
@@ -423,7 +423,7 @@ align="center"><artwork>
         <t>
           Otherwise, if the pn-provider SIP URI parameter identifies a type of PNS that the proxy does not support, or if the REGISTER 
           request does not contain all additional information required for the specific type of PNS, the proxy MUST either forward the request 
-          (e.g., if the proxy knows that a downstream proxy supports the type of PNS) or send a SIP 555 (Push Notification Service Not Supported) 
+          (e.g., if the proxy knows that a proxy that is not between the push proxy and the UA supports the type of PNS) or send a SIP 555 (Push Notification Service Not Supported) 
           response to the REGISTER request. If the proxy sends a SIP 555 (Push Notification Service Not Supported) response <xref target="section.grammar.555"/>, the proxy SHOULD 
           insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, identifying the type of each PNS 
           that the proxy supports. The decision whether to forward the request, or to send a response, is done based on local policy.
@@ -431,7 +431,7 @@ align="center"><artwork>
         <t>
           If the proxy supports the type of PNS identified by the pn-provider SIP URI parameter, the proxy MUST insert a Feature-Caps header field 
           with a 'sip.pns' feature-capability indicator, identifying the type of PNS, in the REGISTER request before forwarding the REGISTER request 
-          towards the registrar. This will inform downstream proxies that the
+          towards the registrar. This will inform proxies that are not between the push proxy and the UA that the
           proxy supports, and will request (if the Contact header field URI of the REGISTER request contains a pn-prid SIP URI parameter), push notifications 
           towards the UA.
         </t>
@@ -533,13 +533,13 @@ align="center"><artwork>
           The proxy MUST NOT include the SIP request as payload in the requested push message.
         </t>
         <t>
-          If the proxy has knowledge that the UA is wake, and that the UA is able to receive the SIP request without first 
+          If the proxy has knowledge that the UA is awake, and that the UA is able to receive the SIP request without first 
           sending a REGISTER request, the proxy MAY choose to not request a push notification towards the UA (and wait for the associated 
           REGISTER request and 2xx response) before it tries to forward the SIP request towards the UA. The mechanisms for getting such knowledge 
           might be dependent on implementation or deployment architecture, and are outside the scope of this document.
           Similarly, if the Request-URI of the SIP request only contains any pn-provider SIP URI parameter, but no other pn- SIP URI parameters, e.g., because 
           the SIP UA has not included them in a REGISTER request (<xref target="section.ua.que"></xref>), the proxy is not able to request a 
-          push notification towards the UA. If the proxy has knowledge that the UA is wake, and that the UA is able to receive the SIP request, 
+          push notification towards the UA. If the proxy has knowledge that the UA is awake, and that the UA is able to receive the SIP request, 
           the proxy MAY forwards the request towards the UA. Otherwise the proxy MUST reject the SIP request with a 480 (Temporarily Unavailable) response.
         </t>
       </section>
