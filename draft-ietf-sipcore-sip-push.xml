@@ -357,7 +357,8 @@ align="center"><artwork>
           binding refresh SIP REGISTER requests, the SIP proxy needs to have information about when a registration
           will expire. The proxy needs to be able to retrieve 
           the information from the registrar using some mechanism. Such mechanisms are outside 
-          the scope of this document.
+          the scope of this document, but could be implemented e.g., using the SIPregistration event package
+          mechanism <xref target="RFC3680"/>.
         </t>
         <t>
           When the proxy receives an indication that the UA needs to send a binding refresh REGISTER
@@ -1170,6 +1171,7 @@ align="center"><artwork>
     </references>
     <references title="Informative References">
       <?rfc include="reference.RFC.3264"?>
+      <?rfc include="reference.RFC.3680"?>
       <?rfc include="reference.RFC.3891"?>
       <?rfc include="reference.RFC.4320"?>
       <?rfc include="reference.RFC.4321"?>
