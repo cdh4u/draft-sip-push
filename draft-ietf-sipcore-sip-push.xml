@@ -244,7 +244,7 @@ align="center"><artwork>
       </t>
       <t>
         If the SIP UA creates multiple bindings (e.g., one for IPv4 and one for IPv6), the UA SHOULD use the same 'expires' Contact header field
-        parameter value <xref target="RFC3261"></xref> for each binding. The UA MUST NOT create bindings for other UAs (using a different PRID).
+        parameter value <xref target="RFC3261"></xref> for each binding.
       </t>
       <t>
         When the UA receives a 2xx response to the REGISTER request, if the response contains a Feature-Caps header field <xref target="RFC6809"></xref>
