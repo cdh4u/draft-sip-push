@@ -779,6 +779,25 @@ align="center"><artwork>
 ]]></artwork></figure>
   
       </section>
+      <section title="sip.pnspurr Feature-Capability Indicator">
+      <t>
+        The sip.pnspurr feature-capability indicator, when included in a SIP 2xx
+        response to a SIP REGISTER request, indicates that the entity
+        associated with the indicator will store information that can be used to
+        associate a mid-dialog SIP request with the binding information in the 
+        REGISTER request.
+      </t>
+            <figure align="center"><artwork>
+<![CDATA[
+
+  pnspurr-fc        = "+sip.pnspurr" EQUAL LDQUOT pnspurr RDQUOT
+  pnspurr           = tag-value
+
+  tag-value = <tag-value defined in [RFC3840]>
+
+]]></artwork></figure>
+  
+      </section>
       <section title="SIP URI Parameters">
       <t>
         The section defines new SIP URI parameters, by extending the grammar for "uri-parameter" 
@@ -787,10 +806,11 @@ align="center"><artwork>
         <figure align="center"><artwork>
 <![CDATA[
 
-  uri-parameter   =/ pn-provider / pn-param / pn-prid
+  uri-parameter   =/ pn-provider / pn-param / pn-prid / pn-purr
   pn-provider     = "pn-provider" EQUAL pvalue
   pn-param        = "pn-param" EQUAL pvalue
   pn-prid         = "pn-prid" EQUAL pvalue
+  pn-purr         = "pn-purr" EQUAL pvalue
 
   pvalue = <pvalue defined in [RFC3261]>
   EQUAL = <EQUAL defined in [RFC3261]>
@@ -982,6 +1002,18 @@ align="center"><artwork>
 
 ]]></artwork></figure>
       </section>
+      <section anchor="section.iana.pn-purr" title="pn-purr">
+        <figure align="center"><artwork>
+<![CDATA[
+
+  Parameter Name: pn-purr
+
+  Predefined Values:  No
+
+  Reference:  RFC XXXX
+
+]]></artwork></figure>
+      </section>
       </section>
 
       <section anchor="section.iana.pns-res" title="SIP Response Codes">
@@ -1088,8 +1120,33 @@ align="center"><artwork>
 
 ]]></artwork></figure>
       </section>
-      </section>
+      <section anchor="section.iana.featurecap-pnspurr" title="sip.pnspurr">
+        <t>
+          This section defines a new feature-capability indicator that extends
+          the "SIP Feature-Capability Indicator Registration Tree" sub-registry 
+          <xref target="RFC6809"/> under the sip-parameters registry: 
+          http://www.iana.org/assignments/sip-parameters.
+        </t>
+        <figure align="center"><artwork>
+<![CDATA[
 
+   Name: sip.pnspurr
+
+   Description: This feature-capability indicator, when included in a
+        SIP 2xx response to a SIP REGISTER request, indicates that 
+        the entity associated with the indicator will store information
+        that can be used to associate a mid-dialog SIP request with the
+        binding information in the REGISTER request. The indicator 
+        value is an identifier that can be used a key to retrieve the 
+        binding information.
+
+   Reference: [RFCXXXX]
+
+   Contact: IESG (iesg@ietf.org)
+
+]]></artwork></figure>
+      </section>
+      </section>
       <section anchor="section.iana.mediatag" title="SIP Media Feature Tag">
       <section anchor="section.iana.mediatag-pnsreg" title="sip.pnsreg">
         <t>
