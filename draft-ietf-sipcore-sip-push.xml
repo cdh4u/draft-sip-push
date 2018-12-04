@@ -817,9 +817,9 @@ align="center"><artwork>
       <t>      
         The value of the pn-param URI parameter is the APNs App ID, which is encoded
         by two values, separated by a period (.): Team ID and Topic. The Team ID is provided by Apple and 
-        is unique to a development team. The Topic consists of the Bundle ID, which is unique to a development team, 
-        and is a string that will match a single application or a group of applications. For VoIP applications
-        the string value is ".voip".
+        is unique to a development team. The Topic consists of the Bundle ID, which uniquelly identifies
+        an appliciation, and a service value that identifies a service associated with the application,
+        separated by a period (.). For VoIP applications the service value is "voip".
       </t>
       <t>
         Example: pn-param = DEF123GHIJ.com.yourcompany.yourexampleapp.voip
@@ -832,16 +832,10 @@ align="center"><artwork>
         Example: pn-prid = 00fc13adff78512
       </t>
       <t>
-        For more information on the APNs App ID:
+        For more information about the App ID and the device token:
       </t>
       <t>
         https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html
-      </t>
-      <t>
-        For more information on the APNs device token:
-      </t>
-      <t>
-        https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/APNSOverview.html#//apple_ref/doc/uid/TP40008194-CH8-SW13
       </t>
     </section>
 
