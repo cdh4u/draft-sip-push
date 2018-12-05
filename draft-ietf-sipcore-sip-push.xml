@@ -815,7 +815,7 @@ align="center"><artwork>
         Example: pn-provider = apns
       </t>
       <t>      
-        The value of the pn-param URI parameter is the APNs App ID, which is encoded
+        The value of the pn-param URI parameter is a string that is composed
         by two values, separated by a period (.): Team ID and Topic. The Team ID is provided by Apple and 
         is unique to a development team. The Topic consists of the Bundle ID, which uniquelly identifies
         an appliciation, and a service value that identifies a service associated with the application,
@@ -832,7 +832,7 @@ align="center"><artwork>
         Example: pn-prid = 00fc13adff78512
       </t>
       <t>
-        For more information about the App ID and the device token:
+        For more information about the APNs Topic and device token:
       </t>
       <t>
         https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html
