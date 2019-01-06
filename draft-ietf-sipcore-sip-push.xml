@@ -927,32 +927,39 @@ align="center"><artwork>
 
     <section anchor="section.sec" title="Security Considerations">
         <t>
-            Different mechanisms exist for authenticating and authorizing devices and users registering 
-            with a PNS. The mechanisms for authorizing and authenticating the users are PNS-specific, and 
-            are outside the scope of this document. In addition to the information that needs to be exchanged 
-            between a device and the PNS in order to establish a push notification subscription, the mechanism 
-            defined in this document does not require any additional information to be exchanged between the 
-            device and the PNS.
+            The security considerations for the use and operation of any particular 
+            PNS (e.g., how users and devices are authenticated and authorized) is out of scope for this document. 
+            <xref target="RFC8030"/> documents the security considerations for the PNS defined in that specification. 
+            Security considerations for other PNSs are left to their respective specifications.
         </t>
         <t>
-            Typically, the PNS also requires the SIP proxy requesting push notifications to be 
+            Typically, the PNS requires the SIP proxy requesting push notifications to be 
             authenticated and authorized by the PNS. In some cases the PNS also require 
             the SIP application (or the SIP application developer) to be identified in order for the 
-            application to request push notifications.
+            application to request push notifications. Unless the PNS authenticates and authorizes the PNS, 
+            a malicious middleman that managed to get access to the parameters transported in the SIP signalling 
+            might be able to request push notifications towards a UA. Which such push notifications will not
+            have any security related impacts, they will impact the battery life of the UA and trigger
+            unnecessary SIP traffic.
         </t>
         <t>
-            Operators MUST ensure that the SIP signalling is properly secured, e.g., using encryption, from 
-            malicious middlemen. TLS MUST be used, unless the operators know that the signalling is secured 
-            using some other mechanism.
-         </t>
-         <t>
             <xref target="RFC8292"/> defines a mechanism which allows a proxy to identity itself to a PNS, 
             by signing a JWT sent to the PNS using a key pair. The public key serves as an 
             identifier of the proxy, and can be used by devices to restrict push notifications to the
             proxy associated with the key.
         </t>
         <t>
-            The mechanism in this document does not require a proxy to include any payload (in addition 
+            Operators MUST ensure that the SIP signalling is properly secured, e.g., using encryption, from 
+            malicious middlemen. TLS MUST be used, unless the operators know that the signalling is secured 
+            using some other mechanism that provides strong crypto properties.
+        </t>
+        <t>
+            In addition to the information that needs to be exchanged between a device and the PNS in order to establish a 
+            push notification subscription, the mechanism defined in this document does not require any additional information 
+            to be exchanged between the device and the PNS.
+        </t>
+        <t>
+            The mechanism defined in this document does not require a proxy to include any payload (in addition 
             to possible payload used for the PNS itself) when requesting push notifications.
         </t>
     </section>
