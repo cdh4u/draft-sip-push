@@ -834,7 +834,6 @@ align="center"><artwork>
 
   pvalue = <pvalue defined in [RFC3261]>
   EQUAL = <EQUAL defined in [RFC3261]>
-  COLON = <COLON defined in [RFC3261]>
   
   The format and semantics of pn-prid and pn-param are 
   specific to the pn-provider value.
@@ -878,7 +877,7 @@ align="center"><artwork>
         The value of the pn-provider URI parameter is "apns". 
       </t>
       <t>
-        Example: pn-provider = apns
+        Example: pn-provider=apns
       </t>
       <t>      
         The value of the pn-param URI parameter is a string that is composed
@@ -888,14 +887,18 @@ align="center"><artwork>
         separated by a period (.). For VoIP applications the service value is "voip".
       </t>
       <t>
-        Example: pn-param = DEF123GHIJ.com.example.yourexampleapp.voip
+        Example: pn-param=DEF123GHIJ.com.example.yourexampleapp.voip
+      </t>
+      <t>
+        NOTE: The Bundle ID might contain one or more periods (.). Hence, within the pn-param value, the first period will be 
+        separating the Team ID from the Topic, and within the Topic the last period will be separating the Bundle ID from the service.
       </t>
       <t>
         The value of the pn-prid URI parameter is the device token, which is a unique identifier assigned by Apple to a specific app 
         on a specific device.
       </t>
       <t>
-        Example: pn-prid = 00fc13adff78512
+        Example: pn-prid=00fc13adff78512
       </t>
     </section>
 
@@ -1199,7 +1202,7 @@ align="center"><artwork>
    Security considerations: This media feature tag does not introduce
       new security considerations, as it simply indicates support for
       a basic SIP feature. If an attacker manages to remove the media
-      feature tag, push notifications towards the client will be 
+      feature tag, push notifications towards the client will not be 
       requested.
 
    Contact: IESG (iesg@ietf.org)
