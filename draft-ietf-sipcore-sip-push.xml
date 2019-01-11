@@ -871,7 +871,7 @@ align="center"><artwork>
         For detailed information about the parameter values:
       </t>
       <t>
-        https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html
+        https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html <xref target="pns-apns"/>)
       </t>
       <t>
         The value of the pn-provider URI parameter is "apns". 
@@ -910,7 +910,7 @@ align="center"><artwork>
         For detailed information about the parameter values:
       </t>
       <t>
-        https://firebase.google.com/docs/cloud-messaging/concept-options
+        https://firebase.google.com/docs/cloud-messaging/concept-options (<xref target="pns-fcm"/>)
       </t>
       <t>
         The value of the pn-provider URI parameter is "fcm". 
@@ -938,7 +938,7 @@ align="center"><artwork>
         The value of the pn-prid URI parameter is the push subscription URI.
       </t>
       <t>
-        See RFC 8030 for more details:
+        See RFC 8030 <xref target="RFC8030"/> for more details.
       </t>
       <t>
         Note that encryption for web push <xref target="RFC8291"/> is not used, therefore parameters for message encryption are not defined in this specification.
@@ -1275,6 +1275,26 @@ align="center"><artwork>
       <?rfc include="reference.RFC.8030"?>
       <?rfc include="reference.RFC.8174"?>
       <?rfc include="reference.RFC.8292"?>
+      <reference anchor="pns-apns" target="https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html">
+        <front>
+          <title>Apple Push Notification Service</title>
+          <author fullname="">
+            <organization>Apple Inc</organization>
+          </author>
+          <date day="11" month="January" year="2019" />
+        </front>
+        <format target="https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html" type="HTML" />
+      </reference>
+      <reference anchor="pns-fcm" target=" https://firebase.google.com/docs/cloud-messaging/concept-options">
+        <front>
+          <title>Firebase Cloud Messaging</title>
+          <author fullname="">
+            <organization>Google Inc</organization>
+          </author>
+          <date day="11" month="January" year="2019" />
+        </front>
+        <format target=" https://firebase.google.com/docs/cloud-messaging/concept-options" type="HTML" />
+      </reference>    
     </references>
     <references title="Informative References">
       <?rfc include="reference.RFC.3264"?>
