@@ -608,6 +608,82 @@ align="center"><artwork>
         request. This section defines such mechanism. The UA and proxy procedures in this section are 
         applied in addition to the generic procedures defined in this specification.
       </t>
+            <figure title="SIP Push Longlived Dialog Flow" anchor="fig-sip-pn-mid"
+align="center"><artwork>
+<![CDATA[
+
+    +--------+      +---------+        +-----------+    +-------------+
+    |        |      |         |        |           |    | SIP         |
+    | SIP UA |      | Push    |        | SIP Proxy |    | Registrar / |   
+    |        |      | Service |        |           |    | Home Proxy  |
+    +--------+      +---------+        +-----------+    +-------------+ 
+        |                 |                  |                 |
+        | Subscribe       |                  |                 |
+        |---------------->|                  |                 |
+        |                 |                  |                 |
+        | PRID            |                  |                 |
+        |<----------------|                  |                 |
+        |                 |                  |                 |
+        | SIP REGISTER (PRID)                |                 |
+        |===================================>|                 |
+        |                 |                  | SIP REGISTER    |
+        |                 |                  |================>|
+        |                 |                  |                 |
+        |                 |      +-----------------------+     |         
+        |                 |      | Store PRID (key=PURR) |     |
+        |                 |      +-----------------------+     |
+        |                 |                  |                 |
+        |                 |                  | SIP 200 OK      |
+        |                 |                  |<================|
+        | SIP 200 OK (PURR)                  |                 |
+        |<===================================|                 |
+        |                 |                  |                 |
+        |                 |                  |                 |
+        | SIP INVITE (PURR)                  |                 |
+        |===================================>|                 |
+        |                 |                  |SIP INVITE (PURR)|
+        |                 |                  |================>|
+        |                 |                  |                 |
+        |                 |                  | SIP 200 OK      |
+        |                 |                  |<================|
+        | SIP 200 OK      |                  |                 |
+        |<===================================|                 |
+        |                 |                  |                 |
+        |                 |                  |                 |
+        |                 |                  |                 |
+        |                 |                  |SIP UPDATE (PURR)|
+        |                 |                  |<================|
+        |                 |                  |                 |
+        |                 |      +-----------------------+     |         
+        |                 |      | Fetch PRID (key=PURR) |     |
+        |                 |      +-----------------------+     |
+        |                 |                  |                 |   
+        |                 |Push Message (PRID)                 |
+        |                 |<-----------------|                 |
+        |Push Message (PRID)                 |                 |
+        |<----------------|                  |                 |
+        |                 |                  |                 |
+        | SIP REGISTER (PRID)                |                 |
+        |===================================>|                 |
+        |                 |                  | SIP REGISTER    |
+        |                 |                  |================>|
+        |                 |                  |                 |
+        |                 |                  | SIP 200 OK      |
+        |                 |                  |<================|
+        | SIP 200 OK      |                  |                 |
+        |<===================================|                 |
+        |                 |                  |                 |
+        | SIP UPDATE      |                  |                 |
+        |<===================================|                 |
+        |                 |                  |                 |
+
+        
+        ------- Push Notification API
+
+        ======= SIP 
+
+]]></artwork></figure>
+
       <section anchor="section.subscription.ua" title="SIP UA Behavior">
         <section anchor="section.subscription.ua.sub" title="Initial Request for Dialog">
           <t>
@@ -1290,25 +1366,25 @@ align="center"><artwork>
       <?rfc include="reference.RFC.8174"?>
       <?rfc include="reference.RFC.8292"?>
       <reference anchor="pns-apns" target="https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html">
-        <front>
-          <title>Apple Push Notification Service</title>
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <front>
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <title>Apple Push Notification Service</title>
           <author fullname="">
-            <organization>Apple Inc</organization>
-          </author>
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  <organization>Apple Inc</organization>
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ </author>
           <date day="11" month="January" year="2019" />
-        </front>
-        <format target="https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html" type="HTML" />
-      </reference>
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ </front>
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <format target="https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html" type="HTML" />
+ï¿½ï¿½ï¿½ï¿½ï¿½ </reference>
       <reference anchor="pns-fcm" target=" https://firebase.google.com/docs/cloud-messaging/concept-options">
-        <front>
-          <title>Firebase Cloud Messaging</title>
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <front>
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <title>Firebase Cloud Messaging</title>
           <author fullname="">
-            <organization>Google Inc</organization>
-          </author>
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  <organization>Google Inc</organization>
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ </author>
           <date day="11" month="January" year="2019" />
-        </front>
-        <format target=" https://firebase.google.com/docs/cloud-messaging/concept-options" type="HTML" />
-      </reference>    
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ </front>
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <format target=" https://firebase.google.com/docs/cloud-messaging/concept-options" type="HTML" />
+ï¿½ï¿½ï¿½ï¿½ï¿½ </reference>ï¿½ ï¿½ 
     </references>
     <references title="Informative References">
       <?rfc include="reference.RFC.3264"?>
