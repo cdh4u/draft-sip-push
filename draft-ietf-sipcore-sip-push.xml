@@ -356,7 +356,8 @@ align="center"><artwork>
         For privacy and security reasons, the UA MUST NOT include the SIP URI parameters defined in this document in non-REGISTER request, to
         prevent the PNS information associated with the UA from reaching the remote peer. For example, the UA MUST NOT include the SIP URI parameters
         in the Contact header field of an INVITE request. REGISTER requests will not reach the remote peer, as they will be terminated by the registrar 
-        of the UA.
+        of the UA. However, the registrar MUST still ensure that the parameters are not sent to other users, e.g., using the SIP event package for
+        registrationss mechanism <xref target="RFC3680"/>. See <xref target="section.sec"></xref> for more information.
       </t>
       </section>
       <section anchor="section.ua.que" title="Query Network Push Notification Capabilities">
@@ -388,7 +389,7 @@ align="center"><artwork>
           binding-refresh SIP REGISTER requests, the SIP proxy needs to have information about when a registration
           will expire. The proxy needs to be able to retrieve 
           the information from the registrar using some mechanism, or run its own registration timers. Such mechanisms are outside 
-          the scope of this document, but could be implemented e.g., using the SIP registration event package
+          the scope of this document, but could be implemented e.g., using the SIP event package for registrations
           mechanism <xref target="RFC3680"/>.
         </t>
         <t>
@@ -1072,6 +1073,15 @@ align="center"><artwork>
         <t>
             The mechanism defined in this document does not require a proxy to include any payload (in addition 
             to possible payload used for the PNS itself) when requesting push notifications.
+        </t>
+        <t>
+            Operators MUST ensure that the PNS-related SIP URI parameters conveyed by a user in the Contact URI of a REGISTER request
+            are not sent to other users, or to non-trusted network entities. One way to convey contact information is by using the
+            the SIP event package for registrations mechanism <xref target="RFC3680"/>. <xref target="RFC3680"/> defines generic security
+            considerations for the SIP event package for registations. As the PMS-related SIP URI parameters conveyed in the REGISTER request 
+            contain sensitive information, operators that support the event package MUST ensure that event package subscriptions are properly 
+            authenticated and authorized, and that the SIP URI parameters are not included in event notifications sent to other users, or to 
+            non-trusted network entities.  
         </t>
     </section>
     <section anchor="section.iana" title="IANA considerations">
