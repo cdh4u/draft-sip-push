@@ -1376,25 +1376,25 @@ align="center"><artwork>
       <?rfc include="reference.RFC.8174"?>
       <?rfc include="reference.RFC.8292"?>
       <reference anchor="pns-apns" target="https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html">
-������� <front>
-��������� <title>Apple Push Notification Service</title>
+        <front>
+          <title>Apple Push Notification Service</title>
           <author fullname="">
-����������  <organization>Apple Inc</organization>
-��������� </author>
+            <organization>Apple Inc</organization>
+          </author>
           <date day="11" month="January" year="2019" />
-������� </front>
-������� <format target="https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html" type="HTML" />
-����� </reference>
+        </front>
+        <format target="https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html" type="HTML" />
+      </reference>
       <reference anchor="pns-fcm" target=" https://firebase.google.com/docs/cloud-messaging/concept-options">
-������� <front>
-��������� <title>Firebase Cloud Messaging</title>
+        <front>
+          <title>Firebase Cloud Messaging</title>
           <author fullname="">
-����������  <organization>Google Inc</organization>
-��������� </author>
+            <organization>Google Inc</organization>
+          </author>
           <date day="11" month="January" year="2019" />
-������� </front>
-������� <format target=" https://firebase.google.com/docs/cloud-messaging/concept-options" type="HTML" />
-����� </reference>� � 
+        </front>
+        <format target=" https://firebase.google.com/docs/cloud-messaging/concept-options" type="HTML" />
+      </reference> 
     </references>
     <references title="Informative References">
       <?rfc include="reference.RFC.3264"?>
