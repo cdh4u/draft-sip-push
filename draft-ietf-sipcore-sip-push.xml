@@ -42,7 +42,7 @@
       </address>
     </author>
   
-    <date year="2018"/>
+    <date year="2019"/>
     <area>Transport</area>
     <workgroup>SIPCORE Working Group</workgroup>
     <keyword>SIP</keyword>
@@ -208,7 +208,6 @@ align="center"><artwork>
         ======= SIP 
 
 ]]></artwork></figure>
-    </section>
     <figure title="SIP REGISTER Example" anchor="fig-sip-pn-reg"
 align="center"><artwork>
 <![CDATA[
@@ -260,16 +259,49 @@ align="center"><artwork>
     </section>
 
     <section anchor="section.ua" title="SIP User Agent (UA) Behavior">
-    <section anchor="section.ua.req" title="Request Push Notifications from Network">
+    <t>
+      This section describes how a SIP UA can request push notfications from a SIP network (delivered via a PNS), 
+      and how to query the network about supported PNS(s), using SIP REGISTER requests. The normal SIP procedures
+      for creating, refreshing and removing a binding apply. This section describes the additional SIP Push specific 
+      procedures. The procdures apply to bindings associated with a PNS.
+    </t>
+    <t>
+      For privacy and security reasons, a UA MUST NOT include the SIP URI parameters (except for the pn-purr parameter) 
+      defined in this document in non-REGISTER request, to prevent the PNS information associated with the UA from reaching 
+      the remote peer. For example, the UA MUST NOT include the SIP URI parameters in the Contact header field of an INVITE request. 
+      REGISTER requests will not reach the remote peer, as they will be terminated by the registrar of the UA. However, the registrar 
+      MUST still ensure that the parameters are not sent to other users, e.g., using the SIP event package for
+      registrations mechanism <xref target="RFC3680"/>. See <xref target="section.sec"></xref> for more information.
+    </t>
+    <t>
+      This specification does not define any usage of a push notification payload. As defined in  <xref target="section.proxy.req.oth"></xref>,
+      a proxy must not include any payload in the push notification request. If a SIP UA receives a push notification that contains a payload the UA 
+      can discard the payload, but the UA will still send a binding-refresh REGISTER request.
+    </t>        
+    <t>
+      If a SIP UA needs to wake up for other usages than those described in this document (e.g., for sending a subscription refresh SUBSCRIBE 
+      request <xref target="RFC6665"/>), this document does not define a mechanism to request push notifications explicitly for such usages. 
+      However, by using the same refresh interval that is used for the binding-refreshes, the UA can perform actions associated with such usages 
+      (in addition to sending a binding-refresh REGISTER request) whenever it receives a push notification.
+    </t>
+    <t>
+      In addition, if the SIP UA wants to use push notifications for other purposes than to trigger binding-refresh requests, it needs 
+      to be able to distinguish between the different purposes when receiving push notifications. Mechanisms for doing that are outside the 
+      scope of this specification.
+    </t>
+    <section anchor="section.ua.req" title="Request Push Notifications">
       <t>
-        The procedures in this section apply to bindings associated with a given PNS.
+        This section describes how a SIP UA can request a proxy to request push notifications from the SIP network.
+        The procedures assumes that the SIP UA has subscribed to push notifications from a PNS, and that the 
+        UA has received a PRID associated with that PNS. The procedures for registereing to a PNS, and subscribing 
+        to push notficiations from that PNS, are outside the scope of this specification. See PNS specific documentation
+        for more details.
       </t>
       <t>
-        The mechanism defined in this document assumes that when a SIP UA registers with a PNS it has received the PRID (using the protocol 
-        and procedures associated with the PNS). Then, if the UA wants to receive push notifications (requested by the proxy), the UA MUST 
-        include the following SIP URI parameters in the SIP Contact header field URI of the REGISTER request: pn-provider, pn-prid and pn-param 
-        (if required for the specific PNS). The pn-provider URI parameter identifies the type of PNS, the pn-prid URI parameter contains the PRID value 
-        and the pn-param URI parameter contains additional PNS-specific information.  
+        In order to request push notifications from the SIP network, the UA MUST include the following SIP URI parameters in the SIP Contact header field 
+        URI of the REGISTER request: pn-provider, pn-prid and pn-param (if required for the specific PNS). The pn-provider URI parameter 
+        identifies the type of PNS, the pn-prid URI paramete push notifications). The UA MUST only include a single pn-provider parameter
+        value and all pn- parameters included in the Contact header field URI MUST be associated with the same PNS of that type.
       </t>
       <t>
         NOTE: If the SIP UA creates multiple bindings (e.g., one for IPv4 and one
@@ -279,70 +311,19 @@ align="center"><artwork>
         than needed.
       </t>
       <t>
-        When the UA receives a 2xx response to the REGISTER request, if the response contains a Feature-Caps header field <xref target="RFC6809"></xref>
-        with a 'sip.pns' feature-capability indicator with a parameter value identifying the same type of PNS that was identified by the pn-provider 
-        URI parameter in the REGISTER request, the UA can assume that a SIP proxy will request that a push notification is sent to the UA. 
-        In other cases, the UA MUST NOT assume that the proxy will request that push notifications is sent to the UA, and the actions taken by the UA might 
-        be dependent on implementation or deployment architecture, and are outside the scope of this document.
+        When the UA receives a 2xx response to the REGISTER request, that contains a Feature-Caps header field <xref target="RFC6809"></xref>
+        with a 'sip.pns' feature-capability indicator with a indicator value identifying the same type of PNS that was identified by the pn-provider 
+        URI parameter in the REGISTER request, it indicates that a SIP Proxy will request that push notifications are sent to the UA.
+        In other cases the UA MUST NOT assume a the proxy will request that push notifications are sent to the UA. The actions taken by the UA 
+        in such cases are outside the scope of this document.
       </t>
       <t>
-        In addition, if the response contains a Feature-Caps header field with a 'sip.vapid' feature-capability indicator, the proxy supports
-        use of the Voluntary Application Server Identification (VAPID) mechanism <xref target="RFC8292"></xref> to restrict push notifications 
-        to the proxy.
+        In addition, if the response contains a Feature-Caps header field with a 'sip.vapid' feature-capability indicator, it indicates that 
+        the proxy supports use of the Voluntary Application Server Identification (VAPID) mechanism <xref target="RFC8292"></xref> to restrict 
+        push notifications to the UA.
       </t>
       <t>
         NOTE: The VAPID specific procedures of the SIP UA are outside the scope of this document.
-      </t>
-      <t>
-        When the UA receives a push notification, it MUST send a binding-refresh REGISTER request, using normal SIP procedures.
-        Once the UA has received a 2xx response to the REGISTER request, the UA might receive a SIP request for a new dialog (e.g., a SIP INVITE), 
-        or a stand-alone SIP request (e.g., a SIP MESSAGE), if such SIP request triggered the push notification. Note that, depending on which 
-        transport protocol is used, the SIP request might reach the UA before the REGISTER response.
-      </t>
-      <t>
-        If the SIP UA has created multiple bindings (e.g., one for IPv4 and one for IPv6), the UA MUST send a binding-refresh REGISTER request 
-        for each of those bindings when it receives a push notification.
-      </t>        
-      <t>
-        If the UA is able to send binding-refresh REGISTER requests using a non-push mechanism (e.g., using
-        an internal timer that periodically wakes the UA), the UA MUST insert a 'sip.pnsreg' media feature tag <xref target="RFC3840"></xref> 
-        in each Contact header field URI of each REGISTER request. Then, if the response to the REGISTER request contains a 'sip.pnsreg' 
-        feature-capability indicator with an indicator value, the UA refreshes the binding prior to the binding expires. 
-        The indicator value indicates a minimum time (given in seconds), prior to the binding expires when the UA MUST send the REGISTER request.
-        Even if the UA is able to to send REGISTER requests using a non-push mechanism, the UA MUST still send a REGISTER request when
-        it receives a push notification, following the procedures in this section. If the REGISTER response does not contain a a 'sip.pnsreg' 
-        feature-capability indicator, the UA SHOULD only send a binding-refresh REGISTER request when it receives a push notification (even if 
-        the UA is able to use a non-push mechanism for sending binding-refresh REGISTER requests), or when there are circumstances (e.g., if the 
-        UA is assigned new contact parameters due to a network configuration change) that require an immediate REGISTER request to be sent.
-      </t>
-      <t>
-        NOTE: If the UA uses a non-push mechanism to wake and send a binding refresh REGISTER request, such REGISTER
-        request will update the binding expiration timer, and the proxy does not need to request that a push notification is sent to the UA in order to wake the UA. The
-        proxy will still request that a push notification is sent to the UA when the proxy receives a SIP request addressed
-        towards the UA (<xref target="section.proxy.req.oth"></xref>). This allows the UA to e.g., use timers for sending 
-        binding-refresh REGISTER requests, but to be suspended (in order to save battery resources etc) between sending 
-        the REGISTER requests and use push notification to wake the UA to process incoming calls.
-      </t>      
-      <t>
-        NOTE: This specification does not define any usage of a push notification payload. As defined in  <xref target="section.proxy.req.oth"></xref>,
-        a proxy must not include any payload in the push notification request. If a SIP UA receives a push notification that contains a payload the UA 
-        can discard the payload, but the UA will still send a binding-refresh REGISTER request.
-      </t>        
-      <t>
-        NOTE: If the SIP UA application wants to use push notifications for other purposes than to trigger binding-refresh requests, it needs 
-        to be able to distinguish between the different purposes when receiving push notifications. Mechanisms for doing that are outside the 
-        scope of this specification.
-      </t>
-      <t>
-        As long as the UA wants to receive push notifications (requested by the proxy), the UA MUST include a pn-provider, pn-prid 
-        and a pn-param (if required for the specific PNS provider) SIP URI parameter in the SIP Contact header field URI of each 
-        binding-refresh REGISTER request. Note that, in some cases, the PNS might update the PRID value, in which case the UA will 
-        include the new value in the pn-prid SIP URI parameter in the binding-refresh REGISTER request.
-      </t>
-      <t>
-        If the UA no longer wants to receive push notifications (requested by the proxy), the UA MUST send a binding-refresh REGISTER request 
-        without including the SIP URI parameters described above, or the UA MUST remove the registration, unless the UA is no longer able to 
-        perform SIP procedures (e.g., due to a forced shutdown).
       </t>
       <t>
         If a UA's subscription to a PNS (and the associated PRID) is only valid for a limited time then the UA is responsible for retrieving 
@@ -352,26 +333,81 @@ align="center"><artwork>
         terminate the registration. The exact mechanisms for expiry and renewal of PRIDs 
         will be PNS-specific and are outside the scope of this document.
       </t>
+    </section>
+      <section anchor="section.ua.dis" title="Disable Push Notifications">
       <t>
-        For privacy and security reasons, the UA MUST NOT include the SIP URI parameters defined in this document in non-REGISTER request, to
-        prevent the PNS information associated with the UA from reaching the remote peer. For example, the UA MUST NOT include the SIP URI parameters
-        in the Contact header field of an INVITE request. REGISTER requests will not reach the remote peer, as they will be terminated by the registrar 
-        of the UA. However, the registrar MUST still ensure that the parameters are not sent to other users, e.g., using the SIP event package for
-        registrationss mechanism <xref target="RFC3680"/>. See <xref target="section.sec"></xref> for more information.
+        If the UA no longer wants to receive push notifications, the UA MUST send a binding-refresh REGISTER request 
+        without including any pn- SIP URI parameters, or the UA MUST remove the binding, unless the UA is no longer able to 
+        perform SIP procedures (e.g., due to a forced shutdown).
       </t>
+      </section>
+    <section anchor="section.ua.recv" title="Receive Push Notifications">
+      <t>
+        When the UA receives a push notification, it MUST send a binding-refresh REGISTER request. The UA MUST include the same set of pn- SIP URI
+        parameters in the SIP Contact header field URI of the REGISTER request that it included when it requested push notifications 
+        (<xref target="section.ua.req"></xref>). Note that, in some cases the PNS might update the PRID value, in which case the UA will 
+        include the new value in the pn-prid SIP URI parameter of the binding-refresh REGISTER request.
+      </t>
+      <t>
+        Once the UA has received a 2xx response to the REGISTER request, the UA might receive a SIP request for a new dialog (e.g., a SIP INVITE), 
+        or a stand-alone SIP request (e.g., a SIP MESSAGE), if such SIP request has triggered a proxy to request that the push notification
+        is sent to the UA.. Note that, depending on which transport protocol is used, the SIP request might reach the UA before the REGISTER response.
+      </t>
+      <t>
+        If the SIP UA has created multiple bindings (e.g., one for IPv4 and one for IPv6), the UA MUST send a binding-refresh REGISTER request 
+        for each of those bindings when it receives a push notification.
+      </t>        
+      </section>
+      <section anchor="section.ua-non-push" title="Binding-Refresh Using Non-Push Mechansim">
+      <t>
+        If a UA is able to send binding-refresh REGISTER requests using a non-push mechanism (e.g., using
+        an internal timer that periodically wakes the UA) the UA MUST insert a 'sip.pnsreg' media feature tag 
+        <xref target="RFC3840"></xref> in each Contact header field URI of each REGISTER request. 
+      </t>
+      <t>
+        When the UA receives a 2xx response to the REGISTER request, that contains a Feature-Caps header field <xref target="RFC6809"></xref>
+        with a 'sip.pnsreq' feature-capability indicator with a indicator value, the UA MUST send a binging-refresh REGISTER request 
+        prior to binding expiration. The indicator value indicates the minimum time (given in seconds), prior to the binding expiration 
+        when the UA MUST send the REGISTER request. If the REGISTER response does not contain a a 'sip.pnsreg' 
+        feature-capability indicator, the UA SHOULD only send a binding-refresh REGISTER request when it receives a push notification (even if 
+        the UA is able to use a non-push mechanism for sending binding-refresh REGISTER requests), or when there are circumstances (e.g., if the 
+        UA is assigned new contact parameters due to a network configuration change) that require an immediate REGISTER request to be sent.
+      </t>
+      <t>  
+        Even if the UA is able to to send binding-refresh REGISTER requests using a non-push mechanism, the UA MUST still send a binding-refresh REGISTER 
+        request whenever it receives a push notification (<xref target="section.ua.recv"></xref>). 
+      </t>
+      <t>
+        NOTE: If the UA uses a non-push mechanism to wake and send a binding-refresh REGISTER request, such REGISTER
+        request will update the binding expiration timer, and the proxy does not need to request that a push notification is sent 
+        to the UA in order to wake the UA. The proxy will still request that a push notification is sent to the UA when the proxy receives 
+        a SIP request addressed towards the UA (<xref target="section.proxy.req.oth"></xref>). This allows the UA to e.g., use timers for sending 
+        binding-refresh REGISTER requests, but to be suspended (in order to save battery resources etc) between sending 
+        the REGISTER requests and use push notification to wake the UA to process incoming calls.
+      </t>      
       </section>
       <section anchor="section.ua.que" title="Query Network Push Notification Capabilities">
       <t>
-        A SIP UA might need to query the SIP network for push notification capabilities (e.g., related to VAPID) before it registers with the
-        PNS, and before it indicates that it wants to receive push notifications. The UA can do so by only including the pn-provider SIP URI parameter 
-        in the SIP Contact header field URI of the REGISTER request, but without including the pn-prid SIP URI parameter. Later, once the UA has received 
-        a response to the REGISTER request with the push notification information from the network, if the UA wants to receive push notifications, the UA 
-        will send a binding-refresh REGISTER request, including  all pn- SIP URI parameters required by the specific PNS, following the procedures in 
-        <xref target="section.ua.req"></xref>.
+        This section describes how a SIP UA can inform which PNS(s) it supports to SIP proxies in the SIP network, and query about the PNS(s) and PNS-related 
+        capabilities (e.g., related to VAPID) supported by proxies. When the UA performs the query procedure, it will not request push 
+        notifications. Therefore, the UA can perform the query before it has registered to a PNS and received a PRID.
+      </t>
+      <t>
+        In order to perform a query, the UA MUST include a pn-provider SIP URI parameter in the SIP Contact header field URI of the REGISTER request.
+        The UA MAY include multiple parameter values, if it supports multiple PNSs. If the UA includes multiple parameter values it MUST include
+        them in order of preference. The first parameter value represents to most preferred PNS. The UA MUST NOT include a pn-prid SIP URI parameter, 
+        as the lack of the parameter informs proxies that the UA is performing a query, in the REGISTER request.
+      </t>
+      <t>
+        When the UA receives a response to the REGISTER request, the response will indicate which PNS(s), of those indicated by the UA, are supported
+        by the proxies. Then, if the UA wants to receive push notifications, it follows the procedures in <xref target="section.ua.req"></xref>.
+      </t>
+      <t>
+        NOTE: It is optional for a UA to perform a query before it requests push notifications. If the UA only supports a single PNS, or if the UA
+        has been configured to use a specific PNS, it can request push notifications (<xref target="section.ua.req"></xref>) without first performing a query.
       </t>
       </section>
     </section>
-
     <section anchor="section.proxy" title="SIP Proxy Behavior">
       <section anchor="section.proxy.pnid" title="PNS Provider">
         <t>
