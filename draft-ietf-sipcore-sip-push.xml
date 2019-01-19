@@ -41,7 +41,7 @@
         <email>Michael.Arnold@metaswitch.com</email>
       </address>
     </author>
-  
+
     <date year="2018"/>
     <area>Transport</area>
     <workgroup>SIPCORE Working Group</workgroup>
@@ -51,11 +51,11 @@
     <abstract>
       <t>
         This document describes how a Push Notification Service (PNS) can be used to wake
-        suspended Session Initiation Protocol (SIP) User Agents (UAs), using push notifications, 
-        for the UA to be able to send binding-refresh REGISTER requests and to receive receive incoming SIP requests. 
+        suspended Session Initiation Protocol (SIP) User Agents (UAs), using push notifications,
+        for the UA to be able to send binding-refresh REGISTER requests and to receive receive incoming SIP requests.
         The document defines new SIP URI parameters and new feature-capability
-        indicators that can be used in SIP messages to indicate support of the mechanism defined in this 
-        document, to exchange PNS information between the SIP User Agent (UA) and the SIP entity that will 
+        indicators that can be used in SIP messages to indicate support of the mechanism defined in this
+        document, to exchange PNS information between the SIP User Agent (UA) and the SIP entity that will
         request that push notifications are sent to the UA, and to trigger such push notification requests.
       </t>
     </abstract>
@@ -69,13 +69,13 @@
         internal timers cannot be used to wake such applications, nor will incoming network
         traffic wake the application. Instead, one way to wake the application is by using a
         Push Notification Service (PNS). A PNS is a service from where a user application can
-        receive messages, referred to as push notifications, requested by other applications. 
-        Push notifications might contain payload data, depending on the application. An application 
+        receive messages, referred to as push notifications, requested by other applications.
+        Push notifications might contain payload data, depending on the application. An application
         can request that a push notification is sent to a single user application, or to multiple
         user applications.
       </t>
-      <t>  
-        Typically, each operating system uses a dedicated PNS. 
+      <t>
+        Typically, each operating system uses a dedicated PNS.
         For example, Apple iOS devices use the Apple Push Notification service (APNs)
         while Android devices use the Firebase Cloud Messaging (FCM) service.
       </t>
@@ -83,23 +83,23 @@
         Because of the restrictions above, Session Initiation Protocol (SIP) User Agents (UAs)
         <xref target="RFC3261"/> can not be awoken, in order to send binding-refresh SIP REGISTER
         requests and to receive incoming SIP requests, without using a PNS to wake the UA
-        in order to perform those functions. 
+        in order to perform those functions.
       </t>
       <t>
-        Also, without being able to use internal timers in order to wake applications, a UA 
-        will not be able to maintain connections e.g., using the SIP Outbound Mechanism 
+        Also, without being able to use internal timers in order to wake applications, a UA
+        will not be able to maintain connections e.g., using the SIP Outbound Mechanism
         <xref target="RFC5626"/>, as it requires the UA to send periodic keep-alive messages.
       </t>
       <t>
         This document describes how PNSs can be used to wake suspended UAs, using push notifications, to be able to send
-        binding-refresh REGISTER requests and to receive incoming SIP requests. The document defines 
-        new SIP URI parameters and new feature-capability indicators <xref target="RFC6809"/> 
-        that can be used in SIP messages to indicate support of the mechanism defined in this document, 
-        to exchange PNS information between the UA and the SIP entity (realized as a SIP proxy in this document) 
+        binding-refresh REGISTER requests and to receive incoming SIP requests. The document defines
+        new SIP URI parameters and new feature-capability indicators <xref target="RFC6809"/>
+        that can be used in SIP messages to indicate support of the mechanism defined in this document,
+        to exchange PNS information between the UA and the SIP entity (realized as a SIP proxy in this document)
         that will request that push notifications are sent to the UA, and to request such push notification requests.
-      </t>  
+      </t>
       <t>
-        NOTE: Even if a UA is able to be awakened by other means than receiving push notifications (e.g., by using internal timers) in order to 
+        NOTE: Even if a UA is able to be awakened by other means than receiving push notifications (e.g., by using internal timers) in order to
         send periodic binding-refresh REGISTER requests, it might still be useful to suspend the application
         between the sending of binding-refresh requests (as it will save battery life) and use push notifications
         to wake the UA when an incoming SIP request UA arrives.
@@ -110,41 +110,41 @@
         provide the PRID to the SIP proxy that will request push that notifications are sent to the UA.
       </t>
       <t>
-        When the proxy receives  
-        a SIP request for a new dialog or a stand-alone SIP request addressed towards a UA, 
-        or when the proxy determines that the UA needs to send a binding-refresh REGISTER request, the proxy will 
-        request that a push notification is sent to the UA, using the PNS of the UA. Once the UA receives 
-        the push notification, it will be able to send a binding-refresh REGISTER request and receive 
+        When the proxy receives
+        a SIP request for a new dialog or a stand-alone SIP request addressed towards a UA,
+        or when the proxy determines that the UA needs to send a binding-refresh REGISTER request, the proxy will
+        request that a push notification is sent to the UA, using the PNS of the UA. Once the UA receives
+        the push notification, it will be able to send a binding-refresh REGISTER request and receive
         the incoming SIP request. The proxy will receive the REGISTER request. If the push notification request was
-        triggered by a SIP request addressed towards the UA (see above), once the REGISTER request has been 
-        accepted by the SIP registrar <xref target="RFC3261"/>, and the associated SIP 2xx response has been forwarded by the proxy towards the UA, 
+        triggered by a SIP request addressed towards the UA (see above), once the REGISTER request has been
+        accepted by the SIP registrar <xref target="RFC3261"/>, and the associated SIP 2xx response has been forwarded by the proxy towards the UA,
         the proxy can forward the SIP request towards the UA using normal SIP routing procedures. In some cases the proxy can forward the SIP
         request without waiting for the SIP 2xx response to the REGISTER request. Note that this mechanism necessarily adds
         delay to responding to requests requiring push notification. The consequences of that delay are discussed
         in <xref target="section.proxy.req.oth"/>.
       </t>
       <t>
-        If there are Network Address Translators (NATs) between the UA and the proxy, the REGISTER request sent by the UA will create NAT bindings 
+        If there are Network Address Translators (NATs) between the UA and the proxy, the REGISTER request sent by the UA will create NAT bindings
         that will allow the incoming SIP request that triggered the push notification to reach the UA.
       </t>
       <t>
-        NOTE: The lifetime of any NAT binding created by the REGISTER request only needs to be long enough in order for the 
+        NOTE: The lifetime of any NAT binding created by the REGISTER request only needs to be long enough in order for the
         SIP request that triggered the push notification to reach the UA.
       </t>
       <t>
-        Different PNSs exist today. Some are based on the standardized mechanism defined in 
-        <xref target="RFC8030"/>, while others are proprietary (e.g., the Apple Push Notification 
-        service). <xref target="fig-sip-pn-arch"/> shows the generic push notification architecture 
+        Different PNSs exist today. Some are based on the standardized mechanism defined in
+        <xref target="RFC8030"/>, while others are proprietary (e.g., the Apple Push Notification
+        service). <xref target="fig-sip-pn-arch"/> shows the generic push notification architecture
         supported by the mechanism in this document.
       </t>
       <t>
-        Each PNS uses PNS-specific terminology and function names. The terminology in this document is meant to 
-        be PNS-independent. If the PNS is based on <xref target="RFC8030"/>, the SIP proxy takes the role of 
+        Each PNS uses PNS-specific terminology and function names. The terminology in this document is meant to
+        be PNS-independent. If the PNS is based on <xref target="RFC8030"/>, the SIP proxy takes the role of
         the application server.
       </t>
       <t>
         The proxy MUST be in the signalling path of REGISTER requests sent by the UA towards the registrar, and of SIP requests (for a new dialog or a stand-alone)
-        forwarded by the proxy responsible for the UA's domain (sometimes referred to as home proxy, S-CSCF, etc) towards the UA. The proxy can also be co-located with 
+        forwarded by the proxy responsible for the UA's domain (sometimes referred to as home proxy, S-CSCF, etc) towards the UA. The proxy can also be co-located with
         the proxy responsible for the UA's domain. This will also ensure that the Request-URI of SIP requests (for a new dialog or a stand-alone) can be matched against
         contacts in REGISTER requests.
       </t>
@@ -158,9 +158,9 @@ align="center"><artwork>
 
     +--------+      +---------+        +-----------+    +-------------+
     |        |      |         |        |           |    | SIP         |
-    | SIP UA |      | Push    |        | SIP Proxy |    | Registrar / |   
+    | SIP UA |      | Push    |        | SIP Proxy |    | Registrar / |
     |        |      | Service |        |           |    | Home Proxy  |
-    +--------+      +---------+        +-----------+    +-------------+ 
+    +--------+      +---------+        +-----------+    +-------------+
         |                 |                  |                   |
         | Subscribe       |                  |                   |
         |---------------->|                  |                   |
@@ -170,7 +170,7 @@ align="center"><artwork>
         |                 |                  |                   |
         | SIP REGISTER (PRID)                |                   |
         |===================================>|                   |
-        |                 |                  |SIP REGISTER (PRID)| 
+        |                 |                  |SIP REGISTER (PRID)|
         |                 |                  |==================>|
         |                 |                  |                   |
         |                 |                  | SIP 200 OK        |
@@ -182,7 +182,7 @@ align="center"><artwork>
         |                 |                  |                   |
         |                 |                  | SIP INVITE (PRID) |
         |                 |                  |<==================|
-        |                 |                  |                   |   
+        |                 |                  |                   |
         |                 |Push Request (PRID)                   |
         |                 |<-----------------|                   |
         |Push Message (PRID)                 |                   |
@@ -202,10 +202,10 @@ align="center"><artwork>
         |<===================================|                   |
         |                 |                  |                   |
 
-        
+
         ------- Push Notification API
 
-        ======= SIP 
+        ======= SIP
 
 ]]></artwork></figure>
     </section>
@@ -231,7 +231,7 @@ align="center"><artwork>
 
 ]]></artwork></figure>
     </section>
- 
+
     <section title="Conventions">
       <t>
         The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
@@ -244,17 +244,17 @@ align="center"><artwork>
 
     <section title="Push Resource ID (PRID)">
       <t>
-        When a SIP UA registers with a PNS it receives a unique Push Resource ID (PRID), 
+        When a SIP UA registers with a PNS it receives a unique Push Resource ID (PRID),
         which is a value associated with the registration that can be used to generate
-        push notifications. 
+        push notifications.
       </t>
-      <t>  
+      <t>
         The format of the PRID varies depending on the PNS.
       </t>
       <t>
-        The details regarding discovery of the PNS, and the procedures regarding the 
-        push notification registration and maintenance are outside the scope of 
-        this document. The information needed to contact the PNS is typically 
+        The details regarding discovery of the PNS, and the procedures regarding the
+        push notification registration and maintenance are outside the scope of
+        this document. The information needed to contact the PNS is typically
         pre-configured in the operating system of the device.
       </t>
     </section>
@@ -265,10 +265,10 @@ align="center"><artwork>
         The procedures in this section apply to bindings associated with a given PNS.
       </t>
       <t>
-        The mechanism defined in this document assumes that when a SIP UA registers with a PNS it has received the PRID (using the protocol 
-        and procedures associated with the PNS). Then, if the UA wants to receive push notifications (requested by the proxy), the UA MUST 
-        include the following SIP URI parameters in the SIP Contact header field URI of the REGISTER request: pn-provider, pn-prid and pn-param 
-        (if required for the specific PNS). The pn-provider URI parameter identifies the type of PNS, the pn-prid URI parameter contains the PRID value 
+        The mechanism defined in this document assumes that when a SIP UA registers with a PNS it has received the PRID (using the protocol
+        and procedures associated with the PNS). Then, if the UA wants to receive push notifications (requested by the proxy), the UA MUST
+        include the following SIP URI parameters in the SIP Contact header field URI of the REGISTER request: pn-provider, pn-prid and pn-param
+        (if required for the specific PNS). The pn-provider URI parameter identifies the type of PNS, the pn-prid URI parameter contains the PRID value
         and the pn-param URI parameter contains additional PNS-specific information.
       </t>
       <t>
@@ -280,9 +280,9 @@ align="center"><artwork>
       </t>
       <t>
         When the UA receives a 2xx response to the REGISTER request, if the response contains a Feature-Caps header field <xref target="RFC6809"></xref>
-        with a 'sip.pns' feature-capability indicator with a parameter value identifying the same type of PNS that was identified by the pn-provider 
-        URI parameter in the REGISTER request, the UA can assume that a SIP proxy will request that a push notification is sent to the UA. 
-        In other cases, the UA MUST NOT assume that the proxy will request that push notifications is sent to the UA, and the actions taken by the UA might 
+        with a 'sip.pns' feature-capability indicator with a parameter value identifying the same type of PNS that was identified by the pn-provider
+        URI parameter in the REGISTER request, the UA can assume that a SIP proxy will request that a push notification is sent to the UA.
+        In other cases, the UA MUST NOT assume that the proxy will request that push notifications is sent to the UA, and the actions taken by the UA might
         be dependent on implementation or deployment architecture, and are outside the scope of this document.
       </t>
       <t>
@@ -294,67 +294,67 @@ align="center"><artwork>
       </t>
       <t>
         When the UA receives a push notification, it MUST send a binding-refresh REGISTER request, using normal SIP procedures.
-        Once the UA has received a 2xx response to the REGISTER request, the UA might receive a SIP request for a new dialog (e.g., a SIP INVITE), 
-        or a stand-alone SIP request (e.g., a SIP MESSAGE), if such SIP request triggered the push notification. Note that, depending on which 
+        Once the UA has received a 2xx response to the REGISTER request, the UA might receive a SIP request for a new dialog (e.g., a SIP INVITE),
+        or a stand-alone SIP request (e.g., a SIP MESSAGE), if such SIP request triggered the push notification. Note that, depending on which
         transport protocol is used, the SIP request might reach the UA before the REGISTER response.
       </t>
       <t>
-        If the SIP UA has created multiple bindings (e.g., one for IPv4 and one for IPv6), the UA MUST send a binding-refresh REGISTER request 
+        If the SIP UA has created multiple bindings (e.g., one for IPv4 and one for IPv6), the UA MUST send a binding-refresh REGISTER request
         for each of those bindings when it receives a push notification.
-      </t>        
+      </t>
       <t>
         If the UA is able to send binding-refresh REGISTER requests using a non-push mechanism (e.g., using
-        an internal timer that periodically wakes the UA), the UA MUST insert a 'sip.pnsreg' media feature tag <xref target="RFC3840"></xref> 
-        in each Contact header field URI of each REGISTER request. Then, if the response to the REGISTER request contains a 'sip.pnsreg' 
-        feature-capability indicator with an indicator value, the UA refreshes the binding prior to the binding expires. 
+        an internal timer that periodically wakes the UA), the UA MUST insert a 'sip.pnsreg' media feature tag <xref target="RFC3840"></xref>
+        in each Contact header field URI of each REGISTER request. Then, if the response to the REGISTER request contains a 'sip.pnsreg'
+        feature-capability indicator with an indicator value, the UA refreshes the binding prior to the binding expires.
         The indicator value indicates a minimum time (given in seconds), prior to the binding expires when the UA MUST send the REGISTER request.
         Even if the UA is able to to send REGISTER requests using a non-push mechanism, the UA MUST still send a REGISTER request when
-        it receives a push notification, following the procedures in this section. If the REGISTER response does not contain a a 'sip.pnsreg' 
-        feature-capability indicator, the UA SHOULD only send a binding-refresh REGISTER request when it receives a push notification (even if 
-        the UA is able to use a non-push mechanism for sending binding-refresh REGISTER requests), or when there are circumstances (e.g., if the 
+        it receives a push notification, following the procedures in this section. If the REGISTER response does not contain a a 'sip.pnsreg'
+        feature-capability indicator, the UA SHOULD only send a binding-refresh REGISTER request when it receives a push notification (even if
+        the UA is able to use a non-push mechanism for sending binding-refresh REGISTER requests), or when there are circumstances (e.g., if the
         UA is assigned new contact parameters due to a network configuration change) that require an immediate REGISTER request to be sent.
       </t>
       <t>
         NOTE: If the UA uses a non-push mechanism to wake and send a binding refresh REGISTER request, such REGISTER
         request will update the binding expiration timer, and the proxy does not need to request that a push notification is sent to the UA in order to wake the UA. The
         proxy will still request that a push notification is sent to the UA when the proxy receives a SIP request addressed
-        towards the UA (<xref target="section.proxy.req.oth"></xref>). This allows the UA to e.g., use timers for sending 
-        binding-refresh REGISTER requests, but to be suspended (in order to save battery resources etc) between sending 
+        towards the UA (<xref target="section.proxy.req.oth"></xref>). This allows the UA to e.g., use timers for sending
+        binding-refresh REGISTER requests, but to be suspended (in order to save battery resources etc) between sending
         the REGISTER requests and use push notification to wake the UA to process incoming calls.
-      </t>      
+      </t>
       <t>
         NOTE: This specification does not define any usage of a push notification payload. As defined in  <xref target="section.proxy.req.oth"></xref>,
-        a proxy must not include any payload in the push notification request. If a SIP UA receives a push notification that contains a payload the UA 
+        a proxy must not include any payload in the push notification request. If a SIP UA receives a push notification that contains a payload the UA
         can discard the payload, but the UA will still send a binding-refresh REGISTER request.
-      </t>        
+      </t>
       <t>
-        NOTE: If the SIP UA application wants to use push notifications for other purposes than to trigger binding-refresh requests, it needs 
-        to be able to distinguish between the different purposes when receiving push notifications. Mechanisms for doing that are outside the 
+        NOTE: If the SIP UA application wants to use push notifications for other purposes than to trigger binding-refresh requests, it needs
+        to be able to distinguish between the different purposes when receiving push notifications. Mechanisms for doing that are outside the
         scope of this specification.
       </t>
       <t>
-        As long as the UA wants to receive push notifications (requested by the proxy), the UA MUST include a pn-provider, pn-prid 
-        and a pn-param (if required for the specific PNS provider) SIP URI parameter in the SIP Contact header field URI of each 
-        binding-refresh REGISTER request. Note that, in some cases, the PNS might update the PRID value, in which case the UA will 
+        As long as the UA wants to receive push notifications (requested by the proxy), the UA MUST include a pn-provider, pn-prid
+        and a pn-param (if required for the specific PNS provider) SIP URI parameter in the SIP Contact header field URI of each
+        binding-refresh REGISTER request. Note that, in some cases, the PNS might update the PRID value, in which case the UA will
         include the new value in the pn-prid SIP URI parameter in the binding-refresh REGISTER request.
       </t>
       <t>
-        If the UA no longer wants to receive push notifications (requested by the proxy), the UA MUST send a binding-refresh REGISTER request 
-        without including the SIP URI parameters described above, or the UA MUST remove the registration, unless the UA is no longer able to 
+        If the UA no longer wants to receive push notifications (requested by the proxy), the UA MUST send a binding-refresh REGISTER request
+        without including the SIP URI parameters described above, or the UA MUST remove the registration, unless the UA is no longer able to
         perform SIP procedures (e.g., due to a forced shutdown).
       </t>
       <t>
-        If a UA's subscription to a PNS (and the associated PRID) is only valid for a limited time then the UA is responsible for retrieving 
+        If a UA's subscription to a PNS (and the associated PRID) is only valid for a limited time then the UA is responsible for retrieving
         new subscription details from the PNS and sending a REGISTER request with the updated pn parameters to the proxy
         prior to the expiry of the existing subscription. If a UA's subscription to a PNS expires then the UA MUST send a REGISTER without the
         pn parameters (to tell the proxy that it no longer wants push notifications) or
-        terminate the registration. The exact mechanisms for expiry and renewal of PRIDs 
+        terminate the registration. The exact mechanisms for expiry and renewal of PRIDs
         will be PNS-specific and are outside the scope of this document.
       </t>
       <t>
         For privacy and security reasons, the UA MUST NOT include the SIP URI parameters defined in this document in non-REGISTER request, to
         prevent the PNS information associated with the UA from reaching the remote peer. For example, the UA MUST NOT include the SIP URI parameters
-        in the Contact header field of an INVITE request. REGISTER requests will not reach the remote peer, as they will be terminated by the registrar 
+        in the Contact header field of an INVITE request. REGISTER requests will not reach the remote peer, as they will be terminated by the registrar
         of the UA. However, the registrar MUST still ensure that the parameters are not sent to other users, e.g., using the SIP event package for
         registrations mechanism <xref target="RFC3680"/>. See <xref target="section.sec"></xref> for more information.
       </t>
@@ -362,10 +362,10 @@ align="center"><artwork>
       <section anchor="section.ua.que" title="Query Network Push Notification Capabilities">
       <t>
         A SIP UA might need to query the SIP network for push notification capabilities (e.g., related to VAPID) before it registers with the
-        PNS, and before it indicates that it wants to receive push notifications. The UA can do so by only including the pn-provider SIP URI parameter 
-        in the SIP Contact header field URI of the REGISTER request, but without including the pn-prid SIP URI parameter. Later, once the UA has received 
-        a response to the REGISTER request with the push notification information from the network, if the UA wants to receive push notifications, the UA 
-        will send a binding-refresh REGISTER request, including  all pn- SIP URI parameters required by the specific PNS, following the procedures in 
+        PNS, and before it indicates that it wants to receive push notifications. The UA can do so by only including the pn-provider SIP URI parameter
+        in the SIP Contact header field URI of the REGISTER request, but without including the pn-prid SIP URI parameter. Later, once the UA has received
+        a response to the REGISTER request with the push notification information from the network, if the UA wants to receive push notifications, the UA
+        will send a binding-refresh REGISTER request, including  all pn- SIP URI parameters required by the specific PNS, following the procedures in
         <xref target="section.ua.req"></xref>.
       </t>
       </section>
@@ -378,16 +378,16 @@ align="center"><artwork>
         </t>
         <t>
           The protocol and format used for the push notification requests are PNS-specific,
-          and the details for constructing and sending a push notification request are outside 
+          and the details for constructing and sending a push notification request are outside
           the scope of this specification.
         </t>
       </section>
       <section anchor="section.proxy.rereg" title="Trigger Periodic Binding Refresh">
         <t>
-          In order to request that a push notification is sent to a SIP UA that will trigger the UA to send 
+          In order to request that a push notification is sent to a SIP UA that will trigger the UA to send
           binding-refresh SIP REGISTER requests, the SIP proxy needs to have information about when a registration
-          will expire. The proxy needs to be able to retrieve 
-          the information from the registrar using some mechanism, or run its own registration timers. Such mechanisms are outside 
+          will expire. The proxy needs to be able to retrieve
+          the information from the registrar using some mechanism, or run its own registration timers. Such mechanisms are outside
           the scope of this document, but could be implemented e.g., using the SIP event package for registrations
           mechanism <xref target="RFC3680"/>.
         </t>
@@ -408,83 +408,83 @@ align="center"><artwork>
           push notification is sent to the UA, to trigger the UA to send a REGISTER request.
         </t>
         <t>
-          NOTE: As described in <xref target="section.ua.que"></xref>, a SIP UA might send a REGISTER request 
+          NOTE: As described in <xref target="section.ua.que"></xref>, a SIP UA might send a REGISTER request
           without including a pn-prid SIP URI parameter, in order to retrieve push notification capabilities from
-          the network before the UA expects to receive push notifications from the network. 
+          the network before the UA expects to receive push notifications from the network.
           A proxy will not request that push notifications are sent to a UA that has not provided a pn-prid SIP URI parameter
           (<xref target="section.proxy.req.oth"></xref>).
         </t>
         <t>
-          If the proxy receives information that a registration has expired, the proxy MUST NOT request that further 
+          If the proxy receives information that a registration has expired, the proxy MUST NOT request that further
           push notifications are sent to the UA.
         </t>
       </section>
       <section anchor="section.proxy.req" title="SIP Requests">
       <section anchor="section.proxy.req.reg" title="REGISTER">
         <t>
-          The procedures in this section apply when the SIP proxy receives a SIP REGISTER request (initial REGISTER request 
-          for a registration, or a binding-refresh REGISTER request) that contains a pn-provider SIP URI parameter identifying a type of PNS. 
-          If the proxy receives a REGISTER request that does not contain a pn-provider SIP URI parameter, or that removes the registration, 
-          the proxy MUST NOT request that a push notification is sent to the UA associated with the REGISTER request or perform any other procedures 
+          The procedures in this section apply when the SIP proxy receives a SIP REGISTER request (initial REGISTER request
+          for a registration, or a binding-refresh REGISTER request) that contains a pn-provider SIP URI parameter identifying a type of PNS.
+          If the proxy receives a REGISTER request that does not contain a pn-provider SIP URI parameter, or that removes the registration,
+          the proxy MUST NOT request that a push notification is sent to the UA associated with the REGISTER request or perform any other procedures
           in this section.
         </t>
         <t>
-          As described in <xref target="section.ua.que"></xref>, a SIP UA might send a REGISTER request without including a 
-          pn-prid SIP URI parameter in the Contact header field URI, in order to retrieve push notification capabilities from the network before 
-          the proxy will request that a push notification is sent to the UA. The procedures in this section apply to both the case when the 
+          As described in <xref target="section.ua.que"></xref>, a SIP UA might send a REGISTER request without including a
+          pn-prid SIP URI parameter in the Contact header field URI, in order to retrieve push notification capabilities from the network before
+          the proxy will request that a push notification is sent to the UA. The procedures in this section apply to both the case when the
           REGISTER request contains a pn-prid SIP URI parameter, and when it does not.
         </t>
         <t>
-          When the proxy receives a REGISTER request, if the REGISTER request contains a Feature-Caps header field 
-          with a 'sip.pns' feature-capability indicator, it indicates that a proxy between this proxy and the UA supports 
-          requesting that push notifications are sent to the UA. The proxy MUST skip the rest of the procedures in this section, 
-          and process the REGISTER request using normal SIP procedures. 
+          When the proxy receives a REGISTER request, if the REGISTER request contains a Feature-Caps header field
+          with a 'sip.pns' feature-capability indicator, it indicates that a proxy between this proxy and the UA supports
+          requesting that push notifications are sent to the UA. The proxy MUST skip the rest of the procedures in this section,
+          and process the REGISTER request using normal SIP procedures.
         </t>
         <t>
           If the proxy considers the requested registration expiration interval <xref target="RFC3261"/> to be too short, the
-          proxy MUST either send a 423 (Interval Too Brief) response to the REGISTER request, or skip the rest of the procedures 
-          in this section and process the REGISTER request using normal SIP procedures. If the proxy sends a 423 (Interval Too Brief) 
-          response, the proxy SHOULD insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, 
-          identifying each type of PNS that the proxy supports. Similarly, when the proxy receives a 2xx response to the 
+          proxy MUST either send a 423 (Interval Too Brief) response to the REGISTER request, or skip the rest of the procedures
+          in this section and process the REGISTER request using normal SIP procedures. If the proxy sends a 423 (Interval Too Brief)
+          response, the proxy SHOULD insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response,
+          identifying each type of PNS that the proxy supports. Similarly, when the proxy receives a 2xx response to the
           REGISTER request (see below), if the proxy considers the registration expiration interval indicated by the registrar too
           short, the proxy MUST NOT insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, and the
-          proxy MUST NOT request push notifications associated with the registration. 
+          proxy MUST NOT request push notifications associated with the registration.
         </t>
         <t>
-          A registration expiration interval MUST be considered too short if the registration would expire before the proxy would request 
-          that a push notification is sent to the UA, in order to trigger the UA to send a REGISTER request. The proxy 
+          A registration expiration interval MUST be considered too short if the registration would expire before the proxy would request
+          that a push notification is sent to the UA, in order to trigger the UA to send a REGISTER request. The proxy
           MAY consider the interval too short based on its own policy so as to reduce load on the system.
         </t>
         <t>
-          Otherwise, if the pn-provider SIP URI parameter identifies a type of PNS that the proxy does not support, or if the REGISTER 
-          request does not contain all additional information required for the specific type of PNS, the proxy SHOULD send a SIP 555 
+          Otherwise, if the pn-provider SIP URI parameter identifies a type of PNS that the proxy does not support, or if the REGISTER
+          request does not contain all additional information required for the specific type of PNS, the proxy SHOULD send a SIP 555
           (Push Notification Service Not Supported) response to the REGISTER request, unless the proxy knows (based on local configuration)
           that another proxy that will receive the REGISTER request supports the type of PNS, in which case it MAY forward the request.
-          If the proxy sends a SIP 555 (Push Notification Service Not Supported) response <xref target="section.grammar.555"/>, the proxy SHOULD 
-          insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, identifying the type of each PNS 
+          If the proxy sends a SIP 555 (Push Notification Service Not Supported) response <xref target="section.grammar.555"/>, the proxy SHOULD
+          insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, identifying the type of each PNS
           that the proxy supports. The decision whether to forward the request, or to send a response, is done based on local policy.
         </t>
         <t>
-          If the proxy supports the type of PNS identified by the pn-provider SIP URI parameter, the proxy MUST insert a Feature-Caps header field 
-          with a 'sip.pns' feature-capability indicator, identifying the type of PNS, in the REGISTER request before forwarding the REGISTER request 
+          If the proxy supports the type of PNS identified by the pn-provider SIP URI parameter, the proxy MUST insert a Feature-Caps header field
+          with a 'sip.pns' feature-capability indicator, identifying the type of PNS, in the REGISTER request before forwarding the REGISTER request
           towards the registrar. This will inform proxies that are not between the push proxy and the UA that the
-          proxy supports, and will request (if the Contact header field URI of the REGISTER request contains a pn-prid SIP URI parameter), that push notifications 
+          proxy supports, and will request (if the Contact header field URI of the REGISTER request contains a pn-prid SIP URI parameter), that push notifications
           are sent to the UA.
         </t>
         <t>
-          If the proxy inserted a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the REGISTER request (see above), if the proxy 
-          receives a 2xx response to the REGISTER request, the proxy MUST 
+          If the proxy inserted a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the REGISTER request (see above), if the proxy
+          receives a 2xx response to the REGISTER request, the proxy MUST
           insert a Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, identifying the type of PNS. This will inform
-          the UA that the proxy supports, and will request (if the Contact header field URI of the REGISTER request contained a pn-prid SIP URI parameter), 
-          that push notifications are sent to the UA. The proxy MUST indicate support only of the same PNS that was identified in the pn-provider SIP URI parameter in 
-          the REGISTER request. If the proxy receives a SIP 555 (Push Notification Service Not Supported) response, the proxy SHOULD insert a 
+          the UA that the proxy supports, and will request (if the Contact header field URI of the REGISTER request contained a pn-prid SIP URI parameter),
+          that push notifications are sent to the UA. The proxy MUST indicate support only of the same PNS that was identified in the pn-provider SIP URI parameter in
+          the REGISTER request. If the proxy receives a SIP 555 (Push Notification Service Not Supported) response, the proxy SHOULD insert a
           Feature-Caps header field with a 'sip.pns' feature-capability indicator in the response, identifying the type of each PNS that the proxy supports.
         </t>
         <t>
           In addition, if the proxy receives a 2xx response to the REGISTER request:
             <list style="symbols">
             <t>
-               if the proxy supports, and will use, the VAPID mechanism, the proxy MUST insert a Feature-Caps header field with a 'sip.vapid'  
+               if the proxy supports, and will use, the VAPID mechanism, the proxy MUST insert a Feature-Caps header field with a 'sip.vapid'
                feature-capability indicator in the response. The header field parameter contains the public key identifying the proxy <xref target="RFC8292"></xref>.
                The proxy MUST determine whether the PNS supports the VAPID mechanism before it inserts the feature-capability indicator.
             </t>
@@ -501,7 +501,7 @@ align="center"><artwork>
           The procedures in this section apply when the SIP proxy has indicated that it supports, and will request, that push notifications
           are sent to the SIP UA.
         </t>
-        <t>        
+        <t>
           When the proxy receives a SIP request for a new dialog (e.g., a SIP
           INVITE request) or a stand-alone SIP request (e.g., a SIP MESSAGE request) addressed towards a SIP UA, if the Request-URI of the request
           contains a pn-provider, a pn-prid and a pn-param (if required for the specific PNS provider) SIP URI parameter, the proxy requests that a push
@@ -511,16 +511,16 @@ align="center"><artwork>
           The push notification will trigger the UA to send a binding-refresh REGISTER request. The proxy will process the REGISTER request
           and the associated response as described in <xref target="section.proxy.req.reg"/>. In case of a 2xx response to the REGISTER request,
           once the proxy has forwarded the REGISTER response towards the UA, if the contact of the SIP REGISTER request associated with the REGISTER response matches the Request-URI of the SIP request
-          to be forwarded, and the contact was also present (and has not expired) in the REGISTER response, the proxy can forward the SIP request towards the UA, 
+          to be forwarded, and the contact was also present (and has not expired) in the REGISTER response, the proxy can forward the SIP request towards the UA,
           using normal SIP procedures. If the contact of the REGISTER request does not match the Request-URI of the SIP request to be forwarded, or if the contact
           was not present in the REGISTER response, the proxy MUST reject the SIP request. It is RECOMMENDED that the proxy sends either a 404 (Not Found) response
-          or a 480 (Temporarily Unavailable) response, but other response codes can be used as well. This can happen if the UA sends a binding-refresh REGISTER request 
-          that does not contain the previously registered contact at the same time the registrar forwards a SIP request towards a UA using the previously registered 
+          or a 480 (Temporarily Unavailable) response, but other response codes can be used as well. This can happen if the UA sends a binding-refresh REGISTER request
+          that does not contain the previously registered contact at the same time the registrar forwards a SIP request towards a UA using the previously registered
           contact in the Request-URI.
         </t>
         <t>
-          NOTE: If the SIP request does not contain the pn- parameters, the proxy processing of the request is based on 
-          local policy, e.g., depending on whether the proxy servers requests towards UAs that do not use the SIP push mechanism, 
+          NOTE: If the SIP request does not contain the pn- parameters, the proxy processing of the request is based on
+          local policy, e.g., depending on whether the proxy servers requests towards UAs that do not use the SIP push mechanism,
           in which case the proxy will forward the request using normal SIP procedures. Otherwise the proxy might reject the request.
         </t>
         <t>
@@ -530,26 +530,26 @@ align="center"><artwork>
         </t>
         <t>
           The reason the proxy needs to wait for the REGISTER response before forwarding the SIP request is to make sure that the REGISTER request has been accepted by
-          the registrar, and that the UA that initiated the REGISTER request is authorized to receive messages for the Request-URI. However, if the proxy is able to authorize 
-          the sender of the REGISTER request, it does not need to wait for the associated 2xx response before it forwards the SIP request towards the UA. The mechanism for authorizing 
+          the registrar, and that the UA that initiated the REGISTER request is authorized to receive messages for the Request-URI. However, if the proxy is able to authorize
+          the sender of the REGISTER request, it does not need to wait for the associated 2xx response before it forwards the SIP request towards the UA. The mechanism for authorizing
           the UA is outside the scope of this document.
         </t>
-        <t> 
-          As both the SIP request to be forwarded towards the UA and the binding-refresh REGISTER request triggered by the push notification request will convey pn- SIP URI 
-          parameters associated with the SIP registration, those can be used to match the SIP request with the binding-refresh REGISTER request (even if other parts of the most recent contact 
+        <t>
+          As both the SIP request to be forwarded towards the UA and the binding-refresh REGISTER request triggered by the push notification request will convey pn- SIP URI
+          parameters associated with the SIP registration, those can be used to match the SIP request with the binding-refresh REGISTER request (even if other parts of the most recent contact
           and the Request-URI of the SIP request do not match).
         </t>
         <t>
-          NOTE: The proxy needs to store (or be able to retrieve) the contact of the most recent REGISTER 2xx response, to be able to 
+          NOTE: The proxy needs to store (or be able to retrieve) the contact of the most recent REGISTER 2xx response, to be able to
           compare it with the Request-URI of the request to be forwarded towards the UA.
         </t>
         <t>
-          In case of non-2xx response to the REGISTER request, the proxy MUST reject the SIP request. It is RECOMMENDED that the proxy sends 
-          either a 404 (Not Found) response or a 480 (Temporarily Unavailable) response, but other response codes can be used as well. 
+          In case of non-2xx response to the REGISTER request, the proxy MUST reject the SIP request. It is RECOMMENDED that the proxy sends
+          either a 404 (Not Found) response or a 480 (Temporarily Unavailable) response, but other response codes can be used as well.
         </t>
         <t>
-          If the push notification request fails (see PNS-specific documentation for details), the proxy MUST reject the SIP request. It is 
-          RECOMMENDED that the proxy sends either a 404 (Not Found) response or a 480 (Temporarily Unavailable) response, but other response 
+          If the push notification request fails (see PNS-specific documentation for details), the proxy MUST reject the SIP request. It is
+          RECOMMENDED that the proxy sends either a 404 (Not Found) response or a 480 (Temporarily Unavailable) response, but other response
           codes can be used as well.
         </t>
         <t>
@@ -559,15 +559,15 @@ align="center"><artwork>
         <t>
            As discussed in <xref target="RFC4320"/> and <xref target="RFC4321"/>, non-INVITE transactions must complete immediately or risk losing a race that results
            in stress on intermediaries and state misalignment at the endpoints. The mechanism defined in this document inherently delays the final response to any
-           non-INVITE request that requires a push notification. In particular, while waiting for the push notification request 
-           to succeed, and the associated REGISTER request to arrive from the SIP UA, the proxy needs to take into consideration that the transaction associated 
-           with the SIP request will eventually time out at the sender of the request (UAC), and the sender will consider the transaction a failure. If the proxy 
-           forwards the SIP request towards the SIP UA, the SIP UA accepts the request and the transaction times out at the sender before it receives the successful 
-           response, this will cause state misalignment between the endpoints (the sender will consider the transaction a failure, while the receiver will consider 
-           the transaction a success). The SIP proxy needs to take this into account when deciding for how long to wait before it considers the transaction associated 
-           with the SIP request a failure, to make sure that the error response reaches the sender before the transaction times out. If the accumulated delay of this 
-           mechanism combined with any other mechanisms in the path of processing the non-INVITE transaction is not kept short, this mechanism should not be used. 
-           For networks encountering such conditions, an alternative (left for possible future work) would be for the proxy to immediately return a new error code 
+           non-INVITE request that requires a push notification. In particular, while waiting for the push notification request
+           to succeed, and the associated REGISTER request to arrive from the SIP UA, the proxy needs to take into consideration that the transaction associated
+           with the SIP request will eventually time out at the sender of the request (UAC), and the sender will consider the transaction a failure. If the proxy
+           forwards the SIP request towards the SIP UA, the SIP UA accepts the request and the transaction times out at the sender before it receives the successful
+           response, this will cause state misalignment between the endpoints (the sender will consider the transaction a failure, while the receiver will consider
+           the transaction a success). The SIP proxy needs to take this into account when deciding for how long to wait before it considers the transaction associated
+           with the SIP request a failure, to make sure that the error response reaches the sender before the transaction times out. If the accumulated delay of this
+           mechanism combined with any other mechanisms in the path of processing the non-INVITE transaction is not kept short, this mechanism should not be used.
+           For networks encountering such conditions, an alternative (left for possible future work) would be for the proxy to immediately return a new error code
            meaning "wait at least the number of seconds specified in this response, and retry your request" before initiating the push notification.
         </t>
         <t>
@@ -578,13 +578,13 @@ align="center"><artwork>
           The proxy MUST NOT include the SIP request as payload in the requested push message.
         </t>
         <t>
-          If the proxy has knowledge that the UA is awake, and that the UA is able to receive the SIP request without first 
-          sending a REGISTER request, the proxy MAY choose to not request that a push notification is sent to the UA (and wait for the associated 
-          REGISTER request and 2xx response) before it tries to forward the SIP request towards the UA. The mechanisms for getting such knowledge 
+          If the proxy has knowledge that the UA is awake, and that the UA is able to receive the SIP request without first
+          sending a REGISTER request, the proxy MAY choose to not request that a push notification is sent to the UA (and wait for the associated
+          REGISTER request and 2xx response) before it tries to forward the SIP request towards the UA. The mechanisms for getting such knowledge
           might be dependent on implementation or deployment architecture, and are outside the scope of this document.
-          Similarly, if the Request-URI of the SIP request only contains any pn-provider SIP URI parameter, but no other pn- SIP URI parameters, e.g., because 
-          the SIP UA has not included them in a REGISTER request (<xref target="section.ua.que"></xref>), the proxy is not able to request that a 
-          push notification is sent to the UA. If the proxy has knowledge that the UA is awake, and that the UA is able to receive the SIP request, 
+          Similarly, if the Request-URI of the SIP request only contains any pn-provider SIP URI parameter, but no other pn- SIP URI parameters, e.g., because
+          the SIP UA has not included them in a REGISTER request (<xref target="section.ua.que"></xref>), the proxy is not able to request that a
+          push notification is sent to the UA. If the proxy has knowledge that the UA is awake, and that the UA is able to receive the SIP request,
           the proxy MAY forwards the request towards the UA. Otherwise the proxy MUST reject the SIP request with a 480 (Temporarily Unavailable) response.
         </t>
       </section>
@@ -599,13 +599,13 @@ align="center"><artwork>
         suspended, and needs to be awaken in order to be able to receive mid-dialog requests.
       </t>
       <t>
-        When the proxy receives a SIP request for a new dialog, or a stand-alone SIP request, addressed 
+        When the proxy receives a SIP request for a new dialog, or a stand-alone SIP request, addressed
         towards a UA, the request will contain information (pn- SIP URI parameters) that allows the proxy
         to request that a push notification is sent to the UA <xref target="section.proxy.req.oth"/>. However,
-        this information will not be present in mid-dialog requests towards the UA. Instead, the proxy 
-        need to support a mechanism where it stores the information needed to request that a push notification 
-        is sent to the UA and be able to find and retrieve that information when it receives a mid-dialog 
-        request. This section defines such mechanism. The UA and proxy procedures in this section are 
+        this information will not be present in mid-dialog requests towards the UA. Instead, the proxy
+        need to support a mechanism where it stores the information needed to request that a push notification
+        is sent to the UA and be able to find and retrieve that information when it receives a mid-dialog
+        request. This section defines such mechanism. The UA and proxy procedures in this section are
         applied in addition to the generic procedures defined in this specification.
       </t>
             <figure title="SIP Push Longlived Dialog Flow" anchor="fig-sip-pn-mid"
@@ -614,9 +614,9 @@ align="center"><artwork>
 
     +--------+      +---------+        +-----------+    +-------------+
     |        |      |         |        |           |    | SIP         |
-    | SIP UA |      | Push    |        | SIP Proxy |    | Registrar / |   
+    | SIP UA |      | Push    |        | SIP Proxy |    | Registrar / |
     |        |      | Service |        |           |    | Home Proxy  |
-    +--------+      +---------+        +-----------+    +-------------+ 
+    +--------+      +---------+        +-----------+    +-------------+
         |                 |                  |                   |
         | Subscribe       |                  |                   |
         |---------------->|                  |                   |
@@ -629,7 +629,7 @@ align="center"><artwork>
         |                 |                  |SIP REGISTER (PRID)|
         |                 |                  |==================>|
         |                 |                  |                   |
-        |                 |      +-----------------------+       |         
+        |                 |      +-----------------------+       |
         |                 |      | Store PRID (key=PURR) |       |
         |                 |      +-----------------------+       |
         |                 |                  |                   |
@@ -654,10 +654,10 @@ align="center"><artwork>
         |                 |                  |SIP UPDATE (PURR)  |
         |                 |                  |<==================|
         |                 |                  |                   |
-        |                 |      +-----------------------+       |         
+        |                 |      +-----------------------+       |
         |                 |      | Fetch PRID (key=PURR) |       |
         |                 |      +-----------------------+       |
-        |                 |                  |                   |    
+        |                 |                  |                   |
         |                 |Push Request (PRID)                   |
         |                 |<-----------------|                   |
         |Push Message (PRID)                 |                   |
@@ -677,52 +677,52 @@ align="center"><artwork>
         |<===================================|                   |
         |                 |                  |                   |
 
-        
+
         ------- Push Notification API
 
-        ======= SIP 
+        ======= SIP
 
 ]]></artwork></figure>
 
       <section anchor="section.subscription.ua" title="SIP UA Behavior">
         <section anchor="section.subscription.ua.sub" title="Initial Request for Dialog">
           <t>
-            When the UA sends an initial request for a dialog, or a 2xx response to such requests, if the UA is 
-            willing to receive push notifications triggered by incoming mid-dialog requests, the UA MUST include 
-            a 'pn-purr' SIP URI parameter in the Contact header field of the request or response. The UA MUST include a 
-            parameter value identical to the last 'sip.pnspurr' feature-capability indicator that it received 
+            When the UA sends an initial request for a dialog, or a 2xx response to such requests, if the UA is
+            willing to receive push notifications triggered by incoming mid-dialog requests, the UA MUST include
+            a 'pn-purr' SIP URI parameter in the Contact header field of the request or response. The UA MUST include a
+            parameter value identical to the last 'sip.pnspurr' feature-capability indicator that it received
             in a REGISTER response (<xref target="section.subscription.proxy.reg"/>).
           </t>
           <t>
             The UA decision whether it is willing to receive push notifications triggered by incoming mid-dialog requests
-            is done based on local policy. Such policy might be based on the type of SIP dialog, the type of media (if any) 
+            is done based on local policy. Such policy might be based on the type of SIP dialog, the type of media (if any)
             negotiated for the dialog <xref target="RFC3264"/>, etc.
           </t>
           <t>
-            NOTE: As the 'pn-purr' SIP URI parameter only applies to a given dialog, the UA needs to include a 'pn-purr' parameter 
-            in the Contact header field of the request or response for each dialog in which the UA is willing to receive push notifications 
+            NOTE: As the 'pn-purr' SIP URI parameter only applies to a given dialog, the UA needs to include a 'pn-purr' parameter
+            in the Contact header field of the request or response for each dialog in which the UA is willing to receive push notifications
             triggered by incoming mid-dialog requests.
           </t>
         </section>
-      </section>  
+      </section>
       <section anchor="section.subscription.proxy" title="SIP Proxy Behavior">
         <section anchor="section.subscription.proxy.reg" title="REGISTER">
           <t>
             When the proxy receives an initial REGISTER request for a registration from the UA, if the proxy supports
-            requesting that push notifications triggered by mid-dialog requests are sent to the registered UA, the proxy MUST 
-            store the information (the pn- SIP URI parameters) needed to request that push notifications associated with the registration 
-            are sent to the UA. In addition, the proxy MUST generate a unique (within the context of the proxy) value, referred to as the PURR (Proxy Unique Registration Reference), 
+            requesting that push notifications triggered by mid-dialog requests are sent to the registered UA, the proxy MUST
+            store the information (the pn- SIP URI parameters) needed to request that push notifications associated with the registration
+            are sent to the UA. In addition, the proxy MUST generate a unique (within the context of the proxy) value, referred to as the PURR (Proxy Unique Registration Reference),
             that is unique within the context of the proxy and that can be used as a key to retrieve the information. When the proxy
-            receives the associated 2xx REGISTER response, it adds a 'sip.pnspurr' feature-capability indicator with the PURR value 
-            to the associated 2xx REGISTER response. When the proxy receives a binding-refresh REGISTER request, it MUST add a 'sip.pnspurr' 
+            receives the associated 2xx REGISTER response, it adds a 'sip.pnspurr' feature-capability indicator with the PURR value
+            to the associated 2xx REGISTER response. When the proxy receives a binding-refresh REGISTER request, it MUST add a 'sip.pnspurr'
             feature-capability indicator with the previously generated key as the value to the associated 2xx REGISTER response.
           </t>
           <t>
-            The PURR value MUST be generated in such a way so that it cannot be used to retrieve information about the user or associate it 
+            The PURR value MUST be generated in such a way so that it cannot be used to retrieve information about the user or associate it
             with registrations. It can be generated e.g., by utilizing a cryptographically secure random function.
           </t>
           <t>
-            In order to prevent client fingerprinting, the proxy MUST periodically generate a new PURR value (even if pn- parameters did not change) and 
+            In order to prevent client fingerprinting, the proxy MUST periodically generate a new PURR value (even if pn- parameters did not change) and
             provide the new value to the UA in a 2xx binding-refresh REGISTER response. However, as long as there are ongoing dialogs associated
             with the old value, the proxy MUST store it so that it can request that push notifications are sent to the UA when it receives a mid-dialog
             request addressed towards the UA.
@@ -730,32 +730,32 @@ align="center"><artwork>
         </section>
         <section anchor="section.subscription.proxy.sub" title="Initial Request for Dialog">
           <t>
-            When the proxy receives an initial request for a dialog from the UA, and if the request contains a 'pn-purr' SIP URI parameter 
-            in the Contact header field with a PURR value that the proxy has generated (<xref target="section.subscription.proxy.sub"/>), the proxy 
+            When the proxy receives an initial request for a dialog from the UA, and if the request contains a 'pn-purr' SIP URI parameter
+            in the Contact header field with a PURR value that the proxy has generated (<xref target="section.subscription.proxy.sub"/>), the proxy
             MUST add a Record-Route header to the request, to insert itself in the dialog route <xref target="RFC3261"/>.
           </t>
           <t>
             When the proxy receives an initial request for a dialog addressed towards the UA, and if the proxy has generated
-            a PURR value associated with the pn- parameters included in the SIP-URI of the request <xref target="section.subscription.proxy.sub"/>, 
+            a PURR value associated with the pn- parameters included in the SIP-URI of the request <xref target="section.subscription.proxy.sub"/>,
             the proxy MUST add a Record-Route header to the request, to insert itself in the dialog route <xref target="RFC3261"/>.
           </t>
         </section>
         <section anchor="section.subscription.proxy.not" title="Mid-Dialog Request">
           <t>
-            When the proxy receives a mid-dialog request addressed towards the UA, if the request contains 
-            a 'pn-purr' SIP URI parameter and if the proxy is able to retrieve the stored information needed to request 
-            that a push notification is sent to the UA (<xref target="section.subscription.proxy.reg"></xref>), the proxy MUST 
-            request that a push notification is sent to the UA. Once the proxy has received the triggered REGISTER request, 
+            When the proxy receives a mid-dialog request addressed towards the UA, if the request contains
+            a 'pn-purr' SIP URI parameter and if the proxy is able to retrieve the stored information needed to request
+            that a push notification is sent to the UA (<xref target="section.subscription.proxy.reg"></xref>), the proxy MUST
+            request that a push notification is sent to the UA. Once the proxy has received the triggered REGISTER request,
             and the associated successful response, the proxy can forward the mid-dialog request towards the UA.
           </t>
           <t>
             As described in <xref target="section.proxy.req.oth"></xref>, while waiting for the push notification request to
-            succeed, and the associated REGISTER request to arrive from the SIP UA, the proxy needs to take into consideration 
-            that the transaction associated with the NOTIFY request will eventually time out at the sender of the request (UAC), 
+            succeed, and the associated REGISTER request to arrive from the SIP UA, the proxy needs to take into consideration
+            that the transaction associated with the NOTIFY request will eventually time out at the sender of the request (UAC),
             and the sender will consider the transaction a failure.
           </t>
           <t>
-            When the proxy rejects a mid-dialog request, it needs to select a response code that only impacts the transaction 
+            When the proxy rejects a mid-dialog request, it needs to select a response code that only impacts the transaction
             associated with the request. See <xref target="RFC5079"/> for more information.
           </t>
         </section>
@@ -786,7 +786,7 @@ align="center"><artwork>
             </t>
         </list>
       </t>
-      <t>  
+      <t>
         In addition, the operator needs to make sure that the initial request for dialog, addressed towards the UA using the contact of the replaced dialog,
         will be routed to the SIP proxy (in order to request that a push notification is sent to the UA). The procedures for doing that are operator
         specific, and are outside the scope of this specification.
@@ -797,8 +797,8 @@ align="center"><artwork>
       <section anchor="section.grammar.555" title="555 (Push Notification Service Not Supported) Response Code">
       <t>
         The 555 response code is added to the "Server-Error" Status-Code
-        definition. 555 (Push Notification Service Not Supported) is used to indicate 
-        that the server did not support the push notification service identified in a 
+        definition. 555 (Push Notification Service Not Supported) is used to indicate
+        that the server did not support the push notification service identified in a
         'pn-provider' SIP URI parameter.
       </t>
       <t>
@@ -809,13 +809,13 @@ align="center"><artwork>
       <t>
        The sip.pns feature-capability indicator, when included in a
        Feature-Caps header field of a SIP REGISTER request or a SIP 2xx response
-       to a REGISTER request, indicates that the entity associated with the 
-       indicator supports, and will use, the SIP push mechanism and the push 
-       notification service identified by the indicator value. When included 
-       in a 555 (Push Notification Service Not Supported) response to a REGISTER 
-       request, the indicator suggests that the entity associated with the 
-       indicator supports both the SIP push mechanism and the push notification service(s) 
-       identified by the indicator value. The values defined for the pn-provider SIP URI 
+       to a REGISTER request, indicates that the entity associated with the
+       indicator supports, and will use, the SIP push mechanism and the push
+       notification service identified by the indicator value. When included
+       in a 555 (Push Notification Service Not Supported) response to a REGISTER
+       request, the indicator suggests that the entity associated with the
+       indicator supports both the SIP push mechanism and the push notification service(s)
+       identified by the indicator value. The values defined for the pn-provider SIP URI
        parameter are used as indicator values.
       </t>
             <figure align="center"><artwork>
@@ -826,17 +826,17 @@ align="center"><artwork>
   pns             = tag-value
 
   tag-value = <tag-value defined in [RFC3840]>
-  
+
 ]]></artwork></figure>
-  
+
       </section>
       <section title="sip.vapid Feature-Capability Indicator">
       <t>
         The sip.vapid feature-capability indicator, when included in a SIP 2xx
         response to a SIP REGISTER request, indicates that the entity
-        associated with the indicator supports, and will use, the 
-        Voluntary Application Server Identification (VAPID) 
-        <xref target="RFC8292"/> mechanism when requesting that a push notification 
+        associated with the indicator supports, and will use, the
+        Voluntary Application Server Identification (VAPID)
+        <xref target="RFC8292"/> mechanism when requesting that a push notification
         is sent to the SIP UA associated with the SIP registration. The indicator
         value is a public key identifying the entity, that can be used
         by a SIP UA to restrict subscriptions to that entity.
@@ -850,16 +850,16 @@ align="center"><artwork>
   tag-value = <tag-value defined in [RFC3840]>
 
 ]]></artwork></figure>
-  
+
       </section>
       <section title="sip.pnsreg Feature-Capability Indicator">
       <t>
         The sip.pnsreg feature-capability indicator, when included in a SIP 2xx
         response to a SIP REGISTER request, indicates that the entity associated with
         the indicator expects to receive binding-refresh REGISTER requests from the
-        SIP UA associated with the registration before the registration expires, without 
+        SIP UA associated with the registration before the registration expires, without
         the entity having to request that a push notification is sent to the SIP UA in order to trigger
-        the REGISTER requests. The indicator value is the minimum value (given in seconds) before the 
+        the REGISTER requests. The indicator value is the minimum value (given in seconds) before the
         registration expiration when the entity expects to receive the REGISTER request.
       </t>
             <figure align="center"><artwork>
@@ -871,7 +871,7 @@ align="center"><artwork>
   DIGIT = <DIGIT defined in [RFC3261]>
 
 ]]></artwork></figure>
-  
+
       </section>
       <section title="sip.pnsreg Media Feature Tag">
       <t>
@@ -887,14 +887,14 @@ align="center"><artwork>
   pnsreg-mt          = "+sip.pnsreg"
 
 ]]></artwork></figure>
-  
+
       </section>
       <section title="sip.pnspurr Feature-Capability Indicator">
       <t>
         The sip.pnspurr feature-capability indicator, when included in a SIP 2xx
         response to a SIP REGISTER request, indicates that the entity
         associated with the indicator will store information that can be used to
-        associate a mid-dialog SIP request with the binding information in the 
+        associate a mid-dialog SIP request with the binding information in the
         REGISTER request.
       </t>
             <figure align="center"><artwork>
@@ -906,11 +906,11 @@ align="center"><artwork>
   tag-value = <tag-value defined in [RFC3840]>
 
 ]]></artwork></figure>
-  
+
       </section>
       <section title="SIP URI Parameters">
       <t>
-        The section defines new SIP URI parameters, by extending the grammar for "uri-parameter" 
+        The section defines new SIP URI parameters, by extending the grammar for "uri-parameter"
         as defined in <xref target="RFC3261"/>. The ABNF is as follows:
       </t>
         <figure align="center"><artwork>
@@ -924,11 +924,11 @@ align="center"><artwork>
 
   pvalue = <pvalue defined in [RFC3261]>
   EQUAL = <EQUAL defined in [RFC3261]>
-  
-  The format and semantics of pn-prid and pn-param are 
+
+  The format and semantics of pn-prid and pn-param are
   specific to the pn-provider value.
-  
-  Parameter value characters that are not part of pvalue need to be 
+
+  Parameter value characters that are not part of pvalue need to be
   escaped, as defined in RFC 3261.
 
 ]]></artwork></figure>
@@ -952,7 +952,7 @@ align="center"><artwork>
           </list>
         </t>
     </section>
-    
+
     <section anchor="section.sec-apns" title="pn-provider, pn-param and pn-prid URI Parameters for Apple Push Notification service">
       <t>
         When the Apple Push Notification service (APNs) is used, the PNS-related SIP URI parameters are set as described below.
@@ -964,14 +964,14 @@ align="center"><artwork>
         https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html <xref target="pns-apns"/>)
       </t>
       <t>
-        The value of the pn-provider URI parameter is "apns". 
+        The value of the pn-provider URI parameter is "apns".
       </t>
       <t>
         Example: pn-provider=apns
       </t>
-      <t>      
+      <t>
         The value of the pn-param URI parameter is a string that is composed
-        by two values, separated by a period (.): Team ID and Topic. The Team ID is provided by Apple and 
+        by two values, separated by a period (.): Team ID and Topic. The Team ID is provided by Apple and
         is unique to a development team. The Topic consists of the Bundle ID, which uniquely identifies
         an application, and a service value that identifies a service associated with the application,
         separated by a period (.). For VoIP applications the service value is "voip".
@@ -980,11 +980,11 @@ align="center"><artwork>
         Example: pn-param=DEF123GHIJ.com.example.yourexampleapp.voip
       </t>
       <t>
-        NOTE: The Bundle ID might contain one or more periods (.). Hence, within the pn-param value, the first period will be 
+        NOTE: The Bundle ID might contain one or more periods (.). Hence, within the pn-param value, the first period will be
         separating the Team ID from the Topic, and within the Topic the last period will be separating the Bundle ID from the service.
       </t>
       <t>
-        The value of the pn-prid URI parameter is the device token, which is a unique identifier assigned by Apple to a specific app 
+        The value of the pn-prid URI parameter is the device token, which is a unique identifier assigned by Apple to a specific app
         on a specific device.
       </t>
       <t>
@@ -1003,13 +1003,13 @@ align="center"><artwork>
         https://firebase.google.com/docs/cloud-messaging/concept-options (<xref target="pns-fcm"/>)
       </t>
       <t>
-        The value of the pn-provider URI parameter is "fcm". 
+        The value of the pn-provider URI parameter is "fcm".
       </t>
       <t>
         The value of the pn-param URI parameter is the Project ID.
       </t>
       <t>
-        The value of the pn-prid URI parameter is the Registration token, which is 
+        The value of the pn-prid URI parameter is the Registration token, which is
         generated by the FCM SDK for each client app instance.
       </t>
     </section>
@@ -1019,7 +1019,7 @@ align="center"><artwork>
         When Generic Event Delivery Using HTTP Push is used, the PNS related URI parameters are set as described below.
       </t>
       <t>
-        The value of the pn-provider URI parameter is "webpush". 
+        The value of the pn-provider URI parameter is "webpush".
       </t>
       <t>
         The value of the pn-param URI parameter MUST NOT be used.
@@ -1038,48 +1038,48 @@ align="center"><artwork>
 
     <section anchor="section.sec" title="Security Considerations">
         <t>
-            The security considerations for the use and operation of any particular 
-            PNS (e.g., how users and devices are authenticated and authorized) is out of scope for this document. 
-            <xref target="RFC8030"/> documents the security considerations for the PNS defined in that specification. 
+            The security considerations for the use and operation of any particular
+            PNS (e.g., how users and devices are authenticated and authorized) is out of scope for this document.
+            <xref target="RFC8030"/> documents the security considerations for the PNS defined in that specification.
             Security considerations for other PNSs are left to their respective specifications.
         </t>
         <t>
-            Typically, the PNS requires the SIP proxy requesting push notifications to be 
-            authenticated and authorized by the PNS. In some cases the PNS also require 
-            the SIP application (or the SIP application developer) to be identified in order for the 
-            application to request push notifications. Unless the PNS authenticates and authorizes the PNS, 
-            a malicious endpoint that managed to get access to the parameters transported in the SIP signalling 
+            Typically, the PNS requires the SIP proxy requesting push notifications to be
+            authenticated and authorized by the PNS. In some cases the PNS also require
+            the SIP application (or the SIP application developer) to be identified in order for the
+            application to request push notifications. Unless the PNS authenticates and authorizes the PNS,
+            a malicious endpoint that managed to get access to the parameters transported in the SIP signalling
             might be able to request that push notifications are sent to a UA. Which such push notifications will not
             have any security related impacts, they will impact the battery life of the UA and trigger
             unnecessary SIP traffic.
         </t>
         <t>
-            <xref target="RFC8292"/> defines a mechanism that allows a proxy to identity itself to a PNS, 
-            by signing a JWT sent to the PNS using a key pair. The public key serves as an 
+            <xref target="RFC8292"/> defines a mechanism that allows a proxy to identity itself to a PNS,
+            by signing a JWT sent to the PNS using a key pair. The public key serves as an
             identifier of the proxy, and can be used by devices to restrict push notifications to the
             proxy associated with the key.
         </t>
         <t>
-            Operators MUST ensure that the SIP signalling is properly secured, e.g., using encryption, from 
-            malicious endpoints. TLS MUST be used, unless the operators know that the signalling is secured 
+            Operators MUST ensure that the SIP signalling is properly secured, e.g., using encryption, from
+            malicious endpoints. TLS MUST be used, unless the operators know that the signalling is secured
             using some other mechanism that provides strong crypto properties.
         </t>
         <t>
-            In addition to the information that needs to be exchanged between a device and the PNS in order to establish a 
-            push notification subscription, the mechanism defined in this document does not require any additional information 
+            In addition to the information that needs to be exchanged between a device and the PNS in order to establish a
+            push notification subscription, the mechanism defined in this document does not require any additional information
             to be exchanged between the device and the PNS.
         </t>
         <t>
-            The mechanism defined in this document does not require a proxy to include any payload (in addition 
+            The mechanism defined in this document does not require a proxy to include any payload (in addition
             to possible payload used for the PNS itself) when requesting push notifications.
         </t>
         <t>
             Operators MUST ensure that the PNS-related SIP URI parameters conveyed by a user in the Contact URI of a REGISTER request
             are not sent to other users, or to non-trusted network entities. One way to convey contact information is by using the
             the SIP event package for registrations mechanism <xref target="RFC3680"/>. <xref target="RFC3680"/> defines generic security
-            considerations for the SIP event package for registations. As the PNS-related SIP URI parameters conveyed in the REGISTER request 
-            contain sensitive information, operators that support the event package MUST ensure that event package subscriptions are properly 
-            authenticated and authorized, and that the SIP URI parameters are not included in event notifications sent to other users, or to 
+            considerations for the SIP event package for registations. As the PNS-related SIP URI parameters conveyed in the REGISTER request
+            contain sensitive information, operators that support the event package MUST ensure that event package subscriptions are properly
+            authenticated and authorized, and that the SIP URI parameters are not included in event notifications sent to other users, or to
             non-trusted network entities.
         </t>
     </section>
@@ -1165,8 +1165,8 @@ align="center"><artwork>
       <section anchor="section.iana.featurecap-pns" title="sip.pns">
         <t>
           This section defines a new feature-capability indicator that extends
-          the "SIP Feature-Capability Indicator Registration Tree" sub-registry 
-          <xref target="RFC6809"/> under the sip-parameters registry: 
+          the "SIP Feature-Capability Indicator Registration Tree" sub-registry
+          <xref target="RFC6809"/> under the sip-parameters registry:
           http://www.iana.org/assignments/sip-parameters.
         </t>
         <figure align="center"><artwork>
@@ -1176,14 +1176,14 @@ align="center"><artwork>
 
    Description: This feature-capability indicator, when included in a
        Feature-Caps header field of a SIP REGISTER request or a SIP 2xx
-       response to a REGISTER request, indicates that the entity 
+       response to a REGISTER request, indicates that the entity
        associated with the indicator supports, and will use, the SIP
        push mechanism and the push notification service identified by
-       the indicator value. When included in a 555 (Push Notification 
-       Service Not Supported) response to a REGISTER request, the 
-       indicator suggests that the entity associated with the 
-       indicator supports both the SIP push mechanism and the push 
-       notification service(s) identified by the indicator value. 
+       the indicator value. When included in a 555 (Push Notification
+       Service Not Supported) response to a REGISTER request, the
+       indicator suggests that the entity associated with the
+       indicator supports both the SIP push mechanism and the push
+       notification service(s) identified by the indicator value.
 
    Reference: [RFCXXXX]
 
@@ -1194,8 +1194,8 @@ align="center"><artwork>
       <section anchor="section.iana.featurecap-vapid" title="sip.vapid">
         <t>
           This section defines a new feature-capability indicator that extends
-          the "SIP Feature-Capability Indicator Registration Tree" sub-registry 
-          <xref target="RFC6809"/> under the sip-parameters registry: 
+          the "SIP Feature-Capability Indicator Registration Tree" sub-registry
+          <xref target="RFC6809"/> under the sip-parameters registry:
           http://www.iana.org/assignments/sip-parameters.
         </t>
         <figure align="center"><artwork>
@@ -1203,11 +1203,11 @@ align="center"><artwork>
 
    Name: sip.vapid
 
-   Description: This feature-capability indicator, when included in a 
+   Description: This feature-capability indicator, when included in a
         SIP 2xx response to a SIP REGISTER request, indicates that the
-        entity associated with the indicator supports, and will use, 
-        the Voluntary Application Server Identification (VAPID) 
-        mechanism when requesting that a push notifications is sent to 
+        entity associated with the indicator supports, and will use,
+        the Voluntary Application Server Identification (VAPID)
+        mechanism when requesting that a push notifications is sent to
         the SIP UA associated with the SIP registration. The indicator
         value is a public key identifying the entity, that can be used
         by a SIP UA to restrict subscriptions to that entity.
@@ -1221,8 +1221,8 @@ align="center"><artwork>
       <section anchor="section.iana.featurecap-pnsreg" title="sip.pnsreg">
         <t>
           This section defines a new feature-capability indicator that extends
-          the "SIP Feature-Capability Indicator Registration Tree" sub-registry 
-          <xref target="RFC6809"/> under the sip-parameters registry: 
+          the "SIP Feature-Capability Indicator Registration Tree" sub-registry
+          <xref target="RFC6809"/> under the sip-parameters registry:
           http://www.iana.org/assignments/sip-parameters.
         </t>
         <figure align="center"><artwork>
@@ -1230,11 +1230,11 @@ align="center"><artwork>
 
    Name: sip.pnsreg
 
-   Description: This feature-capability indicator, when included in a 
+   Description: This feature-capability indicator, when included in a
         SIP 2xx response to a SIP REGISTER request, indicates that the
-        entity associated with the indicator expects to receive 
-        binding-refresh REGISTER requests from the SIP UA associated 
-        with the registration before the registration expires, without 
+        entity associated with the indicator expects to receive
+        binding-refresh REGISTER requests from the SIP UA associated
+        with the registration before the registration expires, without
         the entity having to request that a push notification is sent
         to the SIP UA in order to trigger the REGISTER requests. The
         indicator value is the minimum value (given in seconds) before
@@ -1250,8 +1250,8 @@ align="center"><artwork>
       <section anchor="section.iana.featurecap-pnspurr" title="sip.pnspurr">
         <t>
           This section defines a new feature-capability indicator that extends
-          the "SIP Feature-Capability Indicator Registration Tree" sub-registry 
-          <xref target="RFC6809"/> under the sip-parameters registry: 
+          the "SIP Feature-Capability Indicator Registration Tree" sub-registry
+          <xref target="RFC6809"/> under the sip-parameters registry:
           http://www.iana.org/assignments/sip-parameters.
         </t>
         <figure align="center"><artwork>
@@ -1260,11 +1260,11 @@ align="center"><artwork>
    Name: sip.pnspurr
 
    Description: This feature-capability indicator, when included in a
-        SIP 2xx response to a SIP REGISTER request, indicates that 
+        SIP 2xx response to a SIP REGISTER request, indicates that
         the entity associated with the indicator will store information
         that can be used to associate a mid-dialog SIP request with the
-        binding information in the REGISTER request. The indicator 
-        value is an identifier that can be used a key to retrieve the 
+        binding information in the REGISTER request. The indicator
+        value is an identifier that can be used a key to retrieve the
         binding information.
 
    Reference: [RFCXXXX]
@@ -1278,8 +1278,8 @@ align="center"><artwork>
       <section anchor="section.iana.mediatag-pnsreg" title="sip.pnsreg">
         <t>
           This section defines a new media feature tag that extends
-          the "SIP Media Feature Tag Registration Tree" sub-registry 
-          <xref target="RFC3840"/> under the Media Feature Tag registry: 
+          the "SIP Media Feature Tag Registration Tree" sub-registry
+          <xref target="RFC3840"/> under the Media Feature Tag registry:
           https://www.iana.org/assignments/media-feature-tags/media-feature-tags.xhtml.
         </t>
         <figure align="center"><artwork>
@@ -1288,9 +1288,9 @@ align="center"><artwork>
    Media feature tag name: sip.pnsreg
 
    Summary of the media feature indicated by this feature tag: This
-        media feature tag, when included in the SIP Contact header 
+        media feature tag, when included in the SIP Contact header
         field of a SIP REGISTER request, indicates that the SIP UA
-        associated with the tag is able to send binding-refresh 
+        associated with the tag is able to send binding-refresh
         REGISTER requests associated with the registration without
         being awaken by push notifications.
 
@@ -1308,8 +1308,8 @@ align="center"><artwork>
 
 ]]></artwork></figure>
       </section>
-      </section>      
-      
+      </section>
+
       <section anchor="section.iana.pns-sub" title="PNS Sub-registry Establishment">
         <t>
              This section creates a new sub-registry, "PNS", under the sip-parameters
@@ -1320,7 +1320,7 @@ align="center"><artwork>
         </t>
         <t>
             When a SIP URI pn-provider value is registered in the sub-registry, it
-            needs to meet the "Specification Required" policies defined in 
+            needs to meet the "Specification Required" policies defined in
             <xref target="RFC8126"/>.
         </t>
         <figure align="center"><artwork>
@@ -1347,8 +1347,8 @@ align="center"><artwork>
 
   apns          Apple Push Notification service         [RFC XXXX]
   fcm           Firebase Cloud Messaging                [RFC XXXX]
-  webpush       Generic Event Delivery Using HTTP Push  [RFC XXXX]     
-                 
+  webpush       Generic Event Delivery Using HTTP Push  [RFC XXXX]
+
 
 ]]></artwork></figure>
       </section>
@@ -1356,7 +1356,7 @@ align="center"><artwork>
 
     <section anchor="sec-acks" title="Acknowledgements" toc="default">
       <t>
-        Thanks to Mickey Arnold, Paul Kyzivat, Dale Worley, Ranjit Avasarala, Martin Thomson, 
+        Thanks to Mickey Arnold, Paul Kyzivat, Dale Worley, Ranjit Avasarala, Martin Thomson,
         Mikael Klein, Susanna Sjoholm, Kari-Pekka Perttula, Liviu Chircu, Roman Shpount and
         Yehoshua Gev for reading the text, and providing useful feedback.
       </t>
@@ -1393,7 +1393,7 @@ align="center"><artwork>
           <date day="11" month="January" year="2019" />
         </front>
         <format target=" https://firebase.google.com/docs/cloud-messaging/concept-options" type="HTML" />
-      </reference> 
+      </reference>
     </references>
     <references title="Informative References">
       <?rfc include="reference.RFC.3264"?>
