@@ -423,8 +423,8 @@ align="center"><artwork>
       <section anchor="section.proxy.req.reg" title="REGISTER">
         <t>
           The procedures in this section apply when the SIP proxy receives a SIP REGISTER request (initial REGISTER request
-          for a registration, or a binding-refresh REGISTER request) that contains a pn-provider SIP URI parameter identifying a type of PNS.
-          If the proxy receives a REGISTER request that does not contain a pn-provider SIP URI parameter, or that removes the registration,
+          for a registration, or a binding-refresh REGISTER request) that contains a pn-provider Contact header field URI parameter identifying a type of PNS.
+          If the proxy receives a REGISTER request that does not contain a pn-provider Contact header field URI parameter, or that removes the registration,
           the proxy MUST NOT request that a push notification is sent to the UA associated with the REGISTER request or perform any other procedures
           in this section.
         </t>
@@ -736,7 +736,7 @@ align="center"><artwork>
           </t>
           <t>
             When the proxy receives an initial request for a dialog addressed towards the UA, and if the proxy has generated
-            a PURR value associated with the pn- parameters included in the SIP-URI of the request <xref target="section.subscription.proxy.sub"/>,
+            a PURR value associated with the pn- parameters included in a SIP URI of the request <xref target="section.subscription.proxy.sub"/>,
             the proxy MUST add a Record-Route header to the request, to insert itself in the dialog route <xref target="RFC3261"/>.
           </t>
         </section>
@@ -751,7 +751,7 @@ align="center"><artwork>
           <t>
             As described in <xref target="section.proxy.req.oth"></xref>, while waiting for the push notification request to
             succeed, and the associated REGISTER request to arrive from the SIP UA, the proxy needs to take into consideration
-            that the transaction associated with the NOTIFY request will eventually time out at the sender of the request (UAC),
+            that the transaction associated with the mid-dialog request will eventually time out at the sender of the request (UAC),
             and the sender will consider the transaction a failure.
           </t>
           <t>
@@ -1074,7 +1074,7 @@ align="center"><artwork>
             to possible payload used for the PNS itself) when requesting push notifications.
         </t>
         <t>
-            Operators MUST ensure that the PNS-related SIP URI parameters conveyed by a user in the Contact URI of a REGISTER request
+            Operators MUST ensure that the PNS-related SIP URI parameters conveyed by a user in the Contact header field URI of a REGISTER request
             are not sent to other users, or to non-trusted network entities. One way to convey contact information is by using the
             the SIP event package for registrations mechanism <xref target="RFC3680"/>. <xref target="RFC3680"/> defines generic security
             considerations for the SIP event package for registations. As the PNS-related SIP URI parameters conveyed in the REGISTER request
