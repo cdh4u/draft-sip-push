@@ -459,16 +459,19 @@ align="center"><artwork>
       </section>
       <section anchor="section.proxy.compare" title="SIP URI Comparison Rules">
           <t>
-            When a SIP proxy compares two SIP URIs, the proxy uses the URI comparison rules
-            defined in <xref target="RFC3261"></xref>, with the following addition: the pn-prid, pn-provider 
-            and pn-param SIP URI parameters MUST also match in order for the comparison to be successful.
+            When a SIP proxy compares two SIP URIs, the proxy uses the URI comparison rules defined 
+            in <xref target="RFC3261"></xref>, meaning that in order for a comparison to be successful
+            the pn-prid, pn-provider and pn-param SIP URI parameters must also match.
           </t>
           <t>
             If only the pn- SIP URI parameters listed above match, but other parts of the compared URIs 
             do not match, a proxy MAY still consider the comparison successful, based on local policy.
-            This can occur in a race condition, if a UA modified some parts of the Contact URI in the most 
-            recent REGISTER request, but the Request-URI of a SIP request addressed towards the UA still 
-            contains the old parts.
+            This can occur in a race condition when the proxy compares the Contact header field URI 
+            of a 2xx response to a REGISTER request with a Request-URI of a SIP request in the
+            SIP Request Push Queue (<xref target="section.proxy.queue"></xref>), if the UA that sent
+            the associated REGISTER request modified some parts of the Contact header field URI
+            in the REGISTER request, but the Request-URI of the SIP request in the SIP Request Push Queue
+            still contains the old parts.
           </t>
       </section>
       <section anchor="section.proxy.indicate" title="Indicate Support of Type of PNS">
