@@ -466,9 +466,12 @@ align="center"><artwork>
           <t>
             If only the pn- SIP URI parameters listed above match, but other parts of the compared URIs 
             do not match, a proxy MAY still consider the comparison successful, based on local policy.
-            This can occur in a race condition, if a UA modified some parts of the Contact URI in the most 
-            recent REGISTER request, but the Request-URI of a SIP request addressed towards the UA still 
-            contains the old parts.
+            This can occur in a race condition when the proxy compares the Contact header field URI 
+            of a 2xx response to a REGISTER request with a Request-URI of a SIP request in the
+            SIP Request Push Queue (<xref target="section.proxy.queue"></xref>), if the UA that sent
+            the associated REGISTER request modified some parts of the Contact header field URI
+            in the REGISTER request, but the Request-URI of the SIP request in the SIP Request Push Queue
+            still contains the old parts.
           </t>
       </section>
       <section anchor="section.proxy.indicate" title="Indicate Support of Type of PNS">
