@@ -459,9 +459,9 @@ align="center"><artwork>
       </section>
       <section anchor="section.proxy.compare" title="SIP URI Comparison Rules">
           <t>
-            When a SIP proxy compares two SIP URIs, the proxy uses the URI comparison rules
-            defined in <xref target="RFC3261"></xref>, with the following addition: the pn-prid, pn-provider 
-            and pn-param SIP URI parameters MUST also match in order for the comparison to be successful.
+            When a SIP proxy compares two SIP URIs, the proxy uses the URI comparison rules defined 
+            in <xref target="RFC3261"></xref>, meaning that in order for a comparison to be successful
+            the pn-prid, pn-provider and pn-param SIP URI parameters must also match.
           </t>
           <t>
             If only the pn- SIP URI parameters listed above match, but other parts of the compared URIs 
