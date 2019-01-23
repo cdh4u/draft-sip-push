@@ -671,7 +671,7 @@ align="center"><artwork>
             When the proxy receives a SIP request for a new dialog (e.g., a SIP INVITE request) or a stand-alone SIP request (e.g., a SIP MESSAGE request) 
             addressed towards a SIP UA, if the Request-URI of the request contains a pn-provider, a pn-prid and a pn-param (if required for the specific PNS provider) 
             SIP URI parameter, the proxy requests that a push notification is sent to the UA, using the information in the pn- SIP URI parameters. The proxy then places
-            the SIP request in the SIP Request Push Queue (<xref target="section.proxy.queue"/>). The push notification will trigger the UA to send a binding-refresh REGISTER request,
+            the SIP request in the SIP Request Push Queue. The push notification will trigger the UA to send a binding-refresh REGISTER request,
             that the proxy will process as described in <xref target="section.proxy.req.reg"/>. In addition, the proxy MUST store the Contact URI of the REGISTER request during the 
             lifetime of the REGISTER transaction.
           </t>
@@ -690,7 +690,7 @@ align="center"><artwork>
               The proxy checks whether the SIP Request Push Queue contains a SIP request associated with the REGISTER transaction. If the
               queue contains such request the proxy compares (<xref target="section.proxy.compare"></xref>) the Contact header field URI 
               in the REGISTER response with the Request-URIs of the SIP requests in the queue. If there is a match, the proxy MUST remove 
-              the SIP request from the waiting queue and forward it towards the UA. 
+              the SIP request from the SIP Request Push Queue and forward it towards the UA. 
               </t>
             </list>
           </t>    
@@ -934,7 +934,7 @@ align="center"><artwork>
           <t>
             When the proxy receives a 2xx response to a REGISTER request, the proxy checks whether the SIP Request Push Queue 
             contains a mid-dialog SIP request associated with the REGISTER transaction. If the queue contains such request 
-            the proxy MUST remove the SIP request from the waiting queue and forward it towards the UA.
+            the proxy MUST remove the SIP request from the SIP Request Push Queue and forward it towards the UA.
           </t>
           <t>
             Note that the proxy does not perform a URI comparison (<xref target="section.proxy.compare"/>) when processing 
@@ -977,7 +977,7 @@ align="center"><artwork>
             </t>
             <t>
                 The proxy MUST apply the mechanism defined in <xref target="section.subscription.proxy.not"></xref> to place 
-                and retrieve the request from the waiting queue.
+                and retrieve the request from the SIP Request Push Queue.
             </t>
         </list>
       </t>
