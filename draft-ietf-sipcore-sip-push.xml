@@ -332,7 +332,8 @@ align="center"><artwork>
         <section anchor="section.ua.req.req.push.dis" title="Disable Push Notifications">
           <t>
             When a UA wants to disable previously requested push notifications, the UA SHOULD remove the binding <xref target="RFC3261"></xref>,
-            unless the UA is no longer able to perform SIP procedures (e.g., due to a forced shutdown of the UA). When the UA sends the
+            unless the UA is no longer able to perform SIP procedures (e.g., due to a forced shutdown of the UA) in which case the registrar will
+            remove the binding once it expires. When the UA sends the
             REGISTER request for removing the binding, the UA MUST include the pn-prid SIP URI parameter in the Contact header field URI
             of the REGISTER request, in order to inform the SIP network that the UA no longer wants to receive push notifications associated
             with the PRID.
@@ -444,33 +445,38 @@ align="center"><artwork>
           the scope of this specification.
         </t>
       </section>
-      <section anchor="section.proxy.queue" title="SIP Request Push Queue">
+      <section anchor="section.proxy.bucket" title="SIP Request Push Bucket">
         <t>
-          When a SIP proxy receives a SIP request, addressed towards a UA, that will trigger the proxy to request that a push
-          notification is sent to the UA, the proxy will place the request in a queue referred to as the
-          SIP Request Push Queue. A SIP request is removed from the queue once the proxy either forwards the request towards
-          the UA or when the proxy sends an error response to the request. The detailed procedures are described in the sections below.
+          When a SIP proxy receives a SIP request, addressed towards a UA, that will trigger the proxy to request
+          that a push notification is sent to the UA, the proxy will place the request in a storage referred to as
+          the SIP Request Push Bucket. The proxy starts a timer (referred to as the Bucket Timer) associated with the
+          transaction. A SIP request is removed from the bucket once the proxy forwards the request towards the UA, when the
+          proxy sends an error response to the request, or when the Bucket Timer times out. The detailed procedures are
+          described in the sections below.
         </t>
         <t>
-          Exactly how the SIP Request Push Queue is implemented is outside the scope of this document. One option is to
-          use the PRID as a key to search for SIP requests in the queue. Note that mid-dialog requests 
+          Exactly how the SIP Request Push Bucket is implemented is outside the scope of this document. One option is to
+          use the PRID as a key to search for SIP requests in the bucket. Note that mid-dialog requests 
           (<xref target="section.subscription"></xref>) do not carry the PRID in the SIP request itself.
         </t>
       </section>
       <section anchor="section.proxy.compare" title="SIP URI Comparison Rules">
           <t>
-            When a SIP proxy compares two SIP URIs, the proxy uses the URI comparison rules defined 
-            in <xref target="RFC3261"></xref>, meaning that in order for a comparison to be successful
-            the pn-prid, pn-provider and pn-param SIP URI parameters must also match.
+            By default, a SIP proxy uses the URI comparison rules defined in <xref target="RFC3261"></xref>. 
+            However, when a SIP proxy compares the Contact header field URI of a 2xx response to a REGISTER request 
+            with a Request-URI of a SIP request in the SIP Request Push Bucket (<xref target="section.proxy.bucket"></xref>), 
+            the proxy uses the URI comparison rules with the following additions: the pn-prid, pn-provider and pn-param SIP URI 
+            parameters MUST also match. If a pn- parameter is present in one of the compared URIs but not in the other URI there 
+            is no match.
           </t>
           <t>
             If only the pn- SIP URI parameters listed above match, but other parts of the compared URIs 
             do not match, a proxy MAY still consider the comparison successful, based on local policy.
             This can occur in a race condition when the proxy compares the Contact header field URI 
             of a 2xx response to a REGISTER request with a Request-URI of a SIP request in the
-            SIP Request Push Queue (<xref target="section.proxy.queue"></xref>), if the UA that sent
+            SIP Request Push Bucket (<xref target="section.proxy.bucket"></xref>), if the UA that sent
             the associated REGISTER request modified some parts of the Contact header field URI
-            in the REGISTER request, but the Request-URI of the SIP request in the SIP Request Push Queue
+            in the REGISTER request, but the Request-URI of the SIP request in the SIP Request Push Bucket
             still contains the old parts.
           </t>
       </section>
@@ -671,7 +677,7 @@ align="center"><artwork>
             When the proxy receives a SIP request for a new dialog (e.g., a SIP INVITE request) or a stand-alone SIP request (e.g., a SIP MESSAGE request) 
             addressed towards a SIP UA, if the Request-URI of the request contains a pn-provider, a pn-prid and a pn-param (if required for the specific PNS provider) 
             SIP URI parameter, the proxy requests that a push notification is sent to the UA, using the information in the pn- SIP URI parameters. The proxy then places
-            the SIP request in the SIP Request Push Queue. The push notification will trigger the UA to send a binding-refresh REGISTER request,
+            the SIP request in the SIP Request Push Bucket. The push notification will trigger the UA to send a binding-refresh REGISTER request,
             that the proxy will process as described in <xref target="section.proxy.req.reg"/>. In addition, the proxy MUST store the Contact URI of the REGISTER request during the 
             lifetime of the REGISTER transaction.
           </t>
@@ -687,10 +693,10 @@ align="center"><artwork>
               The proxy processes the REGISTER response as described in <xref target="section.proxy.req.reg"/>.
               </t>
               <t>
-              The proxy checks whether the SIP Request Push Queue contains a SIP request associated with the REGISTER transaction. If the
-              queue contains such request the proxy compares (<xref target="section.proxy.compare"></xref>) the Contact header field URI 
-              in the REGISTER response with the Request-URIs of the SIP requests in the queue. If there is a match, the proxy MUST remove 
-              the SIP request from the SIP Request Push Queue and forward it towards the UA. 
+              The proxy checks whether the SIP Request Push Bucket contains a SIP request associated with the REGISTER transaction,
+              by comparing (<xref target="section.proxy.compare"></xref>) the Contact header field URI in the REGISTER response
+              with the Request-URIs of the SIP requests in the queue. If there is a match, the proxy MUST remove the SIP request 
+              from the bucket and forward it towards the UA.
               </t>
             </list>
           </t>    
@@ -701,23 +707,24 @@ align="center"><artwork>
           </t>
           <t>
             If the proxy receives a non-2xx response to the REGISTER request, the proxy compares the Contact URI stored from the 
-            REGISTER request (see above) with the Request-URIs of the SIP requests in the SIP Request Push Queue. If there is a match,
-            the proxy SHOULD remove the associated request from the queue and send an error response to the request. It is RECOMMENDED 
+            REGISTER request (see above) with the Request-URIs of the SIP requests in the SIP Request Push Bucket. If there is a match,
+            the proxy SHOULD remove the associated request from the bucket and send an error response to the request. It is RECOMMENDED 
             that the proxy sends either a 404 (Not Found) response or a 480 (Temporarily Unavailable) response to the SIP request, but 
             other response codes can be used as well. However, if the REGISTER response is expected to trigger a new REGISTER request
             from the UA (e.g., if the registrar is requesting the UA to perform authentication) the proxy MAY keep the SIP request in 
-            the queue.
+            the bucket.
           </t>
           <t>
             If the push notification request fails (see PNS-specific documentation for details), the proxy MUST remove the SIP request
-            from the queue and send an error response to the SIP request. It is RECOMMENDED that the proxy sends either a 404 (Not Found) 
+            from the bucket and send an error response to the SIP request. It is RECOMMENDED that the proxy sends either a 404 (Not Found) 
             response or a 480 (Temporarily Unavailable) response, but other response codes can be used as well.
           </t>
           <t>
-            When the proxy has requested that a push notification is sent to a UA, if the proxy does not receive a REGISTER response 
-            with a Contact URI that matches the Request-URI of the SIP request, the transaction timer of the SIP request will eventually 
-            time out. When that happens the proxy MUST remove the SIP request from the queue and send a 480 (Temporarily Unavailable) response. The timer expiration value is set based
-            on local policy, taking the guidelines below into consideration.
+            When the proxy has requested that a push notification is sent to a UA, if the proxy does not receive a REGISTER response
+            with a Contact URI that matches the Request-URI of the SIP request, the Bucket Timer (<xref target="section.proxy.bucket"/>)
+            associated with the SIP request will eventually time out. When that happens the proxy MUST remove the SIP request from the
+            SIP Request Push Bucket (<xref target="section.proxy.bucket"/>) and send a 480 (Temporarily Unavailable) response.
+            The Bucket Timer time out value is set based on local policy, taking the guidelines below into consideration.
           </t>
           <t>
             As discussed in <xref target="RFC4320"/> and <xref target="RFC4321"/>, non-INVITE transactions must complete immediately or risk losing a race that results
@@ -727,8 +734,8 @@ align="center"><artwork>
             with the SIP request will eventually time out at the sender of the request (UAC), and the sender will consider the transaction a failure. If the proxy 
             forwards the SIP request towards the SIP UA, the SIP UA accepts the request and the transaction times out at the sender before it receives the successful 
             response, this will cause state misalignment between the endpoints (the sender will consider the transaction a failure, while the receiver will consider 
-            the transaction a success). The SIP proxy needs to take this into account when deciding for how long to wait before it considers the transaction associated 
-            with the SIP request a failure, to make sure that the error response reaches the sender before the transaction times out. If the accumulated delay of this 
+            the transaction a success). The SIP proxy needs to take this into account when it sets the value of the Bucket Timer tassociated with the transaction,
+            to make sure that the error response (triggered by a Bucket Timer time out) reaches the sender before the transaction times out. If the accumulated delay of this 
             mechanism combined with any other mechanisms in the path of processing the non-INVITE transaction is not kept short, this mechanism should not be used. 
             For networks encountering such conditions, an alternative (left for possible future work) would be for the proxy to immediately return an new error code 
             meaning "wait at least the number of seconds specified in this response, and retry your request" before initiating the push notification.
@@ -742,9 +749,9 @@ align="center"><artwork>
             without waiting for a 2xx response to a REGISTER request, or without even requesting that a push notification is sent to the UA:
             <list>
               <t>
-              If the proxy is able to authorize the sender of the REGISTER request, the proxy does not need to wait for the 2xx response before it 
+              If the proxy is able to authenticate the sender of the REGISTER request, the proxy does not need to wait for the 2xx response before it 
               forwards the SIP request towards the UA. In such cases, the proxy will use the Contact URI of the REGISTER request when comparing it
-              against the Request-URIs of the SIP requests in the SIP Request Push Queue.
+              against the Request-URIs of the SIP requests in the SIP Request Push Bucket.
               </t>
               <t>
               If the proxy has knowledge that the UA is awake, and that the UA is able to receive the SIP request without first 
@@ -924,7 +931,7 @@ align="center"><artwork>
             When the proxy receives a mid-dialog SIP request addressed towards the UA, if the request contains 
             a 'pn-purr' SIP URI parameter and if the proxy is able to retrieve the stored information needed to request 
             that a push notification is sent the UA (<xref target="section.subscription.proxy.reg"></xref>), the proxy MUST 
-            place the SIP request in the SIP Request Push Queue and request that a push notification is sent to the UA.
+            place the SIP request in the SIP Request Push Bucket and request that a push notification is sent to the UA.
           </t>
           <t>
             NOTE: The 'pn-purr' SIP URI parameter will either be carried in the Request-URI or in a Route header field 
@@ -932,9 +939,9 @@ align="center"><artwork>
             mid-dialog SIP request has been constructed.
           </t>
           <t>
-            When the proxy receives a 2xx response to a REGISTER request, the proxy checks whether the SIP Request Push Queue 
-            contains a mid-dialog SIP request associated with the REGISTER transaction. If the queue contains such request 
-            the proxy MUST remove the SIP request from the SIP Request Push Queue and forward it towards the UA.
+            When the proxy receives a 2xx response to a REGISTER request, the proxy checks whether the SIP Request Push Bucket 
+            contains a mid-dialog SIP request associated with the REGISTER transaction. If the bucket contains such request 
+            the proxy MUST remove the SIP request from the SIP Request Push Bucket and forward it towards the UA.
           </t>
           <t>
             Note that the proxy does not perform a URI comparison (<xref target="section.proxy.compare"/>) when processing 
@@ -977,7 +984,7 @@ align="center"><artwork>
             </t>
             <t>
                 The proxy MUST apply the mechanism defined in <xref target="section.subscription.proxy.not"></xref> to place 
-                and retrieve the request from the SIP Request Push Queue.
+                and retrieve the request from the SIP Request Push Bucket.
             </t>
         </list>
       </t>
@@ -1242,10 +1249,9 @@ align="center"><artwork>
             authenticated and authorized by the PNS. In some cases the PNS also require 
             the SIP application (or the SIP application developer) to be identified in order for the 
             application to request push notifications. Unless the PNS authenticates and authorizes the PNS, 
-            a malicious endpoint that managed to get access to the parameters transported in the SIP signalling 
-            might be able to request that push notifications are sent to a UA. Which such push notifications will not
-            have any security related impacts, they will impact the battery life of the UA and trigger
-            unnecessary SIP traffic.
+            a malicious endpoint or network entity that managed to get access to the parameters transported in the SIP signalling 
+            might be able to request that push notifications are sent to a UA. Such push notifications will impact
+            the battery life of the UA and trigger unnecessary SIP traffic.
         </t>
         <t>
             <xref target="RFC8292"/> defines a mechanism that allows a proxy to identity itself to a PNS, 
@@ -1255,7 +1261,7 @@ align="center"><artwork>
         </t>
         <t>
             Operators MUST ensure that the SIP signalling is properly secured, e.g., using encryption, from 
-            malicious endpoints. TLS MUST be used, unless the operators know that the signalling is secured 
+            malicious network entities. TLS MUST be used, unless the operators know that the signalling is secured 
             using some other mechanism that provides strong crypto properties.
         </t>
         <t>
