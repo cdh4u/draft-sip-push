@@ -111,14 +111,11 @@
         to wake the UA when an incoming SIP request UA arrives.
       </t>
       <t>
-        When a UA registers with a PNS <!-- ajm: Figure 1 labels this a subscription to the PNS rather than a 
-        registration -->, it will receive a unique Push Resource ID (PRID)
+        When a UA registers with a PNS (<xref target="fig-sip-pn-arch"/>), it will receive a unique Push Resource ID (PRID)
         associated with the push notification registration. The UA will use a REGISTER request 
         to provide the PRID to the SIP proxy, which will then request that push notifications 
         are sent to the UA.
       </t>
-      <!-- ajm: I heavily modified this paragraph below to match what Figure 1 shows. Please check
-           for accuracy. -->
       <t>
         When the SIP proxy receives a SIP request for a new dialog or a stand-alone SIP request 
         addressed towards a UA, or when the SIP proxy determines that the UA needs to send a 
@@ -803,7 +800,7 @@ align="center"><artwork>
     |        |      | Service |        |           |    | Home Proxy  |
     +--------+      +---------+        +-----------+    +-------------+ 
         |                 |                  |                   |
-        | Subscribe       |                  |                   |
+        | PNS Register    |                  |                   |
         |---------------->|                  |                   |
         |                 |                  |                   |
         | PRID            |                  |                   |
@@ -1563,8 +1560,8 @@ align="center"><artwork>
     <section anchor="sec-acks" title="Acknowledgements" toc="default">
       <t>
         Thanks to Mickey Arnold, Paul Kyzivat, Dale Worley, Ranjit Avasarala, Martin Thomson, 
-        Mikael Klein, Susanna Sjoholm, Kari-Pekka Perttula, Liviu Chircu, Roman Shpount and
-        Yehoshua Gev for reading the text, and providing useful feedback.
+        Mikael Klein, Susanna Sjoholm, Kari-Pekka Perttula, Liviu Chircu, Roman Shpount,
+        Yehoshua Gev and Jean Mahoney for reading the text, and providing useful feedback.
       </t>
     </section>
   </middle>
