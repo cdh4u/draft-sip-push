@@ -628,7 +628,7 @@ align="center"><artwork>
               </list>
             </t>
             <t>
-              A binding expiration interval MUST be considered too short if the binding would expire before the proxy would request 
+              A binding expiration interval MUST be considered too short if the binding would expire before the proxy can request 
               that a push notification be sent to the UA to trigger the UA to send a binding-refresh REGISTER request. The proxy 
               MAY consider the interval too short based on its own policy so as to reduce load on the system.
             </t>
