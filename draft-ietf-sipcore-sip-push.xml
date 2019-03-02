@@ -338,7 +338,7 @@ align="center"><artwork>
             When a UA wants to disable previously requested push notifications, the UA SHOULD remove the binding <xref target="RFC3261"></xref>,
             unless the UA is no longer able to perform SIP procedures (e.g., due to a forced shutdown of the UA) in which case the registrar will
             remove the binding once it expires. When the UA sends the
-            REGISTER request for removing the binding, the UA MUST include the pn-prid SIP URI parameter in the Contact header field URI
+            REGISTER request for removing the binding, the UA MUST NOT insert the pn-prid SIP URI parameter in the Contact header field URI
             of the REGISTER request, in order to inform the SIP network that the UA no longer wants to receive push notifications associated
             with the PRID.
          </t>
@@ -910,11 +910,11 @@ align="center"><artwork>
       <section anchor="section.subscription.ua" title="SIP UA Behavior">
         <section anchor="section.subscription.ua.sub" title="Initial Request for Dialog">
           <t>
-            If the UA is 
-            willing to receive push notifications when a proxy receives a mid-dialog request addressed towards the UA, 
-            the UA MUST insert a 'pn-purr' SIP URI parameter in the Contact header field URI of the initial request for a dialog or the 2xx response to such requests. 
+            If the UA is willing to receive push notifications when a proxy receives a mid-dialog request addressed towards the UA, 
+            the UA MUST insert a 'pn-purr' SIP URI parameter (<xref target="section.subscription.proxy.reg"/>) in the Contact
+            header field URI of the initial request for a dialog or the 2xx response to such requests. XXX
             The UA MUST insert a parameter value identical to the last 'sip.pnspurr' feature-capability indicator 
-            that it received in a REGISTER response (<xref target="section.subscription.proxy.reg"/>). If the UA has
+            (<xref target="section.subscription.proxy.reg"/>) that it received in a REGISTER response. If the UA has
             not recived a 'sip.pnspurr' feature-capability indicator, the UA MUST NOT insert a 'pn-purr' SIP URI
             parameter in a request or response.
           </t>
@@ -960,7 +960,7 @@ align="center"><artwork>
           <t>
             When a proxy receives an initial request for a dialog from a UA that contains a 'pn-purr' SIP URI parameter 
             in the Contact header field URI with a PURR value that the proxy has generated 
-            (<xref target="section.subscription.proxy.sub"/>), the proxy MUST add a Record-Route header to the request 
+            (<xref target="section.subscription.proxy.reg"/>), the proxy MUST add a Record-Route header to the request 
             to insert itself in the dialog route <xref target="RFC3261"/> before forwarding the request.
           </t>
           <t>
@@ -1000,7 +1000,7 @@ align="center"><artwork>
           </t>
           <t>
             When a proxy sends an error response to a mid-dialog request (e.g., due to a transaction time out), the proxy SHOULD 
-            select a response code that only impacts the transaction associated with the request (<xref target="RFC5079"/>).
+            select a response code that only impacts the transaction associated with the request <xref target="RFC5079"/>.
           </t>
         </section>
       </section>
@@ -1245,7 +1245,7 @@ align="center"><artwork>
         For detailed information about the parameter values:
       </t>
       <t>
-        https://firebase.google.com/docs/cloud-messaging/concept-options (<xref target="pns-fcm"/>)
+        https://firebase.google.com/docs/cloud-messaging/concept-options <xref target="pns-fcm"/>
       </t>
       <t>
         The value of the pn-provider URI parameter is "fcm". 
