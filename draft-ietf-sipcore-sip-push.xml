@@ -393,7 +393,7 @@ align="center"><artwork>
             binding-refresh REGISTER requests, but to be suspended (in order to save battery resources, etc.) between sending 
             the REGISTER requests and use push notification to wake the UA to process incoming calls.
           </t>      
-              <figure title="SIP REGISTER Example" anchor="fig-sip-pn-reg"
+              <figure title="SIP REGISTER When Using Non-Push Mechanism Example" anchor="fig-sip-pn-reg-nopush"
 align="center"><artwork>
 <![CDATA[
 
