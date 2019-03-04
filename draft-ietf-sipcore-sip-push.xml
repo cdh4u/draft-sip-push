@@ -429,7 +429,7 @@ align="center"><artwork>
       pn-param=acme-param;
       pn-prid=ZTY4ZDJlMzODE1NmUgKi0K>;
       +sip.pnsreg
-    Feature-Caps: *;+sip.pnsreg
+    Feature-Caps: *;+sip.pns="acme",*;+sip.pnsreg="120"
     Expires: 7200
     Content-Length: 0
 
