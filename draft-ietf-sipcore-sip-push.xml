@@ -427,9 +427,9 @@ align="center"><artwork>
     Contact: <sip:alice@alicemobile.example.com;
       pn-provider=acme;
       pn-param=acme-param;
-      pn-prid=ZTY4ZDJlMzODE1NmUgKi0K>;
+      pn-prid=ZTY4ZDJlMzODE1NmUgKi0K>; 
       +sip.pnsreg
-    Feature-Caps: *;+sip.pns="acme",*;+sip.pnsreg="120"
+    Feature-Caps: *;+sip.pns="acme",*;+sip.pnsreg="121"
     Expires: 7200
     Content-Length: 0
 
