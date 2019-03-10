@@ -465,9 +465,11 @@ align="center"><artwork>
             supported by the UA.
           </t>
           <t>
-            If the UA receives a 555 (Push Notification Service Not Supported) response to the REGISTER request, 
-            the response will contain one or more Feature-Caps header fields with a 'sip.pns' feature-capability indicator, indicating the types 
-            of PNSs supported by the SIP network.
+            If the UA receives a 555 (Push Notification Service Not Supported) response to the REGISTER request, and
+            if the UA inserted a pn-provider SIP URI parameter in the REGISTER request, the response indicates that the network
+            does not support the type of PNS that the UA indicated support of. If the UA did not insert a pn-provider
+            parameter in the REGISTER request, the response indicates that the network does not support any type of PNS, while still
+            supporting the 555 (Push Notification Service Not Supported) response.
           </t>
           <t>
             NOTE: It is optional for a UA to perform a query before it requests push notifications from the SIP network.
@@ -615,9 +617,7 @@ align="center"><artwork>
                 <t>
                 If the proxy supports the type of PNS supported by the UA, but considers the requested binding expiration interval <xref target="RFC3261"/> 
                 to be too short (see below), the proxy MUST either send a 423 (Interval Too Brief) response to the REGISTER request 
-                or forward the request towards the registrar and skip the rest of the procedures in this section. If the proxy sends a 423 (Interval Too Brief) 
-                response, the proxy SHOULD insert one or more Feature-Caps header fields with a 'sip.pns' feature-capability indicator 
-                in the response, indicating each type of PNS that the proxy supports.
+                or forward the request towards the registrar and skip the rest of the procedures in this section.
                 </t>
                 <t>
                 If the proxy supports the type of PNS supported by the UA, the proxy MUST indicate support of that type of PNS
@@ -631,10 +631,6 @@ align="center"><artwork>
               A binding expiration interval MUST be considered too short if the binding would expire before the proxy can request 
               that a push notification be sent to the UA to trigger the UA to send a binding-refresh REGISTER request. The proxy 
               MAY consider the interval too short based on its own policy so as to reduce load on the system.
-            </t>
-            <t>
-              If the proxy sends a SIP 555 (Push Notification Service Not Supported) response, the proxy SHOULD indicate each type
-              of PNS that the proxy supports in the response.
             </t>
             <t>
               When a proxy receives a 2xx response to the REGISTER request, if the proxy indicated support of a type of PNS in the 
@@ -695,10 +691,6 @@ align="center"><artwork>
                 it knows (by means of local configuration) that no other proxy supports any of the types of PNSs supported by the UA.
                 </t>
               </list>
-            </t>
-            <t>
-              If the proxy sends a SIP 555 (Push Notification Service Not Supported) response, the proxy SHOULD indicate each type
-              of PNS that the proxy supports in the response.
             </t>
             <t>
               When a proxy receives a REGISTER request, and the pn-provider SIP URI parameter does not contain a parameter value, the 
@@ -1057,12 +1049,8 @@ align="center"><artwork>
        Feature-Caps header field of a SIP REGISTER request or a SIP 2xx response
        to a REGISTER request, indicates that the entity associated with the 
        indicator supports the SIP push mechanism and the type of push 
-       notification service indicated by the indicator value. When inserted 
-       in a 555 (Push Notification Service Not Supported) response to a REGISTER 
-       request, the indicator indicates that the entity associated with the 
-       indicator supports the SIP push mechanism, and the type of push notification service 
-       identified by the indicator value. The values defined for the pn-provider SIP URI 
-       parameter are used as indicator values.
+       notification service indicated by the indicator value. The values
+       defined for the pn-provider SIP URI parameter are used as indicator values.
       </t>
             <figure align="center"><artwork>
 <![CDATA[
@@ -1423,11 +1411,7 @@ align="center"><artwork>
        response to a REGISTER request, denotes that the entity 
        associated with the indicator supports the SIP push mechanism
        and the type of push notification service conveyed by the
-       indicator value. When inserted in a 555 (Push Notification 
-       Service Not Supported) response to a REGISTER request, the 
-       indicator denotes that the entity associated with the 
-       indicator supports the SIP push mechanism, and the type of push 
-       notification service conveyed by the indicator value. 
+       indicator value. 
   
    Reference: [RFCXXXX]
 
